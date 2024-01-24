@@ -92,17 +92,11 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
             <Rules>
-
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.ReadabilityRules">
             <Rules>
-                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
-                    <RuleSettings>
-                        <BooleanProperty Name="Enabled">False</BooleanProperty>
-                    </RuleSettings>
-                </Rule>
                 <Rule Name="PrefixLocalCallsWithThis">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -128,6 +122,11 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="ClosingBraceMustBeFollowedByBlankLine">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
