@@ -53,7 +53,7 @@ public class JumpCommand
         // Important: the reason why this value is not clamped in the property itself is that we
         // have commands, which have implied angle and only accept Power as parameter, which
         // we read from Angle and we can't clamp this value, otherwise we lose 10 Power
-        Angle = Math.Clamp(Angle, -90, 90);
+        this.Angle = Math.Clamp(Angle, -90, 90);
 
         Angle = direction switch
         {
