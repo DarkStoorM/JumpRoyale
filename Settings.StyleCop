@@ -17,11 +17,21 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
             <Rules>
+                <Rule Name="FieldNamesMustNotBeginWithUnderscore">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
@@ -42,11 +52,21 @@
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
                     </RuleSettings>
                 </Rule>
+                <Rule Name="DoNotUseRegions">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">
             <Rules>
+                <Rule Name="ElementMustNotBeOnSingleLine">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
