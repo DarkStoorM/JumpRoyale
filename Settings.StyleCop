@@ -1,7 +1,7 @@
 <StyleCopSettings Version="105">
     <Analyzers>
         <Analyzer AnalyzerId="StyleCop.CSharp">
-            <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+            <Rules>
                 <Rule Id="SA0001" Action="None" />
                 <Rule Id="SA1000" Action="None" />
                 <Rule Id="SA1009" Action="None" />
