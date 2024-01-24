@@ -25,11 +25,16 @@
       </Rules>
       <AnalyzerSettings />
     </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.ReadabilityRules">
+    <Analyzer AnalyzerId="StyleCop.CSharp.`bilityRules">
       <Rules>
         <Rule Name="PrefixLocalCallsWithThis">
           <RuleSettings>
             <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+        <Rule Name="DoNotPrefixLocalMembersWithThis">
+          <RuleSettings>
+            <StringProperty>Warning</StringProperty>
           </RuleSettings>
         </Rule>
       </Rules>
@@ -44,7 +49,22 @@
       <Rules>
         <Rule Name="XmlCommentAnalysisDisabled">
           <RuleSettings>
-            <BooleanProperty Name="Enabled">True</BooleanProperty>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+      </Rules>
+      <AnalyzerSettings />
+    </Analyzer>
+    <Analyzer AnalyzerId="StyleCop.CSharp.SpacingRules">
+      <Rules>
+        <Rule Name="KeywordsMustBeSpacedCorrectly">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+        <Rule Name="ClosingParenthesisMustBeSpacedCorrectly">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
           </RuleSettings>
         </Rule>
       </Rules>
