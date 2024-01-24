@@ -34,7 +34,7 @@
         </Rule>
         <Rule Name="DoNotPrefixLocalMembersWithThis">
           <RuleSettings>
-            <BooleanProperty>True</BooleanProperty>
+            <BooleanProperty Name="Enabled">True</BooleanProperty>
           </RuleSettings>
         </Rule>
       </Rules>
