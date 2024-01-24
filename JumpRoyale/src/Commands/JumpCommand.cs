@@ -17,6 +17,7 @@ public class JumpCommand
         // so this should never happen (?) 🤔
         AdjustAngle(direction);
     }
+
     /// <summary>
     /// Gets the clamped angle from user inputs. Angle of 0 degrees points up and the angles count Clockwise.
     /// Positive: right, negative: left.
