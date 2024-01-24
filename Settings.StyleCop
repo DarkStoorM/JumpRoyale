@@ -32,11 +32,6 @@
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
                     </RuleSettings>
                 </Rule>
-                <Rule Name="DoNotPrefixLocalMembersWithThis">
-                    <RuleSettings>
-                        <BooleanProperty Name="Enabled">True</BooleanProperty>
-                    </RuleSettings>
-                </Rule>
                 <Rule Name="PrefixCallsCorrectly">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
