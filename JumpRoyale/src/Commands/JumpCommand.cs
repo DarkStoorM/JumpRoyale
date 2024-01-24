@@ -55,7 +55,7 @@ public class JumpCommand
         // we read from Angle and we can't clamp this value, otherwise we lose 10 Power
         Angle = Math.Clamp(Angle, -90, 90);
 
-        Angle = direction switch
+        this.Angle = direction switch
         {
             // Predefined set of angles for available jump commands. The pattern matching allows
             // for typos and garbage while still allowing the angle to be changed.
