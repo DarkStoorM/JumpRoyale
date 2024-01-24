@@ -4,23 +4,21 @@
     <Rule Id="SA0001" Action="None" />
     <Rule Id="SA1000" Action="None" />
     <Rule Id="SA1009" Action="None" />
+    <Rule Id="SA1101" Action="None" />
     <Rule Id="SA1111" Action="None" />
     <Rule Id="SA1124" Action="None" />
     <Rule Id="SA1200" Action="None" />
-    <Rule Id="SA1305" Action="Warning" />
     <Rule Id="SA1309" Action="None" />
-    <Rule Id="SA1412" Action="Warning" />
+    <Rule Id="SA1407" Action="None" />
     <Rule Id="SA1502" Action="None" />
+    <Rule Id="SA1516" Action="Warning" />
     <Rule Id="SA1600" Action="None" />
     <Rule Id="SA1601" Action="None" />
     <Rule Id="SA1602" Action="None" />
-    <Rule Id="SA1609" Action="Warning" />
     <Rule Id="SA1615" Action="None" />
     <Rule Id="SA1633" Action="None" />
-    <Rule Id="SA1639" Action="Warning" />
     <Rule Id="SA1649" Action="None" />
     <Rule Id="SX1101" Action="Warning" />
     <Rule Id="SX1309" Action="Warning" />
-    <Rule Id="SX1309S" Action="Warning" />
   </Rules>
 </RuleSet>
