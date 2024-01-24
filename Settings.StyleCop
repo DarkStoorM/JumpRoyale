@@ -1,74 +1,26 @@
-<StyleCopSettings Version="105">
-  <Analyzers>
-    <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
-      <Rules>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
-      <Rules>
-        <Rule Name="ArithmeticExpressionsMustDeclarePrecedence">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
-          </RuleSettings>
-        </Rule>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
-      <Rules>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
-      <Rules>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.ReadabilityRules">
-      <Rules>
-        <Rule Name="PrefixLocalCallsWithThis">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
-          </RuleSettings>
-        </Rule>
-        <Rule Name="DoNotPrefixLocalMembersWithThis">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">True</BooleanProperty>
-          </RuleSettings>
-        </Rule>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">
-      <Rules>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.SpecialRules">
-      <Rules>
-        <Rule Name="XmlCommentAnalysisDisabled">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
-          </RuleSettings>
-        </Rule>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-    <Analyzer AnalyzerId="StyleCop.CSharp.SpacingRules">
-      <Rules>
-        <Rule Name="KeywordsMustBeSpacedCorrectly">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
-          </RuleSettings>
-        </Rule>
-        <Rule Name="ClosingParenthesisMustBeSpacedCorrectly">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
-          </RuleSettings>
-        </Rule>
-      </Rules>
-      <AnalyzerSettings />
-    </Analyzer>
-  </Analyzers>
-</StyleCopSettings>
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="StyleCopSettings" Description=" " ToolsVersion="17.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA0001" Action="None" />
+    <Rule Id="SA1000" Action="None" />
+    <Rule Id="SA1009" Action="None" />
+    <Rule Id="SA1111" Action="None" />
+    <Rule Id="SA1124" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="SA1305" Action="Warning" />
+    <Rule Id="SA1309" Action="None" />
+    <Rule Id="SA1412" Action="Warning" />
+    <Rule Id="SA1502" Action="None" />
+    <Rule Id="SA1600" Action="None" />
+    <Rule Id="SA1601" Action="None" />
+    <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1609" Action="Warning" />
+    <Rule Id="SA1615" Action="None" />
+    <Rule Id="SA1633" Action="None" />
+    <Rule Id="SA1639" Action="Warning" />
+    <Rule Id="SA1649" Action="None" />
+    <Rule Id="SX1101" Action="Warning" />
+    <Rule Id="SX1309" Action="Warning" />
+    <Rule Id="SX1309S" Action="Warning" />
+  </Rules>
+</RuleSet>
