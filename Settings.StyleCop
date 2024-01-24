@@ -29,7 +29,7 @@
       <Rules>
         <Rule Name="PrefixLocalCallsWithThis">
           <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
+            <StringProperty>None</StringProperty>
           </RuleSettings>
         </Rule>
         <Rule Name="DoNotPrefixLocalMembersWithThis">
