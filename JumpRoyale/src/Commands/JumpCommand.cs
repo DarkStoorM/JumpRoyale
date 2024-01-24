@@ -17,7 +17,6 @@ public class JumpCommand
         // so this should never happen (?) 🤔
         AdjustAngle(direction);
     }
-
     /// <summary>
     /// Gets the clamped angle from user inputs. Angle of 0 degrees points up and the angles count Clockwise.
     /// Positive: right, negative: left.
@@ -53,7 +52,7 @@ public class JumpCommand
         // Important: the reason why this value is not clamped in the property itself is that we
         // have commands, which have implied angle and only accept Power as parameter, which
         // we read from Angle and we can't clamp this value, otherwise we lose 10 Power
-        this.Angle = Math.Clamp(Angle, -90, 90);
+        Angle = Math.Clamp(Angle, -90, 90);
 
         Angle = direction switch
         {
