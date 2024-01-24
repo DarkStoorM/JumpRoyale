@@ -42,16 +42,16 @@
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
                     </RuleSettings>
                 </Rule>
-            </Rules>
-            <AnalyzerSettings />
-        </Analyzer>
-        <Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
-            <Rules>
                 <Rule Name="FileHeaderMustShowCopyright">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
                     </RuleSettings>
                 </Rule>
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
+            <Rules>
                 <Rule Name="FileMayOnlyContainASingleType">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
