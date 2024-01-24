@@ -52,11 +52,6 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
             <Rules>
-                <Rule Name="FileMayOnlyContainASingleType">
-                    <RuleSettings>
-                        <BooleanProperty Name="Enabled">False</BooleanProperty>
-                    </RuleSettings>
-                </Rule>
                 <Rule Name="ArithmeticExpressionsMustDeclarePrecedence">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
