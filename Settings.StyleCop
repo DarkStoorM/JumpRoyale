@@ -1,26 +1,47 @@
 <StyleCopSettings Version="105">
     <Analyzers>
-        <Analyzer AnalyzerId="StyleCop.CSharp">
+        <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
             <Rules>
-                <Rule Id="SA0001" Action="None" />
-                <Rule Id="SA1000" Action="None" />
-                <Rule Id="SA1009" Action="None" />
-                <Rule Id="SA1101" Action="None" />
-                <Rule Id="SA1111" Action="None" />
-                <Rule Id="SA1124" Action="None" />
-                <Rule Id="SA1200" Action="None" />
-                <Rule Id="SA1309" Action="None" />
-                <Rule Id="SA1407" Action="None" />
-                <Rule Id="SA1502" Action="None" />
-                <Rule Id="SA1516" Action="Error" />
-                <Rule Id="SA1600" Action="None" />
-                <Rule Id="SA1601" Action="None" />
-                <Rule Id="SA1602" Action="None" />
-                <Rule Id="SA1615" Action="None" />
-                <Rule Id="SA1633" Action="None" />
-                <Rule Id="SA1649" Action="None" />
-                <Rule Id="SX1101" Action="Error" />
-                <Rule Id="SX1309" Action="Error" />
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
+            <Rules>
+                <Rule Name="ArithmeticExpressionsMustDeclarePrecedence">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
+            <Rules>
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
+            <Rules>
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.ReadabilityRules">
+            <Rules>
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">
+            <Rules>
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.SpecialRules">
+            <Rules>
+            </Rules>
+            <AnalyzerSettings />
+        </Analyzer>
+        <Analyzer AnalyzerId="StyleCop.CSharp.SpacingRules">
+            <Rules>
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
