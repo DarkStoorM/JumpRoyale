@@ -2,6 +2,11 @@
     <Analyzers>
         <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
             <Rules>
+                <Rule Name="FileMayOnlyContainASingleType">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="GenericTypeParametersMustBeDocumented">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -92,6 +97,11 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
             <Rules>
+                <Rule Name="FileMayOnlyContainASingleType">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="UsingDirectivesMustBePlacedWithinNamespace">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -102,6 +112,11 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.ReadabilityRules">
             <Rules>
+                <Rule Name="FileMayOnlyContainASingleType">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="PrefixLocalCallsWithThis">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -127,6 +142,11 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">
             <Rules>
+                <Rule Name="FileMayOnlyContainASingleType">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="ClosingCurlyBracketMustBeFollowedByBlankLine">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -147,6 +167,11 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.SpacingRules">
             <Rules>
+                <Rule Name="FileMayOnlyContainASingleType">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="KeywordsMustBeSpacedCorrectly">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
