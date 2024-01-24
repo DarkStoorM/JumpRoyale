@@ -2,6 +2,11 @@
     <Analyzers>
         <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="ElementParametersMustBeDocumented">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -52,6 +57,11 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="FileMayOnlyContainASingleType">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -92,11 +102,21 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.ReadabilityRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="PrefixLocalCallsWithThis">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -142,11 +162,21 @@
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.SpecialRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
             </Rules>
             <AnalyzerSettings />
         </Analyzer>
         <Analyzer AnalyzerId="StyleCop.CSharp.SpacingRules">
             <Rules>
+                <Rule Name="UsingDirectivesMustBePlacedCorrectly">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
                 <Rule Name="KeywordsMustBeSpacedCorrectly">
                     <RuleSettings>
                         <BooleanProperty Name="Enabled">False</BooleanProperty>
