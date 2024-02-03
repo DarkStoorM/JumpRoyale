@@ -1,6 +1,6 @@
-using TwitchChat;
+namespace TwitchChat;
 
-public class TwitchChatInitConfig(string jsonConfigPath, bool skipLocalConfig) : ITwitchChatInitConfig
+public class TwitchChatInitConfig(string jsonConfigPath, bool skipLocalConfig)
 {
     public string JsonConfigPath { get; init; } = jsonConfigPath;
 

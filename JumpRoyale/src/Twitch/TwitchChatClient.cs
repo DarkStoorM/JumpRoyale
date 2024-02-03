@@ -7,10 +7,11 @@ namespace TwitchChat;
 
 public class TwitchChatClient : BaseChatClient
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TwitchChatClient"/> class.
-    /// </summary>
-    public TwitchChatClient(ITwitchChatInitConfig initConfig)
+    private static readonly object _lock = new();
+
+    private static TwitchChatClient? _instance;
+
+    private TwitchChatClient(TwitchChatInitConfig initConfig)
         : base(initConfig)
     {
         TwitchClient.OnConnected += OnConnected;
@@ -32,6 +33,39 @@ public class TwitchChatClient : BaseChatClient
     /// Event fired when Twitch Client
     /// </summary>
     public event EventHandler<RewardRedemptionEventArgs>? OnRedemptionEvent;
+
+    public static TwitchChatClient Instance
+    {
+        get
+        {
+            lock (_lock)
+            {
+                if (_instance is null)
+                {
+                    throw new InvalidOperationException("Call Initialize() before using TwitchChatClient.");
+                }
+            }
+
+            return _instance;
+        }
+    }
+
+    public static void Initialize(TwitchChatInitConfig initConfig)
+    {
+        lock (_lock)
+        {
+            _instance ??= new TwitchChatClient(initConfig);
+        }
+    }
+
+    /// <summary>
+    /// Destroys the currently existing singleton for refreshing purposes, e.g. Initializing with different configs in
+    /// in separate scenes or during testing.
+    /// </summary>
+    public static void Destroy()
+    {
+        _instance = null;
+    }
 
     private void OnConnected(object sender, OnConnectedArgs e)
     {
