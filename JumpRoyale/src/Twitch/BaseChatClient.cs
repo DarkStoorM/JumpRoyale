@@ -17,7 +17,7 @@ public class BaseChatClient
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseChatClient"/> class.
     /// </summary>
-    /// <param name="jsonConfigPath">Path to the main Twitch config json file.</param>
+    /// <param name="initConfig">Path to the main Twitch config json file.</param>
     protected BaseChatClient(ITwitchChatInitConfig initConfig)
     {
         _config = initConfig;
