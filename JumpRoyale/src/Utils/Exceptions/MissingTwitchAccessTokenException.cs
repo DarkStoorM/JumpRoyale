@@ -1,11 +1,13 @@
 using System;
-
-namespace TwitchChat;
+using Constants.Twitch;
 
 public class MissingTwitchAccessTokenException : Exception
 {
     public MissingTwitchAccessTokenException()
-        : base(TwitchConstants.MissingAccessTokenError) { }
+        : base(
+            $"No access token found. Please run `dotnet user-secrets set {TwitchConstants.ConfigAccessTokenIndex} <your access token>`"
+        )
+    { }
 
     public MissingTwitchAccessTokenException(string message)
         : base(message) { }

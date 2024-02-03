@@ -9,6 +9,9 @@ JumpRoyale/.godot/
 .vs/
 JumpRoyale/.vs/
 
+# Optional user config for Twitch
+JumpRoyale/Config/Local.json
+
 # User-specific files
 *.suo
 *.user

@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JumpRoyale\Jump Royale.csproj" GeneratePathAttribute="true" />
+    <ProjectReference Include="..\JumpRoyale\JumpRoyale.csproj" GeneratePathAttribute="true" />
   </ItemGroup>
 
 </Project>

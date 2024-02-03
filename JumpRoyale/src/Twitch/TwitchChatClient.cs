@@ -1,4 +1,5 @@
 using System;
+using Constants.Messages;
 using TwitchLib.Client.Events;
 using TwitchLib.PubSub.Events;
 
@@ -6,91 +7,59 @@ namespace TwitchChat;
 
 public class TwitchChatClient : BaseChatClient
 {
-    public TwitchChatClient()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TwitchChatClient"/> class.
+    /// </summary>
+    public TwitchChatClient(ITwitchChatInitConfig initConfig)
+        : base(initConfig)
     {
-        SubscribeToEvents();
+        TwitchClient.OnConnected += OnConnected;
+        TwitchClient.OnJoinedChannel += OnJoinedChannel;
+        TwitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
+
+        TwitchClient.OnMessageReceived += OnMessageReceived;
+        TwitchPubSub.OnRewardRedeemed += OnRewardRedeemed;
+
+        ConnectToTwitch();
     }
 
+    /// <summary>
+    /// Event fired when Twitch Client receives a new chat message
+    /// </summary>
     public event EventHandler<ChatMessageEventArgs>? OnMessageEvent;
 
+    /// <summary>
+    /// Event fired when Twitch Client
+    /// </summary>
     public event EventHandler<OnRewardRedeemedArgs>? OnRedemptionEvent;
-
-    private void SubscribeToEvents()
-    {
-        TwitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
-#pragma warning disable CS0618 // Type or member is obsolete
-        TwitchPubSub.OnRewardRedeemed += OnRewardRedeemed;
-#pragma warning restore CS0618 // Type or member is obsolete
-
-        TwitchClient.OnJoinedChannel += OnJoinedChannel;
-        TwitchClient.OnMessageReceived += OnMessageReceived;
-        TwitchClient.OnConnected += OnConnected;
-    }
 
     private void OnRewardRedeemed(object sender, OnRewardRedeemedArgs e)
     {
-        Console.WriteLine(TwitchConstants.OnRewardRedeemMessage);
-        Console.WriteLine(e);
+        Console.WriteLine(TwitchMessages.OnRewardRedeemMessage.ReplaceInTemplate(e.DisplayName, e.RedemptionId));
 
         OnRedemptionEvent?.Invoke(this, e);
     }
 
     private void OnConnected(object sender, OnConnectedArgs e)
     {
-        Console.WriteLine(TwitchConstants.OnClientConnectedMessage);
+        Console.WriteLine(TwitchMessages.OnClientConnectedMessage);
     }
 
     private void OnJoinedChannel(object sender, OnJoinedChannelArgs e)
     {
-        Console.WriteLine(TwitchConstants.OnChannelJoinMessage);
+        Console.WriteLine(TwitchMessages.OnChannelJoinMessage);
     }
 
     private void OnPubSubServiceConnected(object sender, EventArgs e)
     {
-        Console.WriteLine(TwitchConstants.OnPubSubConnected);
+        Console.WriteLine(TwitchMessages.OnPubSubConnected);
 
-#pragma warning disable CS0618 // Type or member is obsolete
         TwitchPubSub.ListenToRewards(Configuration.ChannelId);
-#pragma warning restore CS0618 // Type or member is obsolete
-
         TwitchPubSub.SendTopics();
     }
 
     private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
     {
-        bool isPrivileged =
-            e.ChatMessage.IsSubscriber
-            || e.ChatMessage.IsModerator
-            || e.ChatMessage.IsVip
-            || e.ChatMessage.IsBroadcaster;
-
-        HandleChatMessage(
-            e.ChatMessage.UserId,
-            e.ChatMessage.DisplayName,
-            e.ChatMessage.Message,
-            e.ChatMessage.ColorHex,
-            isPrivileged
-        );
-    }
-
-    private void HandleChatMessage(
-        string senderId,
-        string senderName,
-        string message,
-        string colorHex,
-        bool isPrivileged
-    )
-    {
-        OnMessageEvent?.Invoke(
-            this,
-            new ChatMessageEventArgs
-            {
-                Message = message,
-                SenderName = senderName,
-                SenderId = senderId,
-                HexColor = colorHex,
-                IsPrivileged = isPrivileged,
-            }
-        );
+        OnMessageEvent?.Invoke(this, new ChatMessageEventArgs(e));
     }
 }

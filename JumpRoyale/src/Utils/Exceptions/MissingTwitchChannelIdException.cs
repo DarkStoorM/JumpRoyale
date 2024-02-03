@@ -1,11 +1,13 @@
 using System;
-
-namespace TwitchChat;
+using Constants.Twitch;
 
 public class MissingTwitchChannelIdException : Exception
 {
     public MissingTwitchChannelIdException()
-        : base(TwitchConstants.MissingChannelIdError) { }
+        : base(
+            $"Channel Id not found. Please add your Twitch channel id into the {TwitchConstants.ConfigChannelIdIndex} key.`"
+        )
+    { }
 
     public MissingTwitchChannelIdException(string message)
         : base(message) { }

@@ -1,5 +1,7 @@
 using System;
 
+namespace JumpRoyale.Utils;
+
 public static class Rng
 {
     private static readonly Random _rng = new();

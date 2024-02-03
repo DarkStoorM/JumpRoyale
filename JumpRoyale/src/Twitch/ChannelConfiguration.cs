@@ -1,3 +1,4 @@
+using Constants.Twitch;
 using Microsoft.Extensions.Configuration;
 
 namespace TwitchChat;
@@ -10,19 +11,19 @@ public class ChannelConfiguration(ConfigurationBuilder config)
 {
     private readonly IConfigurationRoot _configuration = config.Build();
 
-    public string? AccessToken
+    public string AccessToken
     {
-        get => TryGetPropertyFromConfig(TwitchConstants.TwitchAccessTokenKey);
+        get => TryGetPropertyFromConfig(TwitchConstants.ConfigAccessTokenIndex);
     }
 
-    public string? ChannelName
+    public string ChannelName
     {
-        get => TryGetPropertyFromConfig(TwitchConstants.TwitchChannelNameKey);
+        get => TryGetPropertyFromConfig(TwitchConstants.ConfigChannelNameIndex);
     }
 
-    public string? ChannelId
+    public string ChannelId
     {
-        get => TryGetPropertyFromConfig(TwitchConstants.TwitchChannelIdKey);
+        get => TryGetPropertyFromConfig(TwitchConstants.ConfigChannelIdIndex);
     }
 
     private string TryGetPropertyFromConfig(string index)
@@ -30,16 +31,17 @@ public class ChannelConfiguration(ConfigurationBuilder config)
         // When trying to access an unset configuration key, throw an appropriate exception type with custom message. If
         // more configuration keys are added and we don't have a specific exception for that, we will throw a generic
         // exception. This is only for readability purposes messages are set through TwitchConstants.
-        string? value =
-            _configuration[index]
-            ?? throw index switch
-            {
-                TwitchConstants.TwitchAccessTokenKey => new MissingTwitchAccessTokenException(),
-                TwitchConstants.TwitchChannelNameKey => new MissingTwitchChannelNameException(),
-                TwitchConstants.TwitchChannelIdKey => new MissingTwitchChannelIdException(),
-                _ => new System.Exception($"Missing user-secrets index: ({index})"),
-            };
+        string? value = _configuration[index];
 
-        return value;
+        // Shortcut for selecting an exception to throw if the config key was null or empty
+        return value is null || value.Length == 0
+            ? throw index switch
+            {
+                TwitchConstants.ConfigAccessTokenIndex => new MissingTwitchAccessTokenException(),
+                TwitchConstants.ConfigChannelNameIndex => new MissingTwitchChannelNameException(),
+                TwitchConstants.ConfigChannelIdIndex => new MissingTwitchChannelIdException(),
+                _ => new System.Exception($"Missing user-secrets index: ({index})"),
+            }
+            : value;
     }
 }
