@@ -31,14 +31,7 @@ public class TwitchChatClient : BaseChatClient
     /// <summary>
     /// Event fired when Twitch Client
     /// </summary>
-    public event EventHandler<OnRewardRedeemedArgs>? OnRedemptionEvent;
-
-    private void OnRewardRedeemed(object sender, OnRewardRedeemedArgs e)
-    {
-        Console.WriteLine(TwitchMessages.OnRewardRedeemMessage.ReplaceInTemplate(e.DisplayName, e.RedemptionId));
-
-        OnRedemptionEvent?.Invoke(this, e);
-    }
+    public event EventHandler<RewardRedemptionEventArgs>? OnRedemptionEvent;
 
     private void OnConnected(object sender, OnConnectedArgs e)
     {
@@ -61,5 +54,12 @@ public class TwitchChatClient : BaseChatClient
     private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
     {
         OnMessageEvent?.Invoke(this, new ChatMessageEventArgs(e));
+    }
+
+    private void OnRewardRedeemed(object sender, OnRewardRedeemedArgs e)
+    {
+        Console.WriteLine(TwitchMessages.OnRewardRedeemMessage.ReplaceInTemplate(e.DisplayName, e.RedemptionId));
+
+        OnRedemptionEvent?.Invoke(this, new RewardRedemptionEventArgs(e));
     }
 }
