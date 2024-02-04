@@ -37,11 +37,11 @@ public class BaseChatClient
         TwitchClient = InitializeClient();
     }
 
-    public TwitchPubSub TwitchPubSub { get; private set; } = new();
+    public TwitchPubSub TwitchPubSub { get; init; } = new();
 
     public TwitchClient TwitchClient { get; private set; }
 
-    protected ChannelConfiguration Configuration { get; private set; }
+    protected ChannelConfiguration Configuration { get; init; }
 
     protected TwitchChatInitConfig InitConfig { get; init; }
 
