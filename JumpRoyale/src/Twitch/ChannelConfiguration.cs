@@ -27,16 +27,25 @@ public class ChannelConfiguration
         ChannelId.AsSpan();
     }
 
+    /// <summary>
+    /// Access Token of the user authenticating to Twitch services.
+    /// </summary>
     public string AccessToken
     {
         get => TryGetPropertyFromConfig(TwitchConstants.ConfigAccessTokenIndex);
     }
 
+    /// <summary>
+    /// Twitch User Name of the account connecting to the Twitch services.
+    /// </summary>
     public string ChannelName
     {
         get => TryGetPropertyFromConfig(TwitchConstants.ConfigChannelNameIndex);
     }
 
+    /// <summary>
+    /// Channel ID this client will use to listen for various events.
+    /// </summary>
     public string ChannelId
     {
         get => TryGetPropertyFromConfig(TwitchConstants.ConfigChannelIdIndex);
