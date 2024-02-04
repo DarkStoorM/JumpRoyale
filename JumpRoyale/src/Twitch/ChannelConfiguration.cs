@@ -1,15 +1,32 @@
+using System;
 using Constants.Twitch;
 using Microsoft.Extensions.Configuration;
+using Utils;
 
 namespace TwitchChat;
 
 /// <summary>
 /// Provides the configuration keys for Twitch channel.
 /// </summary>
-/// <param name="config">Builder template with already included data.</param>
-public class ChannelConfiguration(ConfigurationBuilder config)
+public class ChannelConfiguration
 {
-    private readonly IConfigurationRoot _configuration = config.Build();
+    private readonly IConfigurationRoot _configuration;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChannelConfiguration"/> class.
+    /// </summary>
+    /// <param name="config">Builder template with already included data.</param>
+    public ChannelConfiguration(ConfigurationBuilder config)
+    {
+        NullGuard.ThrowIfNull<ArgumentNullException>(config);
+
+        _configuration = config.Build();
+
+        // Make sure everything is set. Accessing any of these when null/empty will throw an exception
+        AccessToken.AsSpan();
+        ChannelName.AsSpan();
+        ChannelId.AsSpan();
+    }
 
     public string AccessToken
     {

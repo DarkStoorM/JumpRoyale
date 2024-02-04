@@ -1,4 +1,4 @@
-using Constants.Twitch;
+using Tests.Mocks;
 using TwitchChat;
 
 namespace Tests.Twitch;
@@ -8,23 +8,16 @@ public class TwitchChatClientTests
 {
     private readonly string _testConfigPath = $"{Directory.GetCurrentDirectory()}\\_testData\\config.json";
 
-    [OneTimeSetUp]
-    public void OneTimeSetup()
-    {
-        File.WriteAllText(
-            _testConfigPath,
-            $"{{\"{TwitchConstants.ConfigChannelIdIndex}\": null, \"{TwitchConstants.ConfigChannelNameIndex}\": \"FakeChannelName\" }}"
-        );
-    }
-
     [SetUp]
     public void SetUp()
     {
+        File.WriteAllText(_testConfigPath, CreateConfigFile());
+
         // This will only initialize the chat client if it was destroyed at some point in the tests
         Initialize();
     }
 
-    [OneTimeTearDown]
+    [TearDown]
     public void OneTimeTearDown()
     {
         if (File.Exists(_testConfigPath))
@@ -57,7 +50,8 @@ public class TwitchChatClientTests
     [Test]
     public void ThrowsIfConfigWasIncomplete()
     {
-        // Failing
+        File.WriteAllText(_testConfigPath, CreateConfigFile(channelId: string.Empty));
+
         Assert.Throws<MissingTwitchChannelIdException>(() =>
         {
             TwitchChatClient.Destroy();
@@ -69,5 +63,14 @@ public class TwitchChatClientTests
     private void Initialize()
     {
         TwitchChatClient.Initialize(new("\\_testData\\config.json", true));
+    }
+
+    private string CreateConfigFile(
+        string accessToken = "FakeToken",
+        string channelId = "FakeId",
+        string channelName = "SomeFakeChannelName"
+    )
+    {
+        return new FakeTwitchConfig(accessToken, channelId, channelName).Serialize();
     }
 }
