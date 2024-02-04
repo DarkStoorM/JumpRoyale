@@ -42,10 +42,9 @@ public class TwitchChatClientTests
             TwitchChatClient.Instance.GetType();
         });
 
-        TwitchChatClient.Destroy();
-
         Assert.Throws<InvalidOperationException>(() =>
         {
+            TwitchChatClient.Destroy();
             TwitchChatClient.Instance.GetType();
         });
     }
@@ -56,9 +55,25 @@ public class TwitchChatClientTests
     [Test]
     public void ThrowsIfConfigWasIncomplete()
     {
+        File.WriteAllText(_fullPathToTestConfig, CreateConfigFile(accessToken: string.Empty));
+
+        Assert.Throws<MissingTwitchAccessTokenException>(() =>
+        {
+            TwitchChatClient.Destroy();
+            Initialize();
+        });
+
         File.WriteAllText(_fullPathToTestConfig, CreateConfigFile(channelId: string.Empty));
 
         Assert.Throws<MissingTwitchChannelIdException>(() =>
+        {
+            TwitchChatClient.Destroy();
+            Initialize();
+        });
+
+        File.WriteAllText(_fullPathToTestConfig, CreateConfigFile(channelName: string.Empty));
+
+        Assert.Throws<MissingTwitchChannelNameException>(() =>
         {
             TwitchChatClient.Destroy();
             Initialize();
@@ -72,10 +87,9 @@ public class TwitchChatClientTests
     [Test]
     public void ThrowsIfLocalConfigNotExistsButWasRequested()
     {
-        TwitchChatClient.Destroy();
-
         Assert.Throws<FileNotFoundException>(() =>
         {
+            TwitchChatClient.Destroy();
             Initialize(false);
         });
     }
@@ -87,12 +101,11 @@ public class TwitchChatClientTests
     [Test]
     public void ThrowsIfMainConfigNotExists()
     {
-        TwitchChatClient.Destroy();
-
         File.Delete(_fullPathToTestConfig);
 
         Assert.Throws<FileNotFoundException>(() =>
         {
+            TwitchChatClient.Destroy();
             Initialize(false);
         });
     }
