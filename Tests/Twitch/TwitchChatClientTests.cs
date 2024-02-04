@@ -47,6 +47,9 @@ public class TwitchChatClientTests
         });
     }
 
+    /// <summary>
+    /// This test will force current scenarios where a single field is missing by rewriting the config file.
+    /// </summary>
     [Test]
     public void ThrowsIfConfigWasIncomplete()
     {
@@ -56,13 +59,12 @@ public class TwitchChatClientTests
         {
             TwitchChatClient.Destroy();
             Initialize();
-            TwitchChatClient.Instance.GetType();
         });
     }
 
     private void Initialize()
     {
-        TwitchChatClient.Initialize(new("\\_testData\\config.json", true));
+        TwitchChatClient.Initialize(new("\\_testData\\config.json", true, false));
     }
 
     private string CreateConfigFile(

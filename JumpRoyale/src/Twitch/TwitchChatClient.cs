@@ -21,7 +21,10 @@ public class TwitchChatClient : BaseChatClient
         TwitchClient.OnMessageReceived += OnMessageReceived;
         TwitchPubSub.OnRewardRedeemed += OnRewardRedeemed;
 
-        ConnectToTwitch();
+        if (InitConfig.AutomaticallyConnectToTwitch)
+        {
+            ConnectToTwitch();
+        }
     }
 
     /// <summary>

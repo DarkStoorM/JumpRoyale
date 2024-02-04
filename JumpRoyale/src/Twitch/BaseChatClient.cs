@@ -7,7 +7,6 @@ using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
-using Utils;
 
 namespace TwitchChat;
 
@@ -19,7 +18,7 @@ public class BaseChatClient
     /// <param name="initConfig">Initialization config object.</param>
     protected BaseChatClient(TwitchChatInitConfig initConfig)
     {
-        NullGuard.ThrowIfNull<ArgumentNullException>(initConfig);
+        InitConfig = initConfig;
 
         ConfigurationBuilder builder = new();
 
@@ -28,11 +27,11 @@ public class BaseChatClient
         builder.AddUserSecrets<TwitchChatClient>();
 
         // Add the main twitch config file
-        AddJsonConfig(builder, initConfig.JsonConfigPath);
+        AddJsonConfig(builder, InitConfig.JsonConfigPath);
 
         // Loads a local configuration file, which is used for Development purposes; overrides the main configuration by
         // replacing the channel name/id the flag is used for testing purposes
-        AddJsonConfig(builder, ResourcePaths.LocalTwitchConfig, initConfig.SkipLocalConfig);
+        AddJsonConfig(builder, ResourcePaths.LocalTwitchConfig, InitConfig.SkipLocalConfig);
 
         Configuration = new(builder);
         TwitchClient = InitializeClient();
@@ -43,6 +42,8 @@ public class BaseChatClient
     public TwitchClient TwitchClient { get; private set; }
 
     protected ChannelConfiguration Configuration { get; private set; }
+
+    protected TwitchChatInitConfig InitConfig { get; init; }
 
     protected void ConnectToTwitch()
     {
