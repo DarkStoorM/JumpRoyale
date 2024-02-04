@@ -1,7 +1,8 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Constants.Twitch;
 using Microsoft.Extensions.Configuration;
-using Utils;
+using Utils.Exceptions;
 
 namespace TwitchChat;
 
@@ -16,10 +17,8 @@ public class ChannelConfiguration
     /// Initializes a new instance of the <see cref="ChannelConfiguration"/> class.
     /// </summary>
     /// <param name="config">Builder template with already included data.</param>
-    public ChannelConfiguration(ConfigurationBuilder config)
+    public ChannelConfiguration([NotNull] ConfigurationBuilder config)
     {
-        NullGuard.ThrowIfNull<ArgumentNullException>(config);
-
         _configuration = config.Build();
 
         // Make sure everything is set. Accessing any of these when null/empty will throw an exception

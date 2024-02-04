@@ -83,6 +83,8 @@ public class BaseChatClient
     /// <param name="skipLocalConfig">If true, omits loading the Local configuration file for Twitch.</param>
     private void AddJsonConfig(ConfigurationBuilder builder, string path, bool skipLocalConfig = false)
     {
+        string pathToConfig = $"{Directory.GetCurrentDirectory()}{path}";
+
         // Sometimes, we just don't need to load an additional configuration file, for example, when testing, so whether
         // the extra config file exists or not, we can just skip it without replacing the already loaded config.
         if (skipLocalConfig)
@@ -90,6 +92,11 @@ public class BaseChatClient
             return;
         }
 
-        builder.AddJsonFile($"{Directory.GetCurrentDirectory()}{path}");
+        if (!File.Exists(pathToConfig))
+        {
+            throw new FileNotFoundException($"The requested config file was not found: {pathToConfig}");
+        }
+
+        builder.AddJsonFile(pathToConfig);
     }
 }
