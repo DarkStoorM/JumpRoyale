@@ -1,3 +1,4 @@
 # JumpRoyale
 
-Work-in-progress of main [Jump Royale](https://github.com/AdamLearns/JumpRoyale) repo.
+> [!note]
+> This branch will only be updated by merging, refer to other branches (except `main`) for actual (current) changes, which are most likely available in the PRs as Drafts.
