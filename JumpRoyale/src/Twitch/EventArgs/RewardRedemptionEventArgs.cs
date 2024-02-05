@@ -11,13 +11,13 @@ public class RewardRedemptionEventArgs : EventArgs
 {
     public RewardRedemptionEventArgs(OnRewardRedeemedArgs eventArgs)
     {
-        NullGuard.ThrowIfNull<ArgumentNullException>(eventArgs);
+        NullGuard.ThrowIfNull(eventArgs);
 
         DisplayName = eventArgs.DisplayName;
-        RewardId = eventArgs.RedemptionId.ToString();
+        RedemptionId = eventArgs.RedemptionId;
     }
 
     public string DisplayName { get; init; }
 
-    public string RewardId { get; init; }
+    public Guid RedemptionId { get; init; }
 }
