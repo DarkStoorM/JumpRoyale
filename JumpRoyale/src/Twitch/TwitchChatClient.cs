@@ -2,6 +2,7 @@ using System;
 using Constants.Messages;
 using TwitchLib.Client.Events;
 using TwitchLib.PubSub.Events;
+using Utils;
 
 namespace TwitchChat;
 
@@ -33,7 +34,7 @@ public class TwitchChatClient : BaseChatClient
     public event EventHandler<ChatMessageEventArgs>? OnMessageEvent;
 
     /// <summary>
-    /// Event fired when Twitch Client
+    /// Event fired when this client gets notified by the Pub Sub about new reward redeems
     /// </summary>
     public event EventHandler<RewardRedemptionEventArgs>? OnRedemptionEvent;
 
@@ -53,6 +54,12 @@ public class TwitchChatClient : BaseChatClient
         }
     }
 
+    /// <summary>
+    /// Initializes the TwitchChatClient with provided configuration. If empty instance of <c>TwitchChatInitConfig</c>
+    /// was provided, it will be initialized with default configs. See <see cref="TwitchChatInitConfig"/> for more
+    /// information.
+    /// </summary>
+    /// <param name="initConfig">Configuration object with Json config file paths.</param>
     public static void Initialize(TwitchChatInitConfig initConfig)
     {
         lock (_lock)
@@ -69,6 +76,31 @@ public class TwitchChatClient : BaseChatClient
     {
         _instance = null;
     }
+
+    #region Streamer/Testing zone
+
+    /// <summary>
+    /// Allows invoking the Chat Message Event without relying on Twitch services. See <see
+    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
+    /// </summary>
+    public void ManuallyInvokeMessageEvent(OnMessageReceivedArgs eventArgs)
+    {
+        NullGuard.ThrowIfNull(eventArgs);
+
+        OnMessageReceived(new(), eventArgs);
+    }
+
+    /// <summary>
+    /// Allows invoking the Reward Redemption Event without relying on Twitch services. See <see
+    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
+    /// </summary>
+    public void ManuallyInvokeRedemptionEvent(OnRewardRedeemedArgs eventArgs)
+    {
+        NullGuard.ThrowIfNull(eventArgs);
+
+        OnRewardRedeemed(new(), eventArgs);
+    }
+    #endregion
 
     private void OnConnected(object sender, OnConnectedArgs e)
     {
