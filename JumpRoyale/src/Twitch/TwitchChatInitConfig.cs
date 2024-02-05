@@ -1,5 +1,18 @@
 namespace TwitchChat;
 
+/// <summary>
+/// Twitch initialization config object containing paths to the Json files with channel name/id.
+/// <para>
+/// Channel Name is used as part of Twitch Credentials along with the Access Token.
+/// </para>
+/// <para>
+/// Channel Id is used to specify where to listen for the events from.
+/// </para>
+/// </summary>
+/// <remarks>
+/// This class can be instantiated with no arguments, meaning that the defaults are used as defined on the arguments
+/// list in the provided constructor.
+/// </remarks>
 public class TwitchChatInitConfig(
     string? jsonConfigPath = null,
     string? localConfigFile = null,
