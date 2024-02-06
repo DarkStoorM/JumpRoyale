@@ -1,12 +1,11 @@
 using System;
-using System.Reflection;
+using System.Drawing;
 using TwitchChat;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Client.Models.Builders;
 using TwitchLib.PubSub.Events;
-using Utils;
 
 public static class TwitchChatClientExtensions
 {
@@ -45,16 +44,21 @@ public static class TwitchChatClientExtensions
         this TwitchChatClient client,
         string? displayName = null,
         string? userId = null,
+        string? colorHex = null,
         SubscriptionPlan? subscriptionPlan = null
     )
     {
-        OnNewSubscriberArgs newSubArgs = CreateSubscriberArgs<Subscriber, OnNewSubscriberArgs>(
-            displayName,
-            userId,
-            subscriptionPlan
-        );
+        SubscriberBuilder builder = SubscriberBuilder.Create();
 
-        TwitchChatClient.Instance.ManuallyInvokeNewSubscriberEvent(newSubArgs);
+        builder
+            .WithDisplayName(displayName ?? "FakeName")
+            .WithUserId(userId ?? "FakeId")
+            .WithColorHex(colorHex ?? "FFFFFF")
+            .WithSubscribtionPlan(subscriptionPlan ?? SubscriptionPlan.Tier1);
+
+        OnNewSubscriberArgs subArgs = new() { Subscriber = (Subscriber)builder.Build() };
+
+        TwitchChatClient.Instance.ManuallyInvokeNewSubscriberEvent(subArgs);
     }
 
     /// <summary>
@@ -65,14 +69,19 @@ public static class TwitchChatClientExtensions
         this TwitchChatClient client,
         string? displayName = null,
         string? userId = null,
+        string? colorHex = null,
         SubscriptionPlan? subscriptionPlan = null
     )
     {
-        OnReSubscriberArgs resubArgs = CreateSubscriberArgs<ReSubscriber, OnReSubscriberArgs>(
-            displayName,
-            userId,
-            subscriptionPlan
-        );
+        ReSubscriberBuilder builder = ReSubscriberBuilder.Create();
+
+        builder
+            .WithDisplayName(displayName ?? "FakeName")
+            .WithColorHex(colorHex ?? "FFFFFF")
+            .WithUserId(userId ?? "FakeId")
+            .WithSubscribtionPlan(subscriptionPlan ?? SubscriptionPlan.Tier1);
+
+        OnReSubscriberArgs resubArgs = new() { ReSubscriber = (ReSubscriber)builder.Build() };
 
         TwitchChatClient.Instance.ManuallyInvokeReSubscriberEvent(resubArgs);
     }
@@ -84,16 +93,45 @@ public static class TwitchChatClientExtensions
     public static void InvokeFakePrimeSubscriberEvent(
         this TwitchChatClient client,
         string? displayName = null,
-        string? userId = null
+        string? userId = null,
+        string? colorHex = null
     )
     {
-        OnPrimePaidSubscriberArgs primeSubArgs = CreateSubscriberArgs<PrimePaidSubscriber, OnPrimePaidSubscriberArgs>(
-            displayName,
-            userId,
-            SubscriptionPlan.Prime
-        );
+        // Sadly, there is no Prime Sub Builder...
+        PrimePaidSubscriber prime =
+            new(
+                [],
+                [],
+                colorHex ?? "FFFFFF",
+                Color.AliceBlue,
+                displayName ?? "FakeName",
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                false,
+                string.Empty,
+                string.Empty,
+                SubscriptionPlan.Prime,
+                string.Empty,
+                string.Empty,
+                userId ?? "FakeId",
+                false,
+                false,
+                false,
+                false,
+                string.Empty,
+                UserType.Viewer,
+                string.Empty,
+                string.Empty,
+                0
+            );
 
-        TwitchChatClient.Instance.ManuallyInvokePrimeSubscriberEvent(primeSubArgs);
+        OnPrimePaidSubscriberArgs primeArgs = new() { PrimePaidSubscriber = prime };
+        TwitchChatClient.Instance.ManuallyInvokePrimeSubscriberEvent(primeArgs);
     }
 
     /// <summary>
@@ -110,40 +148,5 @@ public static class TwitchChatClientExtensions
             new() { DisplayName = displayName ?? "FakeName", RedemptionId = redemptionGuid ?? Guid.NewGuid() };
 
         TwitchChatClient.Instance.ManuallyInvokeRedemptionEvent(redemptionArgs);
-    }
-
-    private static TEventArgsType CreateSubscriberArgs<TSubscriberType, TEventArgsType>(
-        string? displayName = null,
-        string? userId = null,
-        SubscriptionPlan? subscriptionPlan = null
-    )
-        where TSubscriberType : SubscriberBase
-        where TEventArgsType : EventArgs, new()
-    {
-        // TODO: This fails, fix it
-        SubscriberBaseBuilder builder = SubscriberBaseBuilder.Create();
-
-        // Find out what type of the subscriber we have specified
-        string subscriberTypeString = typeof(TSubscriberType).Name switch
-        {
-            nameof(Subscriber) => "Subscriber",
-            nameof(ReSubscriber) => "ReSubscriber",
-            nameof(PrimePaidSubscriber) => "PrimePaidSubscriber",
-            _ => "SomeUnknownType",
-        };
-
-        builder
-            .WithDisplayName(displayName ?? "FakeName")
-            .WithUserId(userId ?? "FakeId")
-            .WithSubscribtionPlan(subscriptionPlan ?? SubscriptionPlan.Tier1);
-
-        TSubscriberType subscriber = (TSubscriberType)builder.Build();
-        TEventArgsType subArgs = new();
-        PropertyInfo? property = subArgs.GetType().GetProperty(subscriberTypeString);
-
-        NullGuard.ThrowIfNull(property);
-        property.SetValue(subArgs, subscriber, null);
-
-        return subArgs;
     }
 }

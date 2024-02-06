@@ -113,14 +113,14 @@ public class FakeTwitchEventTests : BaseTwitchTests
     {
         TwitchChatClient.Instance.OnMessageEvent += MessageListener;
 
-        TwitchChatClient.Instance.InvokeFakeMessageEvent("FakeMessage", "FakeName", "FakeUserId", "FakeColor");
+        TwitchChatClient.Instance.InvokeFakeMessageEvent("FakeMessage", "FakeName", "FakeUserId", "AAAAAA");
 
         Assert.Multiple(() =>
         {
             Assert.That(_chatMessageEventArgs.Message, Is.EqualTo("FakeMessage"));
             Assert.That(_chatMessageEventArgs.DisplayName, Is.EqualTo("FakeName"));
             Assert.That(_chatMessageEventArgs.UserId, Is.EqualTo("FakeUserId"));
-            Assert.That(_chatMessageEventArgs.ColorHex, Is.EqualTo("FakeColor"));
+            Assert.That(_chatMessageEventArgs.ColorHex, Is.EqualTo("AAAAAA"));
         });
 
         TwitchChatClient.Instance.OnMessageEvent -= MessageListener;
@@ -131,12 +131,18 @@ public class FakeTwitchEventTests : BaseTwitchTests
     {
         TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
 
-        TwitchChatClient.Instance.InvokeFakeNewSubscriberEvent("FakeName", "FakeUserId", SubscriptionPlan.Tier2);
+        TwitchChatClient.Instance.InvokeFakeNewSubscriberEvent(
+            "FakeName",
+            "FakeUserId",
+            "AAAAAA",
+            SubscriptionPlan.Tier2
+        );
 
         Assert.Multiple(() =>
         {
             Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
             Assert.That(_subscribeEventArgs.UserId, Is.EqualTo("FakeUserId"));
+            Assert.That(_subscribeEventArgs.ColorHex, Is.EqualTo("AAAAAA"));
             Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Tier2));
         });
 
@@ -148,7 +154,12 @@ public class FakeTwitchEventTests : BaseTwitchTests
     {
         TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
 
-        TwitchChatClient.Instance.InvokeFakeReSubscriberEvent("FakeName", "FakeUserId", SubscriptionPlan.Tier3);
+        TwitchChatClient.Instance.InvokeFakeReSubscriberEvent(
+            "FakeName",
+            "FakeUserId",
+            "AAAAAA",
+            SubscriptionPlan.Tier3
+        );
 
         Assert.Multiple(() =>
         {
@@ -165,12 +176,13 @@ public class FakeTwitchEventTests : BaseTwitchTests
     {
         TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
 
-        TwitchChatClient.Instance.InvokeFakePrimeSubscriberEvent("FakeName", "FakeUserId");
+        TwitchChatClient.Instance.InvokeFakePrimeSubscriberEvent("FakeName", "FakeUserId", "AAAAAA");
 
         Assert.Multiple(() =>
         {
             Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
             Assert.That(_subscribeEventArgs.UserId, Is.EqualTo("FakeUserId"));
+            Assert.That(_subscribeEventArgs.ColorHex, Is.EqualTo("AAAAAA"));
             Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Prime));
         });
 

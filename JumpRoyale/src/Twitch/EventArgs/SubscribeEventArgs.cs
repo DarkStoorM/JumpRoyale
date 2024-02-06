@@ -11,32 +11,37 @@ public class SubscribeEventArgs : EventArgs
     {
         NullGuard.ThrowIfNull(eventArgs);
 
+        ColorHex = eventArgs.Subscriber.ColorHex;
         DisplayName = eventArgs.Subscriber.DisplayName;
-        UserId = eventArgs.Subscriber.UserId;
         SubscriptionPlan = eventArgs.Subscriber.SubscriptionPlan;
+        UserId = eventArgs.Subscriber.UserId;
     }
 
     public SubscribeEventArgs(OnReSubscriberArgs eventArgs)
     {
         NullGuard.ThrowIfNull(eventArgs);
 
+        ColorHex = eventArgs.ReSubscriber.ColorHex;
         DisplayName = eventArgs.ReSubscriber.DisplayName;
-        UserId = eventArgs.ReSubscriber.UserId;
         SubscriptionPlan = eventArgs.ReSubscriber.SubscriptionPlan;
+        UserId = eventArgs.ReSubscriber.UserId;
     }
 
     public SubscribeEventArgs(OnPrimePaidSubscriberArgs eventArgs)
     {
         NullGuard.ThrowIfNull(eventArgs);
 
+        ColorHex = eventArgs.PrimePaidSubscriber.ColorHex;
         DisplayName = eventArgs.PrimePaidSubscriber.DisplayName;
-        UserId = eventArgs.PrimePaidSubscriber.UserId;
         SubscriptionPlan = eventArgs.PrimePaidSubscriber.SubscriptionPlan;
+        UserId = eventArgs.PrimePaidSubscriber.UserId;
     }
 
     public string DisplayName { get; init; }
 
     public string UserId { get; init; }
+
+    public string ColorHex { get; init; }
 
     public SubscriptionPlan SubscriptionPlan { get; init; }
 }
