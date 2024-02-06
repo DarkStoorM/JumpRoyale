@@ -82,7 +82,7 @@ public class TwitchChatClient : BaseChatClient
         _instance = null;
     }
 
-    #region Streamer/Testing zone
+    #region Streamer/Testing zone // These have to be public, can't invoke from the outside of the class
 
     /// <summary>
     /// Allows invoking the Chat Message Event without relying on Twitch services. See <see
