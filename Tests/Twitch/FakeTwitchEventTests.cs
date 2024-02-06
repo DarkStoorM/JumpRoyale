@@ -1,5 +1,6 @@
 using Twitch.Tests;
 using TwitchChat;
+using TwitchLib.Client.Enums;
 
 namespace Tests.Twitch;
 
@@ -9,6 +10,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
     private bool _testCase;
     private RewardRedemptionEventArgs _redemptionArgs;
     private ChatMessageEventArgs _chatMessageEventArgs;
+    private SubscribeEventArgs _subscribeEventArgs;
 
     [SetUp]
     public new void SetUp()
@@ -16,6 +18,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
         _testCase = false;
         _redemptionArgs = null!;
         _chatMessageEventArgs = null!;
+        _subscribeEventArgs = null!;
     }
 
     /// <summary>
@@ -39,10 +42,6 @@ public class FakeTwitchEventTests : BaseTwitchTests
         TwitchChatClient.Instance.OnMessageEvent -= MessageListener;
     }
 
-    /// <summary>
-    /// This test makes sure that when we subscribe to exposed event and call it from manual invoke, we get our internal
-    /// field modified as a result.
-    /// </summary>
     [Test]
     public void CanInvokeRedemptionEvent()
     {
@@ -55,9 +54,42 @@ public class FakeTwitchEventTests : BaseTwitchTests
         TwitchChatClient.Instance.OnRedemptionEvent -= RedemptionListener;
     }
 
-    /// <summary>
-    /// This test makes sure that we can get the same fake data we passed into the fake invocation.
-    /// </summary>
+    [Test]
+    public void CanInvokeNewSubscriberEvent()
+    {
+        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+
+        TwitchChatClient.Instance.InvokeFakeNewSubscriberEvent();
+
+        Assert.That(_testCase, Is.True);
+
+        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+    }
+
+    [Test]
+    public void CanInvokeReSubscriberEvent()
+    {
+        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+
+        TwitchChatClient.Instance.InvokeFakeReSubscriberEvent();
+
+        Assert.That(_testCase, Is.True);
+
+        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+    }
+
+    [Test]
+    public void CanInvokePrimeSubscriberEvent()
+    {
+        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+
+        TwitchChatClient.Instance.InvokeFakePrimeSubscriberEvent();
+
+        Assert.That(_testCase, Is.True);
+
+        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+    }
+
     [Test]
     public void CanGetDataFromFakeRedemptionInvocation()
     {
@@ -76,9 +108,6 @@ public class FakeTwitchEventTests : BaseTwitchTests
         TwitchChatClient.Instance.OnRedemptionEvent -= RedemptionListener;
     }
 
-    /// <summary>
-    /// This test makes sure that we can get the same fake data we passed into the fake invocation.
-    /// </summary>
     [Test]
     public void CanGetDataFromFakeMessageInvocation()
     {
@@ -97,6 +126,57 @@ public class FakeTwitchEventTests : BaseTwitchTests
         TwitchChatClient.Instance.OnMessageEvent -= MessageListener;
     }
 
+    [Test]
+    public void CanGetDataFromFakeNewSubscriberEvent()
+    {
+        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+
+        TwitchChatClient.Instance.InvokeFakeNewSubscriberEvent("FakeName", "FakeUserId", SubscriptionPlan.Tier2);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
+            Assert.That(_subscribeEventArgs.UserId, Is.EqualTo("FakeUserId"));
+            Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Tier2));
+        });
+
+        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+    }
+
+    [Test]
+    public void CanGetDataFromFakeReSubscriberEvent()
+    {
+        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+
+        TwitchChatClient.Instance.InvokeFakeReSubscriberEvent("FakeName", "FakeUserId", SubscriptionPlan.Tier3);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
+            Assert.That(_subscribeEventArgs.UserId, Is.EqualTo("FakeUserId"));
+            Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Tier3));
+        });
+
+        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+    }
+
+    [Test]
+    public void CanGetDataFromFakePrimeSubscriberEvent()
+    {
+        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+
+        TwitchChatClient.Instance.InvokeFakePrimeSubscriberEvent("FakeName", "FakeUserId");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
+            Assert.That(_subscribeEventArgs.UserId, Is.EqualTo("FakeUserId"));
+            Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Prime));
+        });
+
+        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+    }
+
     private void MessageListener(object sender, ChatMessageEventArgs eventArgs)
     {
         _testCase = true;
@@ -107,5 +187,11 @@ public class FakeTwitchEventTests : BaseTwitchTests
     {
         _testCase = true;
         _redemptionArgs = eventArgs;
+    }
+
+    private void SubscriberListener(object sender, SubscribeEventArgs eventArgs)
+    {
+        _testCase = true;
+        _subscribeEventArgs = eventArgs;
     }
 }

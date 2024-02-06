@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Utils;
 
@@ -9,7 +10,7 @@ public static class NullGuard
     /// overload <see cref="ThrowIfNull{TExceptionToThrow}(object?)"/>.
     /// </summary>
     /// <param name="argument">Argument to test.</param>
-    public static void ThrowIfNull(object? argument)
+    public static void ThrowIfNull([NotNull] object? argument)
     {
         ArgumentNullException.ThrowIfNull(argument);
     }
@@ -20,7 +21,7 @@ public static class NullGuard
     /// </summary>
     /// <param name="argument">Argument to test.</param>
     /// <typeparam name="TExceptionToThrow">Custom exception type to throw.</typeparam>
-    public static void ThrowIfNull<TExceptionToThrow>(object? argument)
+    public static void ThrowIfNull<TExceptionToThrow>([NotNull] object? argument)
         where TExceptionToThrow : Exception, new()
     {
         if (argument is null)

@@ -20,6 +20,9 @@ public class TwitchChatClient : BaseChatClient
         TwitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
 
         TwitchClient.OnMessageReceived += OnMessageReceived;
+        TwitchClient.OnNewSubscriber += OnNewSubscription;
+        TwitchClient.OnReSubscriber += OnReSubscription;
+        TwitchClient.OnPrimePaidSubscriber += OnPrimeSubscription;
         TwitchPubSub.OnRewardRedeemed += OnRewardRedeemed;
 
         if (InitConfig.AutomaticallyConnectToTwitch)
@@ -37,6 +40,8 @@ public class TwitchChatClient : BaseChatClient
     /// Event fired when this client gets notified by the Pub Sub about new reward redeems
     /// </summary>
     public event EventHandler<RewardRedemptionEventArgs>? OnRedemptionEvent;
+
+    public event EventHandler<SubscribeEventArgs>? OnSubscribeEvent;
 
     public static TwitchChatClient Instance
     {
@@ -87,7 +92,7 @@ public class TwitchChatClient : BaseChatClient
     {
         NullGuard.ThrowIfNull(eventArgs);
 
-        OnMessageReceived(new(), eventArgs);
+        OnMessageReceived(this, eventArgs);
     }
 
     /// <summary>
@@ -98,7 +103,34 @@ public class TwitchChatClient : BaseChatClient
     {
         NullGuard.ThrowIfNull(eventArgs);
 
-        OnRewardRedeemed(new(), eventArgs);
+        OnRewardRedeemed(this, eventArgs);
+    }
+
+    /// <summary>
+    /// Allows invoking the New Subscriber Event without relying on Twitch services. See <see
+    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
+    /// </summary>
+    public void ManuallyInvokeNewSubscriberEvent(OnNewSubscriberArgs eventArgs)
+    {
+        OnNewSubscription(this, eventArgs);
+    }
+
+    /// <summary>
+    /// Allows invoking the ReSubscriber Event without relying on Twitch services. See <see
+    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
+    /// </summary>
+    public void ManuallyInvokeReSubscriberEvent(OnReSubscriberArgs eventArgs)
+    {
+        OnReSubscription(this, eventArgs);
+    }
+
+    /// <summary>
+    /// Allows invoking the Prime Subscriber Event without relying on Twitch services. See <see
+    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
+    /// </summary>
+    public void ManuallyInvokePrimeSubscriberEvent(OnPrimePaidSubscriberArgs eventArgs)
+    {
+        OnPrimeSubscription(this, eventArgs);
     }
     #endregion
 
@@ -123,6 +155,21 @@ public class TwitchChatClient : BaseChatClient
     private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
     {
         OnMessageEvent?.Invoke(this, new ChatMessageEventArgs(e));
+    }
+
+    private void OnNewSubscription(object sender, OnNewSubscriberArgs e)
+    {
+        OnSubscribeEvent?.Invoke(this, new SubscribeEventArgs(e));
+    }
+
+    private void OnReSubscription(object sender, OnReSubscriberArgs e)
+    {
+        OnSubscribeEvent?.Invoke(this, new SubscribeEventArgs(e));
+    }
+
+    private void OnPrimeSubscription(object sender, OnPrimePaidSubscriberArgs e)
+    {
+        OnSubscribeEvent?.Invoke(this, new SubscribeEventArgs(e));
     }
 
     private void OnRewardRedeemed(object sender, OnRewardRedeemedArgs e)
