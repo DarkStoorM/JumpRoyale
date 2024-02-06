@@ -115,6 +115,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
 
         TwitchChatClient.Instance.InvokeFakeMessageEvent("FakeMessage", "FakeName", "FakeUserId", "AAAAAA");
 
+        // Make sure the Invoker gave us the same data
         Assert.Multiple(() =>
         {
             Assert.That(_chatMessageEventArgs.Message, Is.EqualTo("FakeMessage"));
@@ -138,6 +139,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
             SubscriptionPlan.Tier2
         );
 
+        // This test uses Tier2 sub to make sure the we did actually set the sub plan and didn't get Tier1 in return
         Assert.Multiple(() =>
         {
             Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
@@ -161,6 +163,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
             SubscriptionPlan.Tier3
         );
 
+        // Similarly to New Sub, check with different tier just in case
         Assert.Multiple(() =>
         {
             Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
@@ -178,6 +181,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
 
         TwitchChatClient.Instance.InvokeFakePrimeSubscriberEvent("FakeName", "FakeUserId", "AAAAAA");
 
+        // Prime subs get a Prime sub plan by default inside the Invoker, so make sure we also get that
         Assert.Multiple(() =>
         {
             Assert.That(_subscribeEventArgs.DisplayName, Is.EqualTo("FakeName"));
