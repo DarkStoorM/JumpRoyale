@@ -41,7 +41,7 @@ public class TwitchChatClient : BaseChatClient
     /// </summary>
     public event EventHandler<RewardRedemptionEventArgs>? OnRedemptionEvent;
 
-    public event EventHandler<SubscribeEventArgs>? OnSubscribeEvent;
+    public event EventHandler<SubscriberEventArgs>? OnSubscribeEvent;
 
     public static TwitchChatClient Instance
     {
@@ -159,17 +159,17 @@ public class TwitchChatClient : BaseChatClient
 
     private void OnNewSubscription(object sender, OnNewSubscriberArgs e)
     {
-        OnSubscribeEvent?.Invoke(this, new SubscribeEventArgs(e));
+        OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
     private void OnReSubscription(object sender, OnReSubscriberArgs e)
     {
-        OnSubscribeEvent?.Invoke(this, new SubscribeEventArgs(e));
+        OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
     private void OnPrimeSubscription(object sender, OnPrimePaidSubscriberArgs e)
     {
-        OnSubscribeEvent?.Invoke(this, new SubscribeEventArgs(e));
+        OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
     private void OnRewardRedeemed(object sender, OnRewardRedeemedArgs e)

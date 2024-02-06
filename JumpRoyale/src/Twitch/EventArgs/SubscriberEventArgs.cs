@@ -5,9 +5,9 @@ using Utils;
 
 namespace TwitchChat;
 
-public class SubscribeEventArgs : EventArgs
+public class SubscriberEventArgs : EventArgs
 {
-    public SubscribeEventArgs(OnNewSubscriberArgs eventArgs)
+    public SubscriberEventArgs(OnNewSubscriberArgs eventArgs)
     {
         NullGuard.ThrowIfNull(eventArgs);
 
@@ -17,7 +17,7 @@ public class SubscribeEventArgs : EventArgs
         UserId = eventArgs.Subscriber.UserId;
     }
 
-    public SubscribeEventArgs(OnReSubscriberArgs eventArgs)
+    public SubscriberEventArgs(OnReSubscriberArgs eventArgs)
     {
         NullGuard.ThrowIfNull(eventArgs);
 
@@ -27,7 +27,7 @@ public class SubscribeEventArgs : EventArgs
         UserId = eventArgs.ReSubscriber.UserId;
     }
 
-    public SubscribeEventArgs(OnPrimePaidSubscriberArgs eventArgs)
+    public SubscriberEventArgs(OnPrimePaidSubscriberArgs eventArgs)
     {
         NullGuard.ThrowIfNull(eventArgs);
 

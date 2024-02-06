@@ -10,7 +10,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
     private bool _testCase;
     private RewardRedemptionEventArgs _redemptionArgs;
     private ChatMessageEventArgs _chatMessageEventArgs;
-    private SubscribeEventArgs _subscribeEventArgs;
+    private SubscriberEventArgs _subscribeEventArgs;
 
     [SetUp]
     public new void SetUp()
@@ -201,7 +201,7 @@ public class FakeTwitchEventTests : BaseTwitchTests
         _redemptionArgs = eventArgs;
     }
 
-    private void SubscriberListener(object sender, SubscribeEventArgs eventArgs)
+    private void SubscriberListener(object sender, SubscriberEventArgs eventArgs)
     {
         _testCase = true;
         _subscribeEventArgs = eventArgs;
