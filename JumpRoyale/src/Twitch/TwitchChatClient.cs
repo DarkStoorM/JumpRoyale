@@ -19,11 +19,11 @@ public class TwitchChatClient : BaseChatClient
         TwitchClient.OnJoinedChannel += OnJoinedChannel;
         TwitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
 
-        TwitchClient.OnMessageReceived += OnMessageReceived;
-        TwitchClient.OnNewSubscriber += OnNewSubscription;
-        TwitchClient.OnReSubscriber += OnReSubscription;
-        TwitchClient.OnPrimePaidSubscriber += OnPrimeSubscription;
-        TwitchPubSub.OnRewardRedeemed += OnRewardRedeemed;
+        TwitchClient.OnMessageReceived += HandleMessageReceived;
+        TwitchClient.OnNewSubscriber += HandleNewSubscription;
+        TwitchClient.OnReSubscriber += HandleReSubscription;
+        TwitchClient.OnPrimePaidSubscriber += HandlePrimeSubscription;
+        TwitchPubSub.OnRewardRedeemed += HandleRewardRedeemed;
 
         if (InitConfig.AutomaticallyConnectToTwitch)
         {
@@ -92,7 +92,7 @@ public class TwitchChatClient : BaseChatClient
     {
         NullGuard.ThrowIfNull(eventArgs);
 
-        OnMessageReceived(this, eventArgs);
+        HandleMessageReceived(this, eventArgs);
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class TwitchChatClient : BaseChatClient
     {
         NullGuard.ThrowIfNull(eventArgs);
 
-        OnRewardRedeemed(this, eventArgs);
+        HandleRewardRedeemed(this, eventArgs);
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public class TwitchChatClient : BaseChatClient
     /// </summary>
     public void ManuallyInvokeNewSubscriberEvent(OnNewSubscriberArgs eventArgs)
     {
-        OnNewSubscription(this, eventArgs);
+        HandleNewSubscription(this, eventArgs);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class TwitchChatClient : BaseChatClient
     /// </summary>
     public void ManuallyInvokeReSubscriberEvent(OnReSubscriberArgs eventArgs)
     {
-        OnReSubscription(this, eventArgs);
+        HandleReSubscription(this, eventArgs);
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ public class TwitchChatClient : BaseChatClient
     /// </summary>
     public void ManuallyInvokePrimeSubscriberEvent(OnPrimePaidSubscriberArgs eventArgs)
     {
-        OnPrimeSubscription(this, eventArgs);
+        HandlePrimeSubscription(this, eventArgs);
     }
     #endregion
 
@@ -152,27 +152,27 @@ public class TwitchChatClient : BaseChatClient
         TwitchPubSub.SendTopics();
     }
 
-    private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
+    private void HandleMessageReceived(object sender, OnMessageReceivedArgs e)
     {
         OnMessageEvent?.Invoke(this, new ChatMessageEventArgs(e));
     }
 
-    private void OnNewSubscription(object sender, OnNewSubscriberArgs e)
+    private void HandleNewSubscription(object sender, OnNewSubscriberArgs e)
     {
         OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
-    private void OnReSubscription(object sender, OnReSubscriberArgs e)
+    private void HandleReSubscription(object sender, OnReSubscriberArgs e)
     {
         OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
-    private void OnPrimeSubscription(object sender, OnPrimePaidSubscriberArgs e)
+    private void HandlePrimeSubscription(object sender, OnPrimePaidSubscriberArgs e)
     {
         OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
-    private void OnRewardRedeemed(object sender, OnRewardRedeemedArgs e)
+    private void HandleRewardRedeemed(object sender, OnRewardRedeemedArgs e)
     {
         Console.WriteLine(TwitchMessages.OnRewardRedeemMessage.ReplaceInTemplate(e.DisplayName, e.RedemptionId));
 
