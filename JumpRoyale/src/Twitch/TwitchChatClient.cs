@@ -152,6 +152,8 @@ public class TwitchChatClient : BaseChatClient
         TwitchPubSub.SendTopics();
     }
 
+    #region Event handlers responsible for Invoking
+
     private void HandleMessageReceived(object sender, OnMessageReceivedArgs e)
     {
         OnMessageEvent?.Invoke(this, new ChatMessageEventArgs(e));
@@ -178,4 +180,6 @@ public class TwitchChatClient : BaseChatClient
 
         OnRedemptionEvent?.Invoke(this, new RewardRedemptionEventArgs(e));
     }
+
+    #endregion
 }
