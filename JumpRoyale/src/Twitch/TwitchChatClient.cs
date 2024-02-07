@@ -96,6 +96,24 @@ public class TwitchChatClient : BaseChatClient
     }
 
     /// <summary>
+    /// Allows invoking the New Subscriber Event without relying on Twitch services. See <see
+    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
+    /// </summary>
+    public void ManuallyInvokeNewSubscriberEvent(OnNewSubscriberArgs eventArgs)
+    {
+        HandleNewSubscription(this, eventArgs);
+    }
+
+    /// <summary>
+    /// Allows invoking the Prime Subscriber Event without relying on Twitch services. See <see
+    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
+    /// </summary>
+    public void ManuallyInvokePrimeSubscriberEvent(OnPrimePaidSubscriberArgs eventArgs)
+    {
+        HandlePrimeSubscription(this, eventArgs);
+    }
+
+    /// <summary>
     /// Allows invoking the Reward Redemption Event without relying on Twitch services. See <see
     /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
     /// </summary>
@@ -107,15 +125,6 @@ public class TwitchChatClient : BaseChatClient
     }
 
     /// <summary>
-    /// Allows invoking the New Subscriber Event without relying on Twitch services. See <see
-    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
-    /// </summary>
-    public void ManuallyInvokeNewSubscriberEvent(OnNewSubscriberArgs eventArgs)
-    {
-        HandleNewSubscription(this, eventArgs);
-    }
-
-    /// <summary>
     /// Allows invoking the ReSubscriber Event without relying on Twitch services. See <see
     /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
     /// </summary>
@@ -124,14 +133,6 @@ public class TwitchChatClient : BaseChatClient
         HandleReSubscription(this, eventArgs);
     }
 
-    /// <summary>
-    /// Allows invoking the Prime Subscriber Event without relying on Twitch services. See <see
-    /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
-    /// </summary>
-    public void ManuallyInvokePrimeSubscriberEvent(OnPrimePaidSubscriberArgs eventArgs)
-    {
-        HandlePrimeSubscription(this, eventArgs);
-    }
     #endregion
 
     private void OnConnected(object sender, OnConnectedArgs e)
@@ -164,12 +165,12 @@ public class TwitchChatClient : BaseChatClient
         OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
-    private void HandleReSubscription(object sender, OnReSubscriberArgs e)
+    private void HandlePrimeSubscription(object sender, OnPrimePaidSubscriberArgs e)
     {
         OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
-    private void HandlePrimeSubscription(object sender, OnPrimePaidSubscriberArgs e)
+    private void HandleReSubscription(object sender, OnReSubscriberArgs e)
     {
         OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
