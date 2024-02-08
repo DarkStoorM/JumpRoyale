@@ -149,4 +149,11 @@ public static class TwitchChatClientExtensions
 
         TwitchChatClient.Instance.ManuallyInvokeRedemptionEvent(redemptionArgs);
     }
+
+    public static void InvokeFakeBitsEvent(this TwitchChatClient client, int? bitsAmount = null, string? userId = null)
+    {
+        OnBitsReceivedArgs bitsArgs = new() { BitsUsed = bitsAmount ?? 100, UserId = userId ?? "FakeId" };
+
+        TwitchChatClient.Instance.ManuallyInvokeBitsEvent(bitsArgs);
+    }
 }

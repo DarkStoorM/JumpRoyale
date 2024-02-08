@@ -2,7 +2,6 @@ using System;
 using Constants.Messages;
 using TwitchLib.Client.Events;
 using TwitchLib.PubSub.Events;
-using Utils;
 
 namespace TwitchChat;
 
@@ -24,24 +23,19 @@ public class TwitchChatClient : BaseChatClient
         TwitchClient.OnReSubscriber += HandleReSubscription;
         TwitchClient.OnPrimePaidSubscriber += HandlePrimeSubscription;
         TwitchPubSub.OnRewardRedeemed += HandleRewardRedeemed;
-
         if (InitConfig.AutomaticallyConnectToTwitch)
         {
             ConnectToTwitch();
         }
     }
 
-    /// <summary>
-    /// Event fired when Twitch Client receives a new chat message
-    /// </summary>
-    public event EventHandler<ChatMessageEventArgs>? OnMessageEvent;
+    public event EventHandler<BitsEventArgs>? OnTwitchBitsReceivedEvent;
 
-    /// <summary>
-    /// Event fired when this client gets notified by the Pub Sub about new reward redeems
-    /// </summary>
-    public event EventHandler<RewardRedemptionEventArgs>? OnRedemptionEvent;
+    public event EventHandler<ChatMessageEventArgs>? OnTwitchMessageReceivedEvent;
 
-    public event EventHandler<SubscriberEventArgs>? OnSubscribeEvent;
+    public event EventHandler<RewardRedemptionEventArgs>? OnTwitchRewardRedemptionEvent;
+
+    public event EventHandler<SubscriberEventArgs>? OnTwitchSubscriptionEvent;
 
     public static TwitchChatClient Instance
     {
@@ -84,14 +78,17 @@ public class TwitchChatClient : BaseChatClient
 
     #region Streamer/Testing zone // These have to be public, can't invoke from the outside of the class
 
+    public void ManuallyInvokeBitsEvent(OnBitsReceivedArgs eventArgs)
+    {
+        HandleBitsReceived(this, eventArgs);
+    }
+
     /// <summary>
     /// Allows invoking the Chat Message Event without relying on Twitch services. See <see
     /// cref="TwitchChatClientExtensions"/> for more information on how to invoke this event.
     /// </summary>
     public void ManuallyInvokeMessageEvent(OnMessageReceivedArgs eventArgs)
     {
-        NullGuard.ThrowIfNull(eventArgs);
-
         HandleMessageReceived(this, eventArgs);
     }
 
@@ -119,8 +116,6 @@ public class TwitchChatClient : BaseChatClient
     /// </summary>
     public void ManuallyInvokeRedemptionEvent(OnRewardRedeemedArgs eventArgs)
     {
-        NullGuard.ThrowIfNull(eventArgs);
-
         HandleRewardRedeemed(this, eventArgs);
     }
 
@@ -155,31 +150,34 @@ public class TwitchChatClient : BaseChatClient
 
     #region Event handlers responsible for Invoking
 
+    private void HandleBitsReceived(object sender, OnBitsReceivedArgs e)
+    {
+        OnTwitchBitsReceivedEvent?.Invoke(this, new BitsEventArgs(e));
+    }
+
     private void HandleMessageReceived(object sender, OnMessageReceivedArgs e)
     {
-        OnMessageEvent?.Invoke(this, new ChatMessageEventArgs(e));
+        OnTwitchMessageReceivedEvent?.Invoke(this, new ChatMessageEventArgs(e));
     }
 
     private void HandleNewSubscription(object sender, OnNewSubscriberArgs e)
     {
-        OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
+        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
     private void HandlePrimeSubscription(object sender, OnPrimePaidSubscriberArgs e)
     {
-        OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
+        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
     private void HandleReSubscription(object sender, OnReSubscriberArgs e)
     {
-        OnSubscribeEvent?.Invoke(this, new SubscriberEventArgs(e));
+        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(e));
     }
 
     private void HandleRewardRedeemed(object sender, OnRewardRedeemedArgs e)
     {
-        Console.WriteLine(TwitchMessages.OnRewardRedeemMessage.ReplaceInTemplate(e.DisplayName, e.RedemptionId));
-
-        OnRedemptionEvent?.Invoke(this, new RewardRedemptionEventArgs(e));
+        OnTwitchRewardRedemptionEvent?.Invoke(this, new RewardRedemptionEventArgs(e));
     }
 
     #endregion

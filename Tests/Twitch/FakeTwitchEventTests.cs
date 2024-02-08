@@ -8,16 +8,19 @@ namespace Tests.Twitch;
 public class FakeTwitchEventTests : BaseTwitchTests
 {
     private bool _testCase;
-    private RewardRedemptionEventArgs _redemptionArgs;
+
+    private BitsEventArgs _bitsEventArgs;
     private ChatMessageEventArgs _chatMessageEventArgs;
+    private RewardRedemptionEventArgs _redemptionArgs;
     private SubscriberEventArgs _subscribeEventArgs;
 
     [SetUp]
     public new void SetUp()
     {
         _testCase = false;
-        _redemptionArgs = null!;
+        _bitsEventArgs = null!;
         _chatMessageEventArgs = null!;
+        _redemptionArgs = null!;
         _subscribeEventArgs = null!;
     }
 
@@ -32,68 +35,80 @@ public class FakeTwitchEventTests : BaseTwitchTests
         Assert.That(_testCase, Is.False);
 
         // Subscribe with a dummy method
-        TwitchChatClient.Instance.OnMessageEvent += MessageListener;
+        TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += MessageListener;
 
         TwitchChatClient.Instance.InvokeFakeMessageEvent();
 
         Assert.That(_testCase, Is.True);
 
         // Unsubscribe as cleanup
-        TwitchChatClient.Instance.OnMessageEvent -= MessageListener;
+        TwitchChatClient.Instance.OnTwitchMessageReceivedEvent -= MessageListener;
     }
 
     [Test]
     public void CanInvokeRedemptionEvent()
     {
-        TwitchChatClient.Instance.OnRedemptionEvent += RedemptionListener;
+        TwitchChatClient.Instance.OnTwitchRewardRedemptionEvent += RedemptionListener;
 
         TwitchChatClient.Instance.InvokeFakeRedemptionEvent();
 
         Assert.That(_testCase, Is.True);
 
-        TwitchChatClient.Instance.OnRedemptionEvent -= RedemptionListener;
+        TwitchChatClient.Instance.OnTwitchRewardRedemptionEvent -= RedemptionListener;
     }
 
     [Test]
     public void CanInvokeNewSubscriberEvent()
     {
-        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent += SubscriberListener;
 
         TwitchChatClient.Instance.InvokeFakeNewSubscriberEvent();
 
         Assert.That(_testCase, Is.True);
 
-        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent -= SubscriberListener;
     }
 
     [Test]
     public void CanInvokeReSubscriberEvent()
     {
-        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent += SubscriberListener;
 
         TwitchChatClient.Instance.InvokeFakeReSubscriberEvent();
 
         Assert.That(_testCase, Is.True);
 
-        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent -= SubscriberListener;
     }
 
     [Test]
     public void CanInvokePrimeSubscriberEvent()
     {
-        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent += SubscriberListener;
 
         TwitchChatClient.Instance.InvokeFakePrimeSubscriberEvent();
 
         Assert.That(_testCase, Is.True);
 
-        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent -= SubscriberListener;
+    }
+
+    [Test]
+    public void CanInvokeBitsEvent()
+    {
+        TwitchChatClient.Instance.OnTwitchBitsReceivedEvent += BitsCheerListener;
+
+        TwitchChatClient.Instance.InvokeFakeBitsEvent();
+
+        Assert.That(_testCase, Is.True);
+
+        TwitchChatClient.Instance.OnTwitchBitsReceivedEvent -= BitsCheerListener;
     }
 
     [Test]
     public void CanGetDataFromFakeRedemptionInvocation()
     {
-        TwitchChatClient.Instance.OnRedemptionEvent += RedemptionListener;
+        TwitchChatClient.Instance.OnTwitchRewardRedemptionEvent += RedemptionListener;
 
         Guid guid = Guid.NewGuid();
         TwitchChatClient.Instance.InvokeFakeRedemptionEvent("SomeGuy", guid);
@@ -105,13 +120,15 @@ public class FakeTwitchEventTests : BaseTwitchTests
             Assert.That(_redemptionArgs.RedemptionId, Is.EqualTo(guid));
         });
 
-        TwitchChatClient.Instance.OnRedemptionEvent -= RedemptionListener;
+        TwitchChatClient.Instance.OnTwitchRewardRedemptionEvent -= RedemptionListener;
+
+        Assert.Pass($"{_redemptionArgs.DisplayName} redeemed {_redemptionArgs.RedemptionId}");
     }
 
     [Test]
     public void CanGetDataFromFakeMessageInvocation()
     {
-        TwitchChatClient.Instance.OnMessageEvent += MessageListener;
+        TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += MessageListener;
 
         TwitchChatClient.Instance.InvokeFakeMessageEvent("FakeMessage", "FakeName", "FakeUserId", "AAAAAA");
 
@@ -124,13 +141,15 @@ public class FakeTwitchEventTests : BaseTwitchTests
             Assert.That(_chatMessageEventArgs.ColorHex, Is.EqualTo("AAAAAA"));
         });
 
-        TwitchChatClient.Instance.OnMessageEvent -= MessageListener;
+        TwitchChatClient.Instance.OnTwitchMessageReceivedEvent -= MessageListener;
+
+        Assert.Pass($"Message detected: {_chatMessageEventArgs.DisplayName} - {_chatMessageEventArgs.Message}");
     }
 
     [Test]
     public void CanGetDataFromFakeNewSubscriberEvent()
     {
-        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent += SubscriberListener;
 
         TwitchChatClient.Instance.InvokeFakeNewSubscriberEvent(
             "FakeName",
@@ -148,13 +167,15 @@ public class FakeTwitchEventTests : BaseTwitchTests
             Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Tier2));
         });
 
-        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent -= SubscriberListener;
+
+        Assert.Pass($"New sub: {_subscribeEventArgs.DisplayName} ({_subscribeEventArgs.SubscriptionPlan})");
     }
 
     [Test]
     public void CanGetDataFromFakeReSubscriberEvent()
     {
-        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent += SubscriberListener;
 
         TwitchChatClient.Instance.InvokeFakeReSubscriberEvent(
             "FakeName",
@@ -171,13 +192,15 @@ public class FakeTwitchEventTests : BaseTwitchTests
             Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Tier3));
         });
 
-        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent -= SubscriberListener;
+
+        Assert.Pass($"New Resub: {_subscribeEventArgs.DisplayName} ({_subscribeEventArgs.SubscriptionPlan})");
     }
 
     [Test]
     public void CanGetDataFromFakePrimeSubscriberEvent()
     {
-        TwitchChatClient.Instance.OnSubscribeEvent += SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent += SubscriberListener;
 
         TwitchChatClient.Instance.InvokeFakePrimeSubscriberEvent("FakeName", "FakeUserId", "AAAAAA");
 
@@ -190,7 +213,33 @@ public class FakeTwitchEventTests : BaseTwitchTests
             Assert.That(_subscribeEventArgs.SubscriptionPlan, Is.EqualTo(SubscriptionPlan.Prime));
         });
 
-        TwitchChatClient.Instance.OnSubscribeEvent -= SubscriberListener;
+        TwitchChatClient.Instance.OnTwitchSubscriptionEvent -= SubscriberListener;
+
+        Assert.Pass($"New Prime sub: {_subscribeEventArgs.DisplayName}");
+    }
+
+    [Test]
+    public void CanGetDataFromFakeBitsEvent()
+    {
+        TwitchChatClient.Instance.OnTwitchBitsReceivedEvent += BitsCheerListener;
+
+        TwitchChatClient.Instance.InvokeFakeBitsEvent(666, "SomeFakeId");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_bitsEventArgs.BitsAmount, Is.EqualTo(666));
+            Assert.That(_bitsEventArgs.UserId, Is.EqualTo("SomeFakeId"));
+        });
+
+        TwitchChatClient.Instance.OnTwitchBitsReceivedEvent -= BitsCheerListener;
+
+        Assert.Pass($"{_bitsEventArgs.UserId} cheered: {_bitsEventArgs.BitsAmount}");
+    }
+
+    private void BitsCheerListener(object sender, BitsEventArgs eventArgs)
+    {
+        _testCase = true;
+        _bitsEventArgs = eventArgs;
     }
 
     private void MessageListener(object sender, ChatMessageEventArgs eventArgs)
