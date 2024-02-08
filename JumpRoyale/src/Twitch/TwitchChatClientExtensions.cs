@@ -1,11 +1,12 @@
 using System;
 using System.Drawing;
-using TwitchChat;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Client.Models.Builders;
 using TwitchLib.PubSub.Events;
+
+namespace TwitchChat;
 
 public static class TwitchChatClientExtensions
 {
@@ -33,7 +34,7 @@ public static class TwitchChatClientExtensions
         ChatMessage chatMessage = messageBuilder.WithTwitchLibMessage(libMessageBuilder).Build();
         OnMessageReceivedArgs messageArgs = new() { ChatMessage = chatMessage };
 
-        TwitchChatClient.Instance.ManuallyInvokeMessageEvent(messageArgs);
+        TwitchChatClient.Instance.FakeMessageEvent(messageArgs);
     }
 
     /// <summary>
@@ -58,7 +59,7 @@ public static class TwitchChatClientExtensions
 
         OnNewSubscriberArgs subArgs = new() { Subscriber = (Subscriber)builder.Build() };
 
-        TwitchChatClient.Instance.ManuallyInvokeNewSubscriberEvent(subArgs);
+        TwitchChatClient.Instance.FakeNewSubscriberEvent(subArgs);
     }
 
     /// <summary>
@@ -83,7 +84,7 @@ public static class TwitchChatClientExtensions
 
         OnReSubscriberArgs resubArgs = new() { ReSubscriber = (ReSubscriber)builder.Build() };
 
-        TwitchChatClient.Instance.ManuallyInvokeReSubscriberEvent(resubArgs);
+        TwitchChatClient.Instance.FakeReSubscriberEvent(resubArgs);
     }
 
     /// <summary>
@@ -131,7 +132,7 @@ public static class TwitchChatClientExtensions
             );
 
         OnPrimePaidSubscriberArgs primeArgs = new() { PrimePaidSubscriber = prime };
-        TwitchChatClient.Instance.ManuallyInvokePrimeSubscriberEvent(primeArgs);
+        TwitchChatClient.Instance.FakePrimeSubscriberEvent(primeArgs);
     }
 
     /// <summary>
@@ -147,13 +148,13 @@ public static class TwitchChatClientExtensions
         OnRewardRedeemedArgs redemptionArgs =
             new() { DisplayName = displayName ?? "FakeName", RedemptionId = redemptionGuid ?? Guid.NewGuid() };
 
-        TwitchChatClient.Instance.ManuallyInvokeRedemptionEvent(redemptionArgs);
+        TwitchChatClient.Instance.FakeRedemptionEvent(redemptionArgs);
     }
 
     public static void InvokeFakeBitsEvent(this TwitchChatClient client, int? bitsAmount = null, string? userId = null)
     {
         OnBitsReceivedArgs bitsArgs = new() { BitsUsed = bitsAmount ?? 100, UserId = userId ?? "FakeId" };
 
-        TwitchChatClient.Instance.ManuallyInvokeBitsEvent(bitsArgs);
+        TwitchChatClient.Instance.FakeBitsEvent(bitsArgs);
     }
 }
