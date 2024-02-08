@@ -1,6 +1,6 @@
 using Twitch.Tests;
 using TwitchChat;
-using Utils.Exceptions;
+using TwitchChat.Exceptions;
 
 namespace Tests.Twitch;
 

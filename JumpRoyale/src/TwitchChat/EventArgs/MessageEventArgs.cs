@@ -5,7 +5,8 @@ using Utils;
 namespace TwitchChat;
 
 /// <summary>
-/// Selected event arguments from OnMessageReceivedArgs.
+/// Selected properties of <c>OnMessageReceivedArgs</c>. Additionally, this exposes <c>IsPrivileged</c> field, which is
+/// a combination of Broadcaster / Moderator / VIP / Subscriber.
 /// </summary>
 public class ChatMessageEventArgs : EventArgs
 {

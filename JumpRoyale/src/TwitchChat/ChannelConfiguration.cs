@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Constants.Twitch;
 using Microsoft.Extensions.Configuration;
-using Utils.Exceptions;
+using TwitchChat.Constants;
+using TwitchChat.Exceptions;
 
 namespace TwitchChat;
 

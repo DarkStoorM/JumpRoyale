@@ -1,3 +1,5 @@
+using TwitchChat.Constants;
+
 namespace TwitchChat;
 
 /// <summary>
@@ -23,9 +25,9 @@ public class TwitchChatInitConfig(
     /// <summary>
     /// Path to the main Json config file that contains the channel name/id it should connect to/read from. Override if
     /// the config has to be read from different path than default. Default path: <see
-    /// cref="ResourcePaths.MainTwitchConfig"/>.
+    /// cref="TwitchConfigPaths.MainTwitchConfig"/>.
     /// </summary>
-    public string JsonConfigPath { get; init; } = jsonConfigPath ?? ResourcePaths.MainTwitchConfig;
+    public string JsonConfigPath { get; } = jsonConfigPath ?? TwitchConfigPaths.MainTwitchConfig;
 
     /// <summary>
     /// Local (untracked) Json configuration file for overriding purposes. If this file exists and was requested during
@@ -37,13 +39,13 @@ public class TwitchChatInitConfig(
     /// main config intact and develop on a Local config with different data that does not have to be committed to the
     /// Version Control.
     /// </remarks>
-    public string LocalConfigPath { get; init; } = localConfigFile ?? ResourcePaths.LocalTwitchConfig;
+    public string LocalConfigPath { get; } = localConfigFile ?? TwitchConfigPaths.LocalTwitchConfig;
 
     /// <summary>
     /// If <c>true</c>, omits the additional Json config load during the Twitch Chat initialization. Local configs are
     /// useful when developing on a different Twitch channel.
     /// </summary>
-    public bool SkipLocalConfig { get; init; } = skipLocalConfig;
+    public bool SkipLocalConfig { get; } = skipLocalConfig;
 
     /// <summary>
     /// Flag to instruct the TwitchChatClient to omit connection to the Twitch services. This flag is for testing
@@ -54,5 +56,5 @@ public class TwitchChatInitConfig(
     /// This will only omit the Twitch service connection, leaving the event listeners open, since we still want to
     /// manually invoke the internal Twitch events for testing purposes.
     /// </remarks>
-    public bool AutomaticallyConnectToTwitch { get; init; } = automaticallyConnectToTwitch;
+    public bool AutomaticallyConnectToTwitch { get; } = automaticallyConnectToTwitch;
 }

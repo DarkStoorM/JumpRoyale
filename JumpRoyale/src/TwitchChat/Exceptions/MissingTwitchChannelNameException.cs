@@ -1,7 +1,7 @@
 using System;
-using Constants.Messages;
+using TwitchChat.Messages;
 
-namespace Utils.Exceptions;
+namespace TwitchChat.Exceptions;
 
 public class MissingTwitchChannelNameException : Exception
 {

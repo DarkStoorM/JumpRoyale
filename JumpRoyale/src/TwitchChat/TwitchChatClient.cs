@@ -1,5 +1,5 @@
 using System;
-using Constants.Messages;
+using TwitchChat.Messages;
 using TwitchLib.Client.Events;
 using TwitchLib.PubSub.Events;
 

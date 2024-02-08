@@ -5,6 +5,10 @@ using Utils;
 
 namespace TwitchChat;
 
+/// <summary>
+/// Selected properties of Subscription events. This combines the following: <c>OnNewSubscriberArgs</c>,
+/// <c>OnReSubscriberArgs</c>, <c>OnPrimePaidSubscriberArgs</c>.
+/// </summary>
 public class SubscriberEventArgs : EventArgs
 {
     public SubscriberEventArgs(OnNewSubscriberArgs eventArgs)

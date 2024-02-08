@@ -6,13 +6,13 @@ using TwitchLib.Client.Models;
 using TwitchLib.Client.Models.Builders;
 using TwitchLib.PubSub.Events;
 
-namespace TwitchChat;
+namespace TwitchChat.Extensions;
 
 public static class TwitchChatClientExtensions
 {
     /// <summary>
-    /// Invokes a Chat Message Event and allows replacing some components with custom data if more specific information
-    /// has to be passed to the Client's event handlers.
+    /// Allows faking a Message Received event internally for testing purposes. Allows modifying the properties for fake
+    /// user customization, if needed.
     /// </summary>
     public static void InvokeFakeMessageEvent(
         this TwitchChatClient client,
@@ -38,8 +38,8 @@ public static class TwitchChatClientExtensions
     }
 
     /// <summary>
-    /// Invokes a New Subscriber Event and allows replacing some components with custom data if more specific
-    /// information has to be passed to the Client's event handlers.
+    /// Allows faking a New Subscriber event internally for testing purposes. Allows customizing some of the subscriber
+    /// data, e.g. Subscription Plan, if needed.
     /// </summary>
     public static void InvokeFakeNewSubscriberEvent(
         this TwitchChatClient client,
@@ -63,8 +63,7 @@ public static class TwitchChatClientExtensions
     }
 
     /// <summary>
-    /// Invokes a ReSubscriber Event and allows replacing some components with custom data if more specific
-    /// information has to be passed to the Client's event handlers.
+    /// See: <see cref="InvokeFakeNewSubscriberEvent"/>.
     /// </summary>
     public static void InvokeFakeReSubscriberEvent(
         this TwitchChatClient client,
@@ -88,8 +87,8 @@ public static class TwitchChatClientExtensions
     }
 
     /// <summary>
-    /// Invokes a ReSubscriber Event and allows replacing some components with custom data if more specific
-    /// information has to be passed to the Client's event handlers.
+    /// Allows faking a Prime subscription event internally for testing purposes. Unlike New/Resub events, this will
+    /// have SubscriptionPlan set to Prime by default.
     /// </summary>
     public static void InvokeFakePrimeSubscriberEvent(
         this TwitchChatClient client,
@@ -98,7 +97,7 @@ public static class TwitchChatClientExtensions
         string? colorHex = null
     )
     {
-        // Sadly, there is no Prime Sub Builder...
+        // Sadly, there is no Prime Sub Builder, so we have to call the constructor directly...
         PrimePaidSubscriber prime =
             new(
                 [],
@@ -132,12 +131,12 @@ public static class TwitchChatClientExtensions
             );
 
         OnPrimePaidSubscriberArgs primeArgs = new() { PrimePaidSubscriber = prime };
+
         TwitchChatClient.Instance.FakePrimeSubscriberEvent(primeArgs);
     }
 
     /// <summary>
-    /// Invokes a Reward Redemption Event and allows replacing some components with custom data if more specific
-    /// information has to be passed to the Client's event handlers.
+    /// Allows faking a reward redemption event internally for testing purposes.
     /// </summary>
     public static void InvokeFakeRedemptionEvent(
         this TwitchChatClient client,
@@ -151,6 +150,9 @@ public static class TwitchChatClientExtensions
         TwitchChatClient.Instance.FakeRedemptionEvent(redemptionArgs);
     }
 
+    /// <summary>
+    /// Allows faking the Cheering (Twitch Bits) event for testing purposes. This will store <c>100</c> bits by default.
+    /// </summary>
     public static void InvokeFakeBitsEvent(this TwitchChatClient client, int? bitsAmount = null, string? userId = null)
     {
         OnBitsReceivedArgs bitsArgs = new() { BitsUsed = bitsAmount ?? 100, UserId = userId ?? "FakeId" };

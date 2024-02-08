@@ -1,5 +1,6 @@
 using Twitch.Tests;
 using TwitchChat;
+using TwitchChat.Extensions;
 using TwitchLib.Client.Enums;
 
 namespace Tests.Twitch;

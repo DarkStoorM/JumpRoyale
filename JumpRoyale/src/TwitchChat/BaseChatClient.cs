@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Constants.Twitch;
 using Microsoft.Extensions.Configuration;
+using TwitchChat.Constants;
 using TwitchLib.Client;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
@@ -31,19 +31,19 @@ public class BaseChatClient
 
         // Loads a local configuration file, which is used for Development purposes; overrides the main configuration by
         // replacing the channel name/id the flag is used for testing purposes
-        AddJsonConfig(builder, ResourcePaths.LocalTwitchConfig, InitConfig.SkipLocalConfig);
+        AddJsonConfig(builder, TwitchConfigPaths.LocalTwitchConfig, InitConfig.SkipLocalConfig);
 
         Configuration = new(builder);
         TwitchClient = InitializeClient();
     }
 
-    public TwitchPubSub TwitchPubSub { get; init; } = new();
+    public TwitchClient TwitchClient { get; }
 
-    public TwitchClient TwitchClient { get; private set; }
+    public TwitchPubSub TwitchPubSub { get; } = new();
 
-    protected ChannelConfiguration Configuration { get; init; }
+    protected ChannelConfiguration Configuration { get; }
 
-    protected TwitchChatInitConfig InitConfig { get; init; }
+    protected TwitchChatInitConfig InitConfig { get; }
 
     protected void ConnectToTwitch()
     {
@@ -62,6 +62,9 @@ public class BaseChatClient
         return client;
     }
 
+    /// <summary>
+    /// Returns Twitch connection credentials with client options used to connect to Twitch services.
+    /// </summary>
     private Tuple<ConnectionCredentials, ClientOptions> ConfigureClient()
     {
         ConnectionCredentials credentials = new(Configuration.ChannelName, Configuration.AccessToken);

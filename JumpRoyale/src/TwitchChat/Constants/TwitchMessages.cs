@@ -1,6 +1,6 @@
-using Constants.Twitch;
+using TwitchChat.Constants;
 
-namespace Constants.Messages;
+namespace TwitchChat.Messages;
 
 public static class TwitchMessages
 {

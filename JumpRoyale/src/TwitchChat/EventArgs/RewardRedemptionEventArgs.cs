@@ -5,7 +5,7 @@ using Utils;
 namespace TwitchChat;
 
 /// <summary>
-/// Selected event arguments from OnRewardRedeemedArgs.
+/// Selected properties of <c>OnRewardRedeemedArgs</c>.
 /// </summary>
 public class RewardRedemptionEventArgs : EventArgs
 {
