@@ -1,6 +1,7 @@
 using System;
 using TwitchChat.Messages;
 using TwitchLib.Client.Events;
+using TwitchLib.Communication.Events;
 using TwitchLib.PubSub.Events;
 
 namespace TwitchChat;
@@ -28,6 +29,10 @@ public class TwitchChatClient : BaseChatClient
         TwitchClient.OnReSubscriber += HandleReSubscription;
         TwitchClient.OnPrimePaidSubscriber += HandlePrimeSubscription;
         TwitchPubSub.OnRewardRedeemed += HandleRewardRedeemed;
+
+        TwitchClient.OnError += OnClientError;
+        TwitchClient.OnConnectionError += OnConnectionError;
+        TwitchPubSub.OnPubSubServiceError += OnPubSubError;
 
         if (InitConfig.AutomaticallyConnectToTwitch)
         {
@@ -101,39 +106,65 @@ public class TwitchChatClient : BaseChatClient
 
     #region Event handlers responsible for Invoking
 
-    private void HandleBitsReceived(object sender, OnBitsReceivedArgs e) =>
-        OnTwitchBitsReceivedEvent?.Invoke(this, new BitsEventArgs(e));
+    private void HandleBitsReceived(object sender, OnBitsReceivedArgs args) =>
+        OnTwitchBitsReceivedEvent?.Invoke(this, new BitsEventArgs(args));
 
-    private void HandleMessageReceived(object sender, OnMessageReceivedArgs e) =>
-        OnTwitchMessageReceivedEvent?.Invoke(this, new ChatMessageEventArgs(e));
+    private void HandleMessageReceived(object sender, OnMessageReceivedArgs args) =>
+        OnTwitchMessageReceivedEvent?.Invoke(this, new ChatMessageEventArgs(args));
 
-    private void HandleNewSubscription(object sender, OnNewSubscriberArgs e) =>
-        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(e));
+    private void HandleNewSubscription(object sender, OnNewSubscriberArgs args) =>
+        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(args));
 
-    private void HandlePrimeSubscription(object sender, OnPrimePaidSubscriberArgs e) =>
-        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(e));
+    private void HandlePrimeSubscription(object sender, OnPrimePaidSubscriberArgs args) =>
+        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(args));
 
-    private void HandleReSubscription(object sender, OnReSubscriberArgs e) =>
-        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(e));
+    private void HandleReSubscription(object sender, OnReSubscriberArgs args) =>
+        OnTwitchSubscriptionEvent?.Invoke(this, new SubscriberEventArgs(args));
 
-    private void HandleRewardRedeemed(object sender, OnRewardRedeemedArgs e) =>
-        OnTwitchRewardRedemptionEvent?.Invoke(this, new RewardRedemptionEventArgs(e));
+    private void HandleRewardRedeemed(object sender, OnRewardRedeemedArgs args) =>
+        OnTwitchRewardRedemptionEvent?.Invoke(this, new RewardRedemptionEventArgs(args));
 
     #endregion
 
-    private void OnConnected(object sender, OnConnectedArgs e)
+    #region Error handlers
+
+    private void OnClientError(object sender, OnErrorEventArgs args)
     {
+        // Consider using a logger for any console logs or errors
+        Console.WriteLine(args.Exception);
+    }
+
+    private void OnConnectionError(object sender, OnConnectionErrorArgs args)
+    {
+        // Consider using a logger for any console logs or errors
+        Console.WriteLine(args.Error);
+    }
+
+    private void OnPubSubError(object sender, OnPubSubServiceErrorArgs args)
+    {
+        // Consider using a logger for any console logs or errors
+        Console.WriteLine(args.Exception);
+    }
+
+    #endregion
+
+    private void OnConnected(object sender, OnConnectedArgs args)
+    {
+        // Consider using a logger for any console logs or errors
         Console.WriteLine(TwitchMessages.OnClientConnectedMessage);
     }
 
-    private void OnJoinedChannel(object sender, OnJoinedChannelArgs e)
+    private void OnJoinedChannel(object sender, OnJoinedChannelArgs args)
     {
+        // Consider using a logger for any console logs or errors
         Console.WriteLine(TwitchMessages.OnChannelJoinMessage);
     }
 
     private void OnPubSubServiceConnected(object sender, EventArgs e)
     {
+        // Consider using a logger for any console logs or errors
         Console.WriteLine(TwitchMessages.OnPubSubConnected);
+
         TwitchPubSub.ListenToBitsEvents(Configuration.ChannelId);
         TwitchPubSub.ListenToRewards(Configuration.ChannelId);
         TwitchPubSub.ListenToSubscriptions(Configuration.ChannelId);
