@@ -5,6 +5,11 @@ using TwitchLib.PubSub.Events;
 
 namespace TwitchChat;
 
+/// <summary>
+/// Twitch Client/PubSub singleton with exposed events. Call TwitchChatClient.Initialize(new()) once.
+/// <para><c>Initialize()</c> takes in an instance of <c>TwitchChatInitConfig</c>. For more information, see <see
+/// cref="TwitchChatInitConfig"/>.</para>
+/// </summary>
 public class TwitchChatClient : BaseChatClient
 {
     private static readonly object _lock = new();
@@ -129,8 +134,12 @@ public class TwitchChatClient : BaseChatClient
     private void OnPubSubServiceConnected(object sender, EventArgs e)
     {
         Console.WriteLine(TwitchMessages.OnPubSubConnected);
-
+        TwitchPubSub.ListenToBitsEvents(Configuration.ChannelId);
         TwitchPubSub.ListenToRewards(Configuration.ChannelId);
+        TwitchPubSub.ListenToSubscriptions(Configuration.ChannelId);
+
+        // Is this where __Broadcaster__ token goes for Bits/new Rewards events? 🤔
+        //                     \/
         TwitchPubSub.SendTopics();
     }
 }
