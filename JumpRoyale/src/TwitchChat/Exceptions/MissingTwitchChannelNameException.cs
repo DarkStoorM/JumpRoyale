@@ -1,13 +1,12 @@
 using System;
-using Constants.Twitch;
+using TwitchChat.Messages;
+
+namespace TwitchChat.Exceptions;
 
 public class MissingTwitchChannelNameException : Exception
 {
     public MissingTwitchChannelNameException()
-        : base(
-            $"Channel Name not found. Please add your Twitch channel name into the {TwitchConstants.ConfigChannelNameIndex} key in TwitchConfig.json configuration file.`"
-        )
-    { }
+        : base(TwitchMessages.ExceptionMissingTwitchChannelName) { }
 
     public MissingTwitchChannelNameException(string message)
         : base(message) { }

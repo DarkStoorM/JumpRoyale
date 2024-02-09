@@ -1,4 +1,6 @@
-namespace Constants.Messages;
+using TwitchChat.Constants;
+
+namespace TwitchChat.Messages;
 
 public static class TwitchMessages
 {
@@ -22,4 +24,13 @@ public static class TwitchMessages
     public const string OnRewardRedeemMessage = "{0} redeemed a reward: {1}";
 
     public const string OnPubSubConnected = "Successfully connected to PubSub";
+
+    public const string ExceptionMissingTwitchAccessToken =
+        $"Channel Id not found. Please add your Twitch channel id into the {TwitchConstants.ConfigChannelIdIndex} key.";
+
+    public const string ExceptionMissingTwitchChannelId =
+        $"Channel Id not found. Please add your Twitch channel id into the {TwitchConstants.ConfigChannelIdIndex} key.";
+
+    public const string ExceptionMissingTwitchChannelName =
+        $"Channel Name not found. Please add your Twitch channel name into the {TwitchConstants.ConfigChannelNameIndex} key in TwitchConfig.json configuration file.`";
 }

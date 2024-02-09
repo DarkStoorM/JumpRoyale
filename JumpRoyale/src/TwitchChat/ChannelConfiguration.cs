@@ -1,26 +1,51 @@
-using Constants.Twitch;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
+using TwitchChat.Constants;
+using TwitchChat.Exceptions;
 
 namespace TwitchChat;
 
 /// <summary>
 /// Provides the configuration keys for Twitch channel.
 /// </summary>
-/// <param name="config">Builder template with already included data.</param>
-public class ChannelConfiguration(ConfigurationBuilder config)
+public class ChannelConfiguration
 {
-    private readonly IConfigurationRoot _configuration = config.Build();
+    private readonly IConfigurationRoot _configuration;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChannelConfiguration"/> class.
+    /// </summary>
+    /// <param name="config">Builder template with already included data.</param>
+    public ChannelConfiguration([NotNull] ConfigurationBuilder config)
+    {
+        _configuration = config.Build();
+
+        // Make sure everything is set. Accessing any of these when null/empty will throw an exception
+        AccessToken.AsSpan();
+        ChannelName.AsSpan();
+        ChannelId.AsSpan();
+    }
+
+    /// <summary>
+    /// Access Token of the user authenticating to Twitch services.
+    /// </summary>
     public string AccessToken
     {
         get => TryGetPropertyFromConfig(TwitchConstants.ConfigAccessTokenIndex);
     }
 
+    /// <summary>
+    /// Twitch User Name of the account connecting to the Twitch services.
+    /// </summary>
     public string ChannelName
     {
         get => TryGetPropertyFromConfig(TwitchConstants.ConfigChannelNameIndex);
     }
 
+    /// <summary>
+    /// Channel ID this client will use to listen for various events.
+    /// </summary>
     public string ChannelId
     {
         get => TryGetPropertyFromConfig(TwitchConstants.ConfigChannelIdIndex);

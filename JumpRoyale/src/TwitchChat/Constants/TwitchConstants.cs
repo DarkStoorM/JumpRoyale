@@ -1,4 +1,4 @@
-namespace Constants.Twitch;
+namespace TwitchChat.Constants;
 
 public static class TwitchConstants
 {

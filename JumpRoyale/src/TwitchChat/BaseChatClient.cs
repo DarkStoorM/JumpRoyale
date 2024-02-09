@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Constants.Twitch;
 using Microsoft.Extensions.Configuration;
+using TwitchChat.Constants;
 using TwitchLib.Client;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
@@ -12,15 +12,13 @@ namespace TwitchChat;
 
 public class BaseChatClient
 {
-    private readonly ITwitchChatInitConfig _config;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseChatClient"/> class.
     /// </summary>
-    /// <param name="jsonConfigPath">Path to the main Twitch config json file.</param>
-    protected BaseChatClient(ITwitchChatInitConfig initConfig)
+    /// <param name="initConfig">Initialization config object.</param>
+    protected BaseChatClient(TwitchChatInitConfig initConfig)
     {
-        _config = initConfig;
+        InitConfig = initConfig;
 
         ConfigurationBuilder builder = new();
 
@@ -29,21 +27,23 @@ public class BaseChatClient
         builder.AddUserSecrets<TwitchChatClient>();
 
         // Add the main twitch config file
-        AddJsonConfig(builder, _config.JsonConfigPath);
+        AddJsonConfig(builder, InitConfig.JsonConfigPath);
 
         // Loads a local configuration file, which is used for Development purposes; overrides the main configuration by
         // replacing the channel name/id the flag is used for testing purposes
-        AddJsonConfig(builder, ResourcePaths.LocalTwitchConfig);
+        AddJsonConfig(builder, TwitchConfigPaths.LocalTwitchConfig, InitConfig.SkipLocalConfig);
 
         Configuration = new(builder);
         TwitchClient = InitializeClient();
     }
 
-    protected ChannelConfiguration Configuration { get; private set; }
+    public TwitchClient TwitchClient { get; }
 
-    protected TwitchPubSub TwitchPubSub { get; private set; } = new();
+    public TwitchPubSub TwitchPubSub { get; } = new();
 
-    protected TwitchClient TwitchClient { get; private set; }
+    protected ChannelConfiguration Configuration { get; }
+
+    protected TwitchChatInitConfig InitConfig { get; }
 
     protected void ConnectToTwitch()
     {
@@ -62,6 +62,9 @@ public class BaseChatClient
         return client;
     }
 
+    /// <summary>
+    /// Returns Twitch connection credentials with client options used to connect to Twitch services.
+    /// </summary>
     private Tuple<ConnectionCredentials, ClientOptions> ConfigureClient()
     {
         ConnectionCredentials credentials = new(Configuration.ChannelName, Configuration.AccessToken);
@@ -80,15 +83,23 @@ public class BaseChatClient
     /// </summary>
     /// <param name="builder">Configuration builder.</param>
     /// <param name="path">Path to the json file.</param>
-    private void AddJsonConfig(ConfigurationBuilder builder, string path)
+    /// <param name="skipLocalConfig">If true, omits loading the Local configuration file for Twitch.</param>
+    private void AddJsonConfig(ConfigurationBuilder builder, string path, bool skipLocalConfig = false)
     {
+        string pathToConfig = $"{Directory.GetCurrentDirectory()}{path}";
+
         // Sometimes, we just don't need to load an additional configuration file, for example, when testing, so whether
         // the extra config file exists or not, we can just skip it without replacing the already loaded config.
-        if (_config.SkipLocalConfig)
+        if (skipLocalConfig)
         {
             return;
         }
 
-        builder.AddJsonFile($"{Directory.GetCurrentDirectory()}{path}");
+        if (!File.Exists(pathToConfig))
+        {
+            throw new FileNotFoundException($"The requested config file was not found: {pathToConfig}");
+        }
+
+        builder.AddJsonFile(pathToConfig);
     }
 }
