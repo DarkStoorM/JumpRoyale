@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
+namespace JumpRoyale.Commands;
+
 /// <summary>
 /// Provides a set of methods for pattern matching of command names extracted from a chat message.
 /// Each method accepts <c>isPrivileged</c> argument, which can eventually be used to determine if

@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Utils;
+namespace JumpRoyale.Utils;
 
 public static class NullGuard
 {
@@ -25,6 +25,25 @@ public static class NullGuard
         where TExceptionToThrow : Exception, new()
     {
         if (argument is null)
+        {
+            throw new TExceptionToThrow();
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception if the provided argument is null or of 0 length. This overload should be used to validate
+    /// nullable string properties.
+    /// </summary>
+    /// <typeparam name="TExceptionToThrow">Custom exception type to throw.</typeparam>
+    public static void ThrowIfNullOrEmpty<TExceptionToThrow>([NotNull] object? argument)
+        where TExceptionToThrow : Exception, new()
+    {
+        if (argument is null)
+        {
+            throw new TExceptionToThrow();
+        }
+
+        if (argument.ToString()!.Length == 0)
         {
             throw new TExceptionToThrow();
         }

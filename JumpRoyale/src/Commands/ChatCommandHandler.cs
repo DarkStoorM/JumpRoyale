@@ -1,7 +1,7 @@
 using Godot;
-using Utils;
+using JumpRoyale.Utils;
 
-namespace JumpRoyale;
+namespace JumpRoyale.Commands;
 
 public class CommandHandler(string message, string userId, string displayName, string colorHex, bool isPrivileged)
 {
@@ -87,7 +87,8 @@ public class CommandHandler(string message, string userId, string displayName, s
     /// <param name="characterChoice">Numeric choice specified in the chat message.</param>
     private void HandleCharacterChange(object jumper, int? characterChoice)
     {
-        GD.Print("HandleCharacterChange called");
+        // Temporary until implemented
+        GD.Print(jumper, characterChoice);
     }
 
     /// <summary>
@@ -98,19 +99,21 @@ public class CommandHandler(string message, string userId, string displayName, s
     /// <param name="defaultGlowColor">Default glow color to fallback to, which is Twitch Chat color.</param>
     private void HandleGlow(object jumper, string? userGlowColor, string defaultGlowColor)
     {
-        GD.Print("HandleGlow called");
+        // Temporary until implemented
+        GD.Print(jumper, userGlowColor, defaultGlowColor);
     }
 
     /// <summary>
     /// Creates a new Jumper object for the player.
     /// </summary>
-    /// <param name="userID">Twitch User Id.</param>
+    /// <param name="userId">Twitch User Id.</param>
     /// <param name="displayName">Twitch Display Name.</param>
     /// <param name="colorHex">Twitch Chat color.</param>
     /// <param name="isPrivileged">If this player privileged for extra features, enables them on join.</param>
-    private void HandleJoin(string userID, string displayName, string colorHex, bool isPrivileged)
+    private void HandleJoin(string userId, string displayName, string colorHex, bool isPrivileged)
     {
-        GD.Print("HandleJoin called");
+        // Temporary until implemented
+        GD.Print(userId, displayName, colorHex, isPrivileged);
     }
 
     /// <summary>
@@ -122,7 +125,8 @@ public class CommandHandler(string message, string userId, string displayName, s
     /// <param name="power">Jump power specified by the user in his chat message.</param>
     private void HandleJump(object jumper, string direction, int? angle, int? power)
     {
-        GD.Print("HandleJump called");
+        // Temporary until implemented
+        GD.Print(jumper, direction, angle, power);
     }
 
     /// <summary>
@@ -131,7 +135,8 @@ public class CommandHandler(string message, string userId, string displayName, s
     /// <param name="jumper">Player's Jumper object.</param>
     private void HandleUnglow(object jumper)
     {
-        GD.Print("HandleUnglow called");
+        // Temporary until implemented
+        GD.Print(jumper);
     }
 
     /// <summary>
@@ -142,6 +147,7 @@ public class CommandHandler(string message, string userId, string displayName, s
     /// <param name="defaultNameColor">Default color to fallback to, which is the Twitch Chat Color.</param>
     private void HandleNamecolor(object jumper, string? userNameColor, string defaultNameColor)
     {
-        GD.Print("HandleNamecolor called");
+        // Temporary until implemented
+        GD.Print(jumper, userNameColor, defaultNameColor);
     }
 }

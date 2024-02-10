@@ -1,4 +1,6 @@
-namespace Commands;
+using JumpRoyale.Commands;
+
+namespace Tests.Commands;
 
 [TestFixture]
 public class ChatCommandParserTests

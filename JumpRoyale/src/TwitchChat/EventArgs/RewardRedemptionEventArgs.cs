@@ -1,6 +1,6 @@
 using System;
+using JumpRoyale.Utils;
 using TwitchLib.PubSub.Events;
-using Utils;
 
 namespace TwitchChat;
 

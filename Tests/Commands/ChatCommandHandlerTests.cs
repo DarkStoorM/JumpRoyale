@@ -1,7 +1,7 @@
-using JumpRoyale;
-using Utils;
+using JumpRoyale.Commands;
+using JumpRoyale.Utils;
 
-namespace Commands;
+namespace Tests.Commands;
 
 [TestFixture]
 public class CommandHandlerTests

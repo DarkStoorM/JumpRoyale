@@ -1,4 +1,4 @@
-namespace Utils;
+namespace JumpRoyale.Utils;
 
 public delegate TReturnType GenericReturnActionHandler<out TReturnType>();
 

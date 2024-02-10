@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using Utils;
+using JumpRoyale.Utils;
+
+namespace JumpRoyale.Commands;
 
 public class ChatCommandParser
 {

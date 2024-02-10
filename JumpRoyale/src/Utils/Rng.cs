@@ -1,6 +1,6 @@
 using System;
 
-namespace Utils;
+namespace JumpRoyale.Utils;
 
 public static class Rng
 {
