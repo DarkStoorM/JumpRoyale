@@ -4,5 +4,5 @@ namespace JumpRoyale;
 
 public class CommandHandler(ChatMessageEventArgs args)
 {
-    public ChatMessageEventArgs CharMessageEventArgs { get; } = args;
+    public ChatMessageEventArgs ChatMessageEventArgs { get; } = args;
 }
