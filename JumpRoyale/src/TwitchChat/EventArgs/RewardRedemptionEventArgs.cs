@@ -17,7 +17,7 @@ public class RewardRedemptionEventArgs : EventArgs
         RedemptionId = eventArgs.RedemptionId;
     }
 
-    public string DisplayName { get; init; }
+    public string DisplayName { get; }
 
-    public Guid RedemptionId { get; init; }
+    public Guid RedemptionId { get; }
 }

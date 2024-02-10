@@ -27,13 +27,13 @@ public class ChatMessageEventArgs : EventArgs
         IsPrivileged = isPrivileged;
     }
 
-    public string Message { get; init; }
+    public string Message { get; }
 
-    public string DisplayName { get; init; }
+    public string DisplayName { get; }
 
-    public string UserId { get; init; }
+    public string UserId { get; }
 
-    public string ColorHex { get; init; }
+    public string ColorHex { get; }
 
-    public bool IsPrivileged { get; init; }
+    public bool IsPrivileged { get; }
 }
