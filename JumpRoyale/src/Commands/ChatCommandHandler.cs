@@ -1,39 +1,25 @@
-using System.Diagnostics.CodeAnalysis;
 using Godot;
-using TwitchChat;
 using Utils;
 
 namespace JumpRoyale;
 
-public class CommandHandler
+public class CommandHandler(string message, string userId, string displayName, string colorHex, bool isPrivileged)
 {
-    public CommandHandler([NotNull] ChatMessageEventArgs args)
-    {
-        Message = args.Message;
-        DisplayName = args.DisplayName;
-        UserId = args.UserId;
-        ColorHex = args.ColorHex;
+    public string Message { get; } = message.ToLower();
 
-        ProcessMessage();
-    }
+    public string DisplayName { get; } = userId;
 
-    public string Message { get; }
+    public string UserId { get; } = displayName;
 
-    public string DisplayName { get; }
+    public string ColorHex { get; } = colorHex;
 
-    public string UserId { get; }
-
-    public string ColorHex { get; }
-
-    public bool IsPrivileged { get; }
-
-    public ChatMessageEventArgs ChatMessageEventArgs { get; } = null!;
+    public bool IsPrivileged { get; } = isPrivileged;
 
     public GenericActionHandler<object>? CallableCommand { get; }
 
     public ChatCommandParser ExecutedCommand { get; private set; } = null!;
 
-    private void ProcessMessage()
+    public void ProcessMessage()
     {
         GenericActionHandler<object>? callableCommand = TryGetCommandFromChatMessage();
 
@@ -61,7 +47,7 @@ public class CommandHandler
     /// </summary>
     public GenericActionHandler<object>? TryGetCommandFromChatMessage()
     {
-        ExecutedCommand = new(ChatMessageEventArgs.Message.ToLower());
+        ExecutedCommand = new(Message);
 
         string?[] stringArguments = ExecutedCommand.ArgumentsAsStrings();
         int?[] numericArguments = ExecutedCommand.ArgumentsAsNumbers();
