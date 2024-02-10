@@ -35,8 +35,8 @@ public class NullGuardTests
     }
 
     /// <summary>
-    /// This test checks the overload with nullable parameter for strings, which should throw custom exception both if
-    /// the argument was null or empty.
+    /// This test checks the overload with nullable parameter for strings, which should throw custom exception if the
+    /// argument was null or empty.
     /// </summary>
     [Test]
     public void TestsNullOrEmptyGuard()
