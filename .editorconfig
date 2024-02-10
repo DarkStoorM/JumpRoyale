@@ -88,8 +88,6 @@ dotnet_diagnostic.S1075.severity = none
 dotnet_diagnostic.S1118.severity = none
 # Loop should be simplified with LINQ expressions
 dotnet_diagnostic.S3267.severity = none
-# Require classes to be in a namespace
-dotnet_diagnostic.S3903.severity = none
 
 # --- IDE rules ---
 # Unnecessary usings
@@ -100,8 +98,6 @@ dotnet_diagnostic.IDE1006.severity = none
 dotnet_diagnostic.IDE0090.severity = warning
 
 # --- Code Analysis Rules ---
-# Declare types in namespaces
-dotnet_diagnostic.CA1050.severity = none
 # Ignore CultureInfo on string operations (applying locales)
 dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.CA1304.severity = none
