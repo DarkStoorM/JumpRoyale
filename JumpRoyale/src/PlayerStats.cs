@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -18,7 +19,10 @@ public class PlayerStats
     /// </summary>
     private readonly AllPlayerData _allPlayerData = new();
 
-    private PlayerStats() { }
+    private PlayerStats(string pathToStatsFile)
+    {
+        StatsFilePath = pathToStatsFile;
+    }
 
     public static PlayerStats Instance
     {
@@ -26,17 +30,47 @@ public class PlayerStats
         {
             lock (_lock)
             {
-                _instance ??= new PlayerStats();
-            }
+                if (_instance is null)
+                {
+                    throw new InvalidOperationException("Call Initialize() before using PlayerStats.");
+                }
 
-            return _instance;
+                return _instance;
+            }
         }
     }
 
     /// <summary>
     /// Defines where the path for player stats is located.
     /// </summary>
-    public string? StatsFilePath { get; set; }
+    public string StatsFilePath { get; set; }
+
+    /// <summary>
+    /// Initializes the PlayerStats with provided stats file path. This path is required to point into a valid location,
+    /// where the file will be stored/read from.
+    /// </summary>
+    /// <param name="pathToStatsFile">Path to the "save" file with serialized player statistics.</param>
+    public static void Initialize(string pathToStatsFile)
+    {
+        if (pathToStatsFile is null || pathToStatsFile.Length == 0)
+        {
+            throw new MissingStatsFilePathException();
+        }
+
+        lock (_lock)
+        {
+            _instance ??= new PlayerStats(pathToStatsFile);
+        }
+    }
+
+    /// <summary>
+    /// Destroys the currently existing singleton for refreshing purposes, e.g. Initializing with different file paths
+    /// in separate scenes or during testing.
+    /// </summary>
+    public static void Destroy()
+    {
+        _instance = null;
+    }
 
     /// <summary>
     /// Clears the Players dictionary.
@@ -46,6 +80,10 @@ public class PlayerStats
         _allPlayerData.Players.Clear();
     }
 
+    /// <summary>
+    /// Returns true if the player with specified Twitch id exists in the collection
+    /// </summary>
+    /// <param name="userId">User Twitch id.</param>
     public bool Exists(string userId)
     {
         return _allPlayerData.Players.ContainsKey(userId);
@@ -69,8 +107,6 @@ public class PlayerStats
     /// </summary>
     public bool LoadPlayerData()
     {
-        ValidateStatsFilePath();
-
         if (!File.Exists(StatsFilePath))
         {
             return false;
@@ -108,9 +144,7 @@ public class PlayerStats
     {
         string jsonString = JsonSerializer.Serialize(_allPlayerData);
 
-        ValidateStatsFilePath();
-
-        File.WriteAllText(StatsFilePath!, jsonString);
+        File.WriteAllText(StatsFilePath, jsonString);
     }
 
     /// <summary>
@@ -134,17 +168,5 @@ public class PlayerStats
         }
 
         _allPlayerData.Players[playerData.UserId] = playerData;
-    }
-
-    /// <summary>
-    /// Makes sure that <c>StatsFilePath</c> is set before being used.
-    /// </summary>
-    /// <exception cref="MissingStatsFilePathException">When <c>StatsFilePath</c> was uninitialized.</exception>
-    private void ValidateStatsFilePath()
-    {
-        if (StatsFilePath is null || StatsFilePath.Length == 0)
-        {
-            throw new MissingStatsFilePathException();
-        }
     }
 }
