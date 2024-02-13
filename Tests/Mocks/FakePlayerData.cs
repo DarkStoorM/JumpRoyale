@@ -16,6 +16,8 @@ public static class FakePlayerData
                 Num3rdPlaceWins = Rng.RandomInt(),
                 NumJumps = Rng.RandomInt(),
                 NumPlays = Rng.RandomInt(),
+                HighestWinStreak = Rng.RandomInt(),
+                WinStreak = Rng.RandomInt(),
                 Name = Path.GetRandomFileName(), /* looks like: "zewrsrzg.rfp" */
             };
 

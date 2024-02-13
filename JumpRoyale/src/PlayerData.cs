@@ -10,6 +10,11 @@ public class PlayerData(string glowColor, int characterChoice, string nameColor)
     public string GlowColor { get; set; } = glowColor;
 
     /// <summary>
+    /// Defines the highest amount of consecutive first place game results.
+    /// </summary>
+    public int HighestWinStreak { get; set; }
+
+    /// <summary>
     /// Defines this player's current <c>isPrivileged</c> status that was set upon joining the game. This property is
     /// mostly used by Join command to instantiate the player with previously customized privileged features, but it can
     /// also be used for commands, that are partially privileged, like extra cosmetics inside a command.
@@ -63,7 +68,19 @@ public class PlayerData(string glowColor, int characterChoice, string nameColor)
         set { NameColor = value; }
     }
 
+    /// <summary>
+    /// Cumulative height from all game sessions.
+    /// </summary>
     public int TotalHeightAchieved { get; set; }
 
+    /// <summary>
+    /// User Twitch id.
+    /// </summary>
     public string UserId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Defines the current win streak (1st place only). Increments every time the player achieves the first place in
+    /// the current session, resets to 0 otherwise.
+    /// </summary>
+    public int WinStreak { get; set; }
 }
