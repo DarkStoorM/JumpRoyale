@@ -8,7 +8,7 @@ namespace TwitchChat;
 /// </summary>
 public class BitsEventArgs(OnBitsReceivedArgs eventArgs) : EventArgs
 {
-    public int BitsAmount { get; init; } = eventArgs.BitsUsed;
+    public int BitsAmount { get; } = eventArgs.BitsUsed;
 
-    public string UserId { get; init; } = eventArgs.UserId;
+    public string UserId { get; } = eventArgs.UserId;
 }

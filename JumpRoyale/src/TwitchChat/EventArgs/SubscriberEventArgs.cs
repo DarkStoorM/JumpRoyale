@@ -1,7 +1,7 @@
 using System;
+using JumpRoyale.Utils;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
-using Utils;
 
 namespace TwitchChat;
 

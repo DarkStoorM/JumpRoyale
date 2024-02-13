@@ -1,3 +1,5 @@
+namespace JumpRoyale.Utils.Extensions;
+
 public static class StringExtensions
 {
     /// <summary>

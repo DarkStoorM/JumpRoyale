@@ -58,9 +58,9 @@ public class TwitchChatClient : BaseChatClient
                 {
                     throw new InvalidOperationException("Call Initialize() before using TwitchChatClient.");
                 }
-            }
 
-            return _instance;
+                return _instance;
+            }
         }
     }
 

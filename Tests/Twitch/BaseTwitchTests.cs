@@ -1,7 +1,7 @@
 using Tests.Mocks;
 using TwitchChat;
 
-namespace Twitch.Tests;
+namespace Tests.Twitch;
 
 public class BaseTwitchTests
 {
