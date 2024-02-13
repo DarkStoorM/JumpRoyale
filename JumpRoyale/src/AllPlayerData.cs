@@ -6,5 +6,7 @@ namespace JumpRoyale;
 public class AllPlayerData
 {
     [JsonPropertyName("players")]
-    public Dictionary<string, PlayerData> Players { get; } = [];
+#pragma warning disable CA2227 // Collection properties should be read only
+    public Dictionary<string, PlayerData> Players { get; set; } = [];
+#pragma warning restore CA2227 // Collection properties should be read only
 }
