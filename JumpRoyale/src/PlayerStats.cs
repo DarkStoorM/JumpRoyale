@@ -81,7 +81,7 @@ public class PlayerStats
     }
 
     /// <summary>
-    /// Returns true if the player with specified Twitch id exists in the collection
+    /// Returns true if the player with specified Twitch id exists in the collection.
     /// </summary>
     /// <param name="userId">User Twitch id.</param>
     public bool Exists(string userId)
