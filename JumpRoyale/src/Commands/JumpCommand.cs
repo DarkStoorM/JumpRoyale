@@ -74,6 +74,6 @@ public class JumpCommand
 
     private bool MatchesFixedAngleAlias(string direction)
     {
-        return _fixedAngleDirections.Exists(alias => direction.StartsWith(alias));
+        return _fixedAngleDirections.Exists(direction.StartsWith);
     }
 }
