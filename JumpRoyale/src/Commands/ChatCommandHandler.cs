@@ -15,13 +15,13 @@ public class ChatCommandHandler(string message, string userId, string displayNam
 
     public bool IsPrivileged { get; } = isPrivileged;
 
-    public GenericActionHandler<object>? CallableCommand { get; }
+    public GenericActionHandler<Jumper>? CallableCommand { get; }
 
     public ChatCommandParser ExecutedCommand { get; private set; } = null!;
 
     public void ProcessMessage()
     {
-        GenericActionHandler<object>? callableCommand = TryGetCommandFromChatMessage();
+        GenericActionHandler<Jumper>? callableCommand = TryGetCommandFromChatMessage();
 
         if (callableCommand is null)
         {
@@ -32,9 +32,8 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         // dictionary with players
         if (ExecutedCommand.Name.Equals("join"))
         {
-            // Automatically dispose unused object, this is only here because we need to match the delegate, even though
-            // the jumper is not required in the Join command
-            callableCommand(new());
+            // In the join command, we don't care if the jumper exists or not, we don't need him here, hence the `null!`
+            callableCommand(null!);
         }
 
         // Retrieve the Jumper instance and execute the command
@@ -45,7 +44,7 @@ public class ChatCommandHandler(string message, string userId, string displayNam
     /// <summary>
     /// Returns a command delegate if the chat message contained a valid command name.
     /// </summary>
-    public GenericActionHandler<object>? TryGetCommandFromChatMessage()
+    public GenericActionHandler<Jumper>? TryGetCommandFromChatMessage()
     {
         ExecutedCommand = new(Message);
 
@@ -65,42 +64,19 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         return ExecutedCommand.Name switch
         {
             // -- Commands for all Chatters (active)
-            string when ChatCommandMatcher.MatchesUnglow(ExecutedCommand.Name) => (jumper) => HandleUnglow(jumper),
+            string when ChatCommandMatcher.MatchesUnglow(ExecutedCommand.Name) => (jumper) => jumper.DisableGlow(),
             string when ChatCommandMatcher.MatchesJump(ExecutedCommand.Name)
-                => (jumper) => HandleJump(jumper, ExecutedCommand.Name, numericArguments[0], numericArguments[1]),
+                => (jumper) => jumper.ExecuteJump(ExecutedCommand.Name, numericArguments[0], numericArguments[1]),
             string when ChatCommandMatcher.MatchesCharacterChange(ExecutedCommand.Name)
-                => (jumper) => HandleCharacterChange(jumper, numericArguments[0]),
+                => (jumper) => jumper.SetCharacter(numericArguments[0]),
 
             // -- Commands for Mods, VIPs, Subs
             string when ChatCommandMatcher.MatchesGlow(ExecutedCommand.Name, IsPrivileged)
-                => (jumper) => HandleGlow(jumper, stringArguments[0], ColorHex),
+                => (jumper) => jumper.SetGlowColor(stringArguments[0], ColorHex),
             string when ChatCommandMatcher.MatchesNamecolor(ExecutedCommand.Name, IsPrivileged)
-                => (jumper) => HandleNamecolor(jumper, stringArguments[0], ColorHex),
+                => (jumper) => jumper.SetNameColor(stringArguments[0], ColorHex),
             _ => null,
         };
-    }
-
-    /// <summary>
-    /// Changes the player's appearance by selecting a new character sprite.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="characterChoice">Numeric choice specified in the chat message.</param>
-    private void HandleCharacterChange(object jumper, int? characterChoice)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, characterChoice);
-    }
-
-    /// <summary>
-    /// Enables the particles for the player.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="userGlowColor">Glow color specified by the user.</param>
-    /// <param name="defaultGlowColor">Default glow color to fallback to, which is Twitch Chat color.</param>
-    private void HandleGlow(object jumper, string? userGlowColor, string defaultGlowColor)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, userGlowColor, defaultGlowColor);
     }
 
     /// <summary>
@@ -114,40 +90,5 @@ public class ChatCommandHandler(string message, string userId, string displayNam
     {
         // Temporary until implemented
         GD.Print(userId, displayName, colorHex, isPrivileged);
-    }
-
-    /// <summary>
-    /// Executes the Jump on player's Jumper.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="direction">Direction alias.</param>
-    /// <param name="angle">Jump angle specified by the user (-90° - 90°) in his chat message.</param>
-    /// <param name="power">Jump power specified by the user in his chat message.</param>
-    private void HandleJump(object jumper, string direction, int? angle, int? power)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, direction, angle, power);
-    }
-
-    /// <summary>
-    /// Disables the particles on this player.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    private void HandleUnglow(object jumper)
-    {
-        // Temporary until implemented
-        GD.Print(jumper);
-    }
-
-    /// <summary>
-    /// Modifies the color of player's Nameplate in-game.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="userNameColor">Name color selected by the user.</param>
-    /// <param name="defaultNameColor">Default color to fallback to, which is the Twitch Chat Color.</param>
-    private void HandleNamecolor(object jumper, string? userNameColor, string defaultNameColor)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, userNameColor, defaultNameColor);
     }
 }

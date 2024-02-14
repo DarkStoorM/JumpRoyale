@@ -1,3 +1,4 @@
+using JumpRoyale;
 using JumpRoyale.Commands;
 using JumpRoyale.Utils;
 
@@ -18,7 +19,7 @@ public class CommandHandlerTests
         {
             ChatCommandHandler commandHandler = new(command, "12345", "fakeUser", "ffffff", true);
 
-            GenericActionHandler<object>? matchedCommand = commandHandler.TryGetCommandFromChatMessage();
+            GenericActionHandler<Jumper>? matchedCommand = commandHandler.TryGetCommandFromChatMessage();
 
             Assert.That(matchedCommand is not null && commandHandler.ExecutedCommand.Name == command);
         }
