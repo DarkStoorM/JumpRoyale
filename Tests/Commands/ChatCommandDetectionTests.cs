@@ -22,7 +22,7 @@ public class ChatCommandDetectionTests
     [Test]
     public void CanMatchAvailableCommands()
     {
-        foreach (string command in CommandMatcher.AvailableCommands)
+        foreach (string command in ChatCommandMatcher.AvailableCommands)
         {
             (string message, string commandName, bool wasMatched) = CommandNameMatcher(command);
 
@@ -106,7 +106,7 @@ public class ChatCommandDetectionTests
     /// <param name="isPrivileged">Privileged state of this user privileged, allows executing the matched command when <c>true</c>.</param>
     private Tuple<string, string, bool> CommandNameMatcher(string chatMessage, bool isPrivileged = true)
     {
-        CommandHandler commandHandler =
+        ChatCommandHandler commandHandler =
             new(chatMessage.ToLower(), string.Empty, string.Empty, string.Empty, isPrivileged);
 
         // Returning a callable method means that out chat message managed to match appropriate command

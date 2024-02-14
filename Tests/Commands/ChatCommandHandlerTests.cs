@@ -14,9 +14,9 @@ public class CommandHandlerTests
     [Test]
     public void CanExecuteAllAvailableCommands()
     {
-        foreach (string command in CommandMatcher.AvailableCommands)
+        foreach (string command in ChatCommandMatcher.AvailableCommands)
         {
-            CommandHandler commandHandler = new(command, "12345", "fakeUser", "ffffff", true);
+            ChatCommandHandler commandHandler = new(command, "12345", "fakeUser", "ffffff", true);
 
             GenericActionHandler<object>? matchedCommand = commandHandler.TryGetCommandFromChatMessage();
 

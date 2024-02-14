@@ -3,7 +3,7 @@ using JumpRoyale.Utils;
 
 namespace JumpRoyale.Commands;
 
-public class CommandHandler(string message, string userId, string displayName, string colorHex, bool isPrivileged)
+public class ChatCommandHandler(string message, string userId, string displayName, string colorHex, bool isPrivileged)
 {
     public string Message { get; } = message.ToLower();
 
@@ -54,7 +54,7 @@ public class CommandHandler(string message, string userId, string displayName, s
 
         // Join is the only command that can be executed by everyone, whether joined or not.
         // All the remaining commands are only available to those who joined the game
-        if (CommandMatcher.MatchesJoin(ExecutedCommand.Name))
+        if (ChatCommandMatcher.MatchesJoin(ExecutedCommand.Name))
         {
             return (jumper) => HandleJoin(UserId, DisplayName, ColorHex, IsPrivileged);
         }
@@ -65,16 +65,16 @@ public class CommandHandler(string message, string userId, string displayName, s
         return ExecutedCommand.Name switch
         {
             // -- Commands for all Chatters (active)
-            string when CommandMatcher.MatchesUnglow(ExecutedCommand.Name) => (jumper) => HandleUnglow(jumper),
-            string when CommandMatcher.MatchesJump(ExecutedCommand.Name)
+            string when ChatCommandMatcher.MatchesUnglow(ExecutedCommand.Name) => (jumper) => HandleUnglow(jumper),
+            string when ChatCommandMatcher.MatchesJump(ExecutedCommand.Name)
                 => (jumper) => HandleJump(jumper, ExecutedCommand.Name, numericArguments[0], numericArguments[1]),
-            string when CommandMatcher.MatchesCharacterChange(ExecutedCommand.Name)
+            string when ChatCommandMatcher.MatchesCharacterChange(ExecutedCommand.Name)
                 => (jumper) => HandleCharacterChange(jumper, numericArguments[0]),
 
             // -- Commands for Mods, VIPs, Subs
-            string when CommandMatcher.MatchesGlow(ExecutedCommand.Name, IsPrivileged)
+            string when ChatCommandMatcher.MatchesGlow(ExecutedCommand.Name, IsPrivileged)
                 => (jumper) => HandleGlow(jumper, stringArguments[0], ColorHex),
-            string when CommandMatcher.MatchesNamecolor(ExecutedCommand.Name, IsPrivileged)
+            string when ChatCommandMatcher.MatchesNamecolor(ExecutedCommand.Name, IsPrivileged)
                 => (jumper) => HandleNamecolor(jumper, stringArguments[0], ColorHex),
             _ => null,
         };
