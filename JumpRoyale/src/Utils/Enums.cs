@@ -2,7 +2,7 @@ namespace JumpRoyale.Utils;
 
 public enum JumperEventTypes
 {
-    OnJumpEvent,
+    OnJumpCommandEvent,
     OnDisableGlow,
     OnSetCharacter,
     OnSetGlowColor,
