@@ -2,14 +2,21 @@ using JumpRoyale;
 using JumpRoyale.Commands;
 using JumpRoyale.Events;
 using JumpRoyale.Utils;
+using JumpRoyale.Utils.Exceptions;
 using Tests.Mocks;
 
 namespace Tests;
 
+/// <summary>
+/// Test fixture providing tests for cases that would typically be handled by the Jumper Scene, which subscribes to
+/// events inside the event manager of specific Jumper instance and gets specific data this manager has passed to the
+/// events.
+/// </summary>
 [TestFixture]
 public class JumperEventTests
 {
     private Jumper _fakeJumper;
+    private Jumper _fakeHelperJumper;
 
     private JumpCommandEventArgs? _jumpCommandEventArgs;
     private DisableGlowEventArgs? _disableGlowEventArgs;
@@ -21,6 +28,7 @@ public class JumperEventTests
     public void SetUp()
     {
         _fakeJumper = new(FakePlayerData.Make());
+        _fakeHelperJumper = new(FakePlayerData.Make());
 
         _fakeJumper.JumperEventsManager.OnJumpCommandEvent += JumpCommandListener;
         _fakeJumper.JumperEventsManager.OnDisableGlowEvent += DisableGlowListener;
@@ -123,6 +131,56 @@ public class JumperEventTests
         });
     }
 
+    /// <summary>
+    /// This test makes sure that when trying to raise an event and we specify a wrong instance of event args, the
+    /// invoker throws an exception. The reason for this is that we want the event invoker to be generic, so we need to
+    /// provide a matching event args instance to make sure we pass the correct object with parameters required by the
+    /// invoked event.
+    /// </summary>
+    [Test]
+    public void CanThrowExceptionOnMismatchedTypes()
+    {
+        Assert.Throws<MismatchedGenericEventArgsTypeException>(() =>
+        {
+            _fakeJumper.JumperEventsManager.InvokeEvent(
+                JumperEventTypes.OnJumpCommandEvent,
+                new DisableGlowEventArgs()
+            );
+        });
+    }
+
+    /// <summary>
+    /// This test makes sure that the events won't be picked up by external objects subscribed to specific event
+    /// manager. The purpose of this is to check if one Jumper Scene that has an instance of a Jumper will not receive
+    /// an event invocation if another Jumper raises an event from a different Event Manager.
+    /// </summary>
+    [Test]
+    public void EventManagersAreNotConfused()
+    {
+        _fakeHelperJumper.JumperEventsManager.OnJumpCommandEvent += HelperListenerOnJumpCommand;
+
+        JumpCommand jumpCommand = new("l");
+
+        Assert.DoesNotThrow(() =>
+        {
+            _fakeJumper.JumperEventsManager.InvokeEvent(
+                JumperEventTypes.OnJumpCommandEvent,
+                new JumpCommandEventArgs(jumpCommand)
+            );
+        });
+
+        // Sanity check
+        Assert.Throws<Exception>(() =>
+        {
+            _fakeHelperJumper.JumperEventsManager.InvokeEvent(
+                JumperEventTypes.OnJumpCommandEvent,
+                new JumpCommandEventArgs(jumpCommand)
+            );
+        });
+
+        _fakeHelperJumper.JumperEventsManager.OnJumpCommandEvent -= HelperListenerOnJumpCommand;
+    }
+
     private void JumpCommandListener(object sender, JumpCommandEventArgs args)
     {
         _jumpCommandEventArgs = args;
@@ -146,5 +204,10 @@ public class JumperEventTests
     private void SetNameColorListener(object sender, SetNameColorEventArgs args)
     {
         _nameColorChangeEventArgs = args;
+    }
+
+    private void HelperListenerOnJumpCommand(object sender, JumpCommandEventArgs args)
+    {
+        throw new Exception("This should not happen :)");
     }
 }
