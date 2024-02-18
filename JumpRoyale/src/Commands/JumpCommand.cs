@@ -10,7 +10,7 @@ public class JumpCommand
 
     private int _power;
 
-    public JumpCommand([NotNull] string direction, int? angle, int? power)
+    public JumpCommand([NotNull] string direction, int? angle = null, int? power = null)
     {
         Angle = angle ?? 0;
         Power = power ?? 100;
