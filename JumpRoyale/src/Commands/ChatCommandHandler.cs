@@ -88,6 +88,10 @@ public class ChatCommandHandler(string message, string userId, string displayNam
     /// <param name="isPrivileged">If this player privileged for extra features, enables them on join.</param>
     private void HandleJoin(string userId, string displayName, string colorHex, bool isPrivileged)
     {
+        PlayerData? playerData = PlayerStats.Instance.GetPlayerById(userId);
+
+        // TODO: create player
+
         // Temporary until implemented
         GD.Print(userId, displayName, colorHex, isPrivileged);
     }
