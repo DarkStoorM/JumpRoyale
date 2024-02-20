@@ -16,6 +16,13 @@ public class Jumper(PlayerData playerData)
 
     public JumperEventsManager JumperEventsManager { get; } = new();
 
+    public void Initialize()
+    {
+        SetCharacter(PlayerData.CharacterChoice);
+        SetGlowColor(PlayerData.GlowColor, "FFFFFF");
+        SetNameColor(PlayerData.PlayerNameColor, "FFFFFF");
+    }
+
     /// <summary>
     /// Executes the Jump on player's Jumper.
     /// </summary>
