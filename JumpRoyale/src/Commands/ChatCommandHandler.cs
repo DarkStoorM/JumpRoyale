@@ -1,4 +1,4 @@
-using Godot;
+using System;
 using JumpRoyale.Utils;
 
 namespace JumpRoyale.Commands;
@@ -7,9 +7,9 @@ public class ChatCommandHandler(string message, string userId, string displayNam
 {
     public string Message { get; } = message.ToLower();
 
-    public string DisplayName { get; } = userId;
+    public string DisplayName { get; } = displayName;
 
-    public string UserId { get; } = displayName;
+    public string UserId { get; } = userId;
 
     public string ColorHex { get; } = colorHex;
 
@@ -89,10 +89,33 @@ public class ChatCommandHandler(string message, string userId, string displayNam
     private void HandleJoin(string userId, string displayName, string colorHex, bool isPrivileged)
     {
         PlayerData? playerData = PlayerStats.Instance.GetPlayerById(userId);
+        Jumper? jumper = PlayerStats.Instance.GetJumperByUserId(userId);
 
-        // TODO: create player
+        // If this player has already joined the game, don't do anything. Create a new Jumper if he's actually joining
+        if (jumper is not null)
+        {
+            return;
+        }
 
-        // Temporary until implemented
-        GD.Print(userId, displayName, colorHex, isPrivileged);
+        // If this player has not joined the game yet, create a data object for this player and store privileges
+        playerData ??= new(colorHex, Math.Clamp(Rng.RandomInt(), 1, 18), colorHex);
+
+        // Update the player name in case his Twitch name has changed. Also, update the remaining properties
+        playerData.Name = displayName;
+        playerData.IsPrivileged = isPrivileged;
+        playerData.UserId = userId;
+
+        jumper = new(playerData);
+        jumper.Initialize();
+
+        // Update both objects. Probably should make some relation to do both in one call...
+        PlayerStats.Instance.UpdatePlayer(playerData);
+        PlayerStats.Instance.UpdateJumper(jumper);
+
+        // To Be Added:
+        // 1) instantiate the Jumper Scene
+        // 2) place Jumper on the scene within arena bounds
+        // 3) Add instantiated Jumper scene as child to the Arena
+        // 4) Emit a signal that Jumpers count should be incremented
     }
 }
