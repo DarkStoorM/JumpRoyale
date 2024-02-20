@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using JumpRoyale.Utils;
 using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale;
@@ -18,6 +19,8 @@ public class PlayerStats
     /// Gets currently deserialized Json data of all players.
     /// </summary>
     private readonly AllPlayerData _allPlayerData = new();
+
+    private readonly Dictionary<string, Jumper> _jumpers = [];
 
     private PlayerStats(string pathToStatsFile)
     {
@@ -162,11 +165,22 @@ public class PlayerStats
     /// <param name="playerData">New player data.</param>
     public void UpdatePlayer(PlayerData playerData)
     {
-        if (playerData is null)
-        {
-            throw new NullPlayerDataException();
-        }
+        NullGuard.ThrowIfNull<NullPlayerDataException>(playerData);
 
         _allPlayerData.Players[playerData.UserId] = playerData;
+    }
+
+    public void UpdateJumper(Jumper jumper)
+    {
+        NullGuard.ThrowIfNull(jumper);
+
+        _jumpers[jumper.PlayerData.UserId] = jumper;
+    }
+
+    public Jumper? GetJumperByUserId(string userId)
+    {
+        _jumpers.TryGetValue(userId, out Jumper? jumper);
+
+        return jumper;
     }
 }
