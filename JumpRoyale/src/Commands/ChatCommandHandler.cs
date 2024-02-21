@@ -37,8 +37,11 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         }
 
         // Retrieve the Jumper instance and execute the command
-        // Jumper jumper = ActiveJumpers.Instance.GetById(_senderId);
-        // command(jumper);
+        Jumper? jumper = PlayerStats.Instance.GetJumperByUserId(UserId);
+
+        NullGuard.ThrowIfNull<Exception>(jumper);
+
+        callableCommand(jumper);
     }
 
     /// <summary>
@@ -100,10 +103,9 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         // If this player has not joined the game yet, create a data object for this player and store privileges
         playerData ??= new(colorHex, Math.Clamp(Rng.RandomInt(), 1, 18), colorHex);
 
-        // Update the player name in case his Twitch name has changed. Also, update the remaining properties
-        playerData.Name = displayName;
-        playerData.IsPrivileged = isPrivileged;
-        playerData.UserId = userId;
+        // Update the PlayerData with new data, which could potentially change between the game sessions, e.g. player's
+        // username, his sub status
+        playerData.Initialize(displayName, isPrivileged, colorHex);
 
         jumper = new(playerData);
         jumper.Initialize();
