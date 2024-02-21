@@ -83,4 +83,21 @@ public class PlayerData(string glowColor, int characterChoice, string nameColor)
     /// the current session, resets to 0 otherwise.
     /// </summary>
     public int WinStreak { get; set; }
+
+    /// <summary>
+    /// Initializes the dynamically imported values with the new data, which could potentially change at any point.
+    /// </summary>
+    /// <param name="name">Twitch display name.</param>
+    /// <param name="isPrivileged">Current privilege status (subscriber, mod, etc).</param>
+    /// <param name="twitchChatColor">Fallback color to set if player had no color assigned (name or glow).</param>
+    public void Initialize(string name, bool isPrivileged, string twitchChatColor)
+    {
+        // Update the player name in case his Twitch name has changed. Also, update the remaining properties
+        Name = name;
+        IsPrivileged = isPrivileged;
+
+        // Update the following only if the values didn't exist in the save file
+        PlayerNameColor ??= twitchChatColor;
+        GlowColor ??= twitchChatColor;
+    }
 }
