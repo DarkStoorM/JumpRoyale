@@ -12,8 +12,6 @@ public class IntegrationTests : BaseTwitchTests
 {
     private FakeTwitchChatter _fakeChatter;
 
-    private PlayerData _fakePlayerData;
-
     [SetUp]
     public new void SetUp()
     {
@@ -25,10 +23,10 @@ public class IntegrationTests : BaseTwitchTests
 
         // Create some fake PlayerData that we will immediately store in the player stats file so we always have a
         // player ready to read from the file
-        _fakePlayerData = FakePlayerData.Make(_fakeChatter.UserId, _fakeChatter.DisplayName);
+        PlayerData dummyPlayerData = FakePlayerData.Make(_fakeChatter.UserId, _fakeChatter.DisplayName);
 
         PlayerStats.Initialize($"{TestContext.CurrentContext.WorkDirectory}\\_TestData\\data.json");
-        PlayerStats.Instance.UpdatePlayer(_fakePlayerData);
+        PlayerStats.Instance.UpdatePlayer(dummyPlayerData);
         PlayerStats.Instance.SaveAllPlayers();
     }
 
