@@ -77,13 +77,14 @@ public class IntegrationTests : BaseTwitchTests
         command.ProcessMessage();
     }
 
-    private void InvokeMessageEvent(string messageToSend)
+    private void InvokeMessageEvent(string messageToSend, bool isPrivileged = false)
     {
         TwitchChatClient.Instance.InvokeFakeMessageEvent(
             messageToSend,
             _fakeChatter.DisplayName,
             _fakeChatter.UserId,
-            _fakeChatter.ColorHex
+            _fakeChatter.ColorHex,
+            isPrivileged
         );
     }
 }
