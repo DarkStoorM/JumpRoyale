@@ -19,13 +19,20 @@ public static class TwitchChatClientExtensions
         string? message = null,
         string? displayName = null,
         string? userId = null,
-        string? colorHex = null
+        string? colorHex = null,
+        bool isPrivileged = false
     )
     {
         ChatMessageBuilder messageBuilder = ChatMessageBuilder.Create();
         TwitchLibMessageBuilder libMessageBuilder = TwitchLibMessageBuilder.Create();
 
         messageBuilder.WithMessage(message ?? "FakeMessage");
+
+        if (isPrivileged)
+        {
+            messageBuilder.WithIsSubscriber(true);
+        }
+
         libMessageBuilder
             .WithDisplayName(displayName ?? "FakeName")
             .WithUserId(userId ?? "FakeId")

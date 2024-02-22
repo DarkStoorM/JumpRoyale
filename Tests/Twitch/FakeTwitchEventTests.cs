@@ -236,6 +236,26 @@ public class FakeTwitchEventTests : BaseTwitchTests
         Assert.Pass($"{_bitsEventArgs.UserId} cheered: {_bitsEventArgs.BitsAmount}");
     }
 
+    /// <summary>
+    /// This test makes sure that we can force the Privileged status on this chatter (Subscriber is enough).
+    /// </summary>
+    [Test]
+    public void CanGetPrivilegeStatus()
+    {
+        TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += MessageListener;
+
+        TwitchChatClient.Instance.InvokeFakeMessageEvent(isPrivileged: true);
+
+        Assert.That(_chatMessageEventArgs.IsPrivileged, Is.True);
+
+        // Sanity check
+        TwitchChatClient.Instance.InvokeFakeMessageEvent(isPrivileged: false);
+
+        Assert.That(_chatMessageEventArgs.IsPrivileged, Is.False);
+
+        TwitchChatClient.Instance.OnTwitchMessageReceivedEvent -= MessageListener;
+    }
+
     private void BitsCheerListener(object sender, BitsEventArgs eventArgs)
     {
         _testCase = true;

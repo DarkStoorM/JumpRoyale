@@ -1,27 +1,27 @@
-using Godot;
+using System;
 using JumpRoyale.Utils;
 
 namespace JumpRoyale.Commands;
 
-public class CommandHandler(string message, string userId, string displayName, string colorHex, bool isPrivileged)
+public class ChatCommandHandler(string message, string userId, string displayName, string colorHex, bool isPrivileged)
 {
     public string Message { get; } = message.ToLower();
 
-    public string DisplayName { get; } = userId;
+    public string DisplayName { get; } = displayName;
 
-    public string UserId { get; } = displayName;
+    public string UserId { get; } = userId;
 
     public string ColorHex { get; } = colorHex;
 
     public bool IsPrivileged { get; } = isPrivileged;
 
-    public GenericActionHandler<object>? CallableCommand { get; }
+    public GenericActionHandler<Jumper>? CallableCommand { get; }
 
     public ChatCommandParser ExecutedCommand { get; private set; } = null!;
 
     public void ProcessMessage()
     {
-        GenericActionHandler<object>? callableCommand = TryGetCommandFromChatMessage();
+        GenericActionHandler<Jumper>? callableCommand = TryGetCommandFromChatMessage();
 
         if (callableCommand is null)
         {
@@ -32,20 +32,22 @@ public class CommandHandler(string message, string userId, string displayName, s
         // dictionary with players
         if (ExecutedCommand.Name.Equals("join"))
         {
-            // Automatically dispose unused object, this is only here because we need to match the delegate, even though
-            // the jumper is not required in the Join command
-            callableCommand(new());
+            // In the join command, we don't care if the jumper exists or not, we don't need him here, hence the `null!`
+            callableCommand(null!);
         }
 
         // Retrieve the Jumper instance and execute the command
-        // Jumper jumper = ActiveJumpers.Instance.GetById(_senderId);
-        // command(jumper);
+        Jumper? jumper = PlayerStats.Instance.GetJumperByUserId(UserId);
+
+        NullGuard.ThrowIfNull<Exception>(jumper);
+
+        callableCommand(jumper);
     }
 
     /// <summary>
     /// Returns a command delegate if the chat message contained a valid command name.
     /// </summary>
-    public GenericActionHandler<object>? TryGetCommandFromChatMessage()
+    public GenericActionHandler<Jumper>? TryGetCommandFromChatMessage()
     {
         ExecutedCommand = new(Message);
 
@@ -54,7 +56,7 @@ public class CommandHandler(string message, string userId, string displayName, s
 
         // Join is the only command that can be executed by everyone, whether joined or not.
         // All the remaining commands are only available to those who joined the game
-        if (CommandMatcher.MatchesJoin(ExecutedCommand.Name))
+        if (ChatCommandMatcher.MatchesJoin(ExecutedCommand.Name))
         {
             return (jumper) => HandleJoin(UserId, DisplayName, ColorHex, IsPrivileged);
         }
@@ -65,42 +67,19 @@ public class CommandHandler(string message, string userId, string displayName, s
         return ExecutedCommand.Name switch
         {
             // -- Commands for all Chatters (active)
-            string when CommandMatcher.MatchesUnglow(ExecutedCommand.Name) => (jumper) => HandleUnglow(jumper),
-            string when CommandMatcher.MatchesJump(ExecutedCommand.Name)
-                => (jumper) => HandleJump(jumper, ExecutedCommand.Name, numericArguments[0], numericArguments[1]),
-            string when CommandMatcher.MatchesCharacterChange(ExecutedCommand.Name)
-                => (jumper) => HandleCharacterChange(jumper, numericArguments[0]),
+            string when ChatCommandMatcher.MatchesUnglow(ExecutedCommand.Name) => (jumper) => jumper.DisableGlow(),
+            string when ChatCommandMatcher.MatchesJump(ExecutedCommand.Name)
+                => (jumper) => jumper.ExecuteJump(ExecutedCommand.Name, numericArguments[0], numericArguments[1]),
+            string when ChatCommandMatcher.MatchesCharacterChange(ExecutedCommand.Name)
+                => (jumper) => jumper.SetCharacter(numericArguments[0]),
 
             // -- Commands for Mods, VIPs, Subs
-            string when CommandMatcher.MatchesGlow(ExecutedCommand.Name, IsPrivileged)
-                => (jumper) => HandleGlow(jumper, stringArguments[0], ColorHex),
-            string when CommandMatcher.MatchesNamecolor(ExecutedCommand.Name, IsPrivileged)
-                => (jumper) => HandleNamecolor(jumper, stringArguments[0], ColorHex),
+            string when ChatCommandMatcher.MatchesGlow(ExecutedCommand.Name, IsPrivileged)
+                => (jumper) => jumper.SetGlowColor(stringArguments[0], ColorHex),
+            string when ChatCommandMatcher.MatchesNamecolor(ExecutedCommand.Name, IsPrivileged)
+                => (jumper) => jumper.SetNameColor(stringArguments[0], ColorHex),
             _ => null,
         };
-    }
-
-    /// <summary>
-    /// Changes the player's appearance by selecting a new character sprite.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="characterChoice">Numeric choice specified in the chat message.</param>
-    private void HandleCharacterChange(object jumper, int? characterChoice)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, characterChoice);
-    }
-
-    /// <summary>
-    /// Enables the particles for the player.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="userGlowColor">Glow color specified by the user.</param>
-    /// <param name="defaultGlowColor">Default glow color to fallback to, which is Twitch Chat color.</param>
-    private void HandleGlow(object jumper, string? userGlowColor, string defaultGlowColor)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, userGlowColor, defaultGlowColor);
     }
 
     /// <summary>
@@ -112,42 +91,34 @@ public class CommandHandler(string message, string userId, string displayName, s
     /// <param name="isPrivileged">If this player privileged for extra features, enables them on join.</param>
     private void HandleJoin(string userId, string displayName, string colorHex, bool isPrivileged)
     {
-        // Temporary until implemented
-        GD.Print(userId, displayName, colorHex, isPrivileged);
-    }
+        PlayerData? playerData = PlayerStats.Instance.GetPlayerById(userId);
+        Jumper? jumper = PlayerStats.Instance.GetJumperByUserId(userId);
 
-    /// <summary>
-    /// Executes the Jump on player's Jumper.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="direction">Direction alias.</param>
-    /// <param name="angle">Jump angle specified by the user (-90° - 90°) in his chat message.</param>
-    /// <param name="power">Jump power specified by the user in his chat message.</param>
-    private void HandleJump(object jumper, string direction, int? angle, int? power)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, direction, angle, power);
-    }
+        // If this player has already joined the game, don't do anything. Create a new Jumper if he's actually joining
+        if (jumper is not null)
+        {
+            return;
+        }
 
-    /// <summary>
-    /// Disables the particles on this player.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    private void HandleUnglow(object jumper)
-    {
-        // Temporary until implemented
-        GD.Print(jumper);
-    }
+        // If this player has not joined the game yet, create a data object for this player and store privileges
+        playerData ??= new(colorHex, Math.Clamp(Rng.RandomInt(), 1, 18), colorHex);
 
-    /// <summary>
-    /// Modifies the color of player's Nameplate in-game.
-    /// </summary>
-    /// <param name="jumper">Player's Jumper object.</param>
-    /// <param name="userNameColor">Name color selected by the user.</param>
-    /// <param name="defaultNameColor">Default color to fallback to, which is the Twitch Chat Color.</param>
-    private void HandleNamecolor(object jumper, string? userNameColor, string defaultNameColor)
-    {
-        // Temporary until implemented
-        GD.Print(jumper, userNameColor, defaultNameColor);
+        // Update the PlayerData with new data, which could potentially change between the game sessions, e.g. player's
+        // username, his sub status
+        playerData.Initialize(displayName, isPrivileged, colorHex);
+
+        jumper = new(playerData);
+        jumper.Initialize();
+
+        // Update both objects. Probably should make some relation to do both in one call...
+        PlayerStats.Instance.UpdatePlayer(playerData);
+        PlayerStats.Instance.UpdateJumper(jumper);
+        PlayerStats.Instance.EmitPlayerJoinEvent(jumper);
+
+        // To Be Added:
+        // 1) instantiate the Jumper Scene
+        // 2) place Jumper on the scene within arena bounds
+        // 3) Add instantiated Jumper scene as child to the Arena
+        // 4) Emit a signal that Jumpers count should be incremented
     }
 }

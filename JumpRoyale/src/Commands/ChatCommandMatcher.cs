@@ -13,7 +13,7 @@ namespace JumpRoyale.Commands;
 /// the chatter can execute the command. This argument can also be passed to command methods
 /// in order to execute a separate part of the logic reserved for privileged users only.
 /// </remarks>
-public static class CommandMatcher
+public static class ChatCommandMatcher
 {
     public static readonly ImmutableList<string> CharCommandAliases = ["char"];
     public static readonly ImmutableList<string> GlowCommandAliases = ["glow"];
@@ -22,7 +22,7 @@ public static class CommandMatcher
     public static readonly ImmutableList<string> NamecolorCommandAliases = ["namecolor"];
     public static readonly ImmutableList<string> UnglowCommandAliases = ["unglow"];
 
-    static CommandMatcher()
+    static ChatCommandMatcher()
     {
         // Warning: whenever a new alias list is added, add it to this list below! It will automatically
         // expose a list of all commands combined for display and testing purposes
