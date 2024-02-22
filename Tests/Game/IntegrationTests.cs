@@ -1,5 +1,6 @@
 using JumpRoyale;
 using JumpRoyale.Commands;
+using JumpRoyale.Events;
 using Tests.Mocks;
 using Tests.Twitch;
 using TwitchChat;
@@ -19,6 +20,12 @@ public class IntegrationTests : BaseTwitchTests
     private PlayerData _playerData;
     private Jumper _jumper;
 
+    private JumpCommandEventArgs _jumpCommandEventArgs;
+    private SetNameColorEventArgs _setNameColorEventArgs;
+    private SetGlowColorEventArgs _setGlowColorEventArgs;
+    private DisableGlowEventArgs _disableGlowEventArgs;
+    private SetCharacterEventArgs _setCharacterEventArgs;
+
     [SetUp]
     public new void SetUp()
     {
@@ -35,6 +42,12 @@ public class IntegrationTests : BaseTwitchTests
         PlayerStats.Initialize($"{TestContext.CurrentContext.WorkDirectory}\\_TestData\\data.json");
         PlayerStats.Instance.UpdatePlayer(dummyPlayerData);
         PlayerStats.Instance.SaveAllPlayers();
+
+        _jumpCommandEventArgs = null!;
+        _setNameColorEventArgs = null!;
+        _setGlowColorEventArgs = null!;
+        _disableGlowEventArgs = null!;
+        _setCharacterEventArgs = null!;
 
         _playerData = null!;
         _jumper = null!;
@@ -58,6 +71,55 @@ public class IntegrationTests : BaseTwitchTests
         InvokeMessageEvent("join");
 
         Assert.That(_jumper, Is.Not.Null);
+    }
+
+    /// <summary>
+    /// This test makes sure that internal listeners receive event and get corresponding event args. This only has to
+    /// check if the event args are not null, which is the correct result of receiving an event from Jumper.
+    /// </summary>
+    [Test]
+    public void CanListenToJumperEvent()
+    {
+        InvokeMessageEvent("join");
+        GetJumper();
+
+        _jumper.JumperEventsManager.OnJumpCommandEvent += JumperJumpCommandListener;
+        _jumper.JumperEventsManager.OnSetNameColorEvent += JumperNameColorListener;
+        _jumper.JumperEventsManager.OnSetGlowColorEvent += JumperGlowColorListener;
+        _jumper.JumperEventsManager.OnDisableGlowEvent += JumperDisableGlowListener;
+        _jumper.JumperEventsManager.OnSetCharacterEvent += JumperSetCharacterListener;
+
+        // Simulate sending all commands in the chat
+        InvokeMessageEvent("j 5 80", true);
+        InvokeMessageEvent("namecolor bada55", true);
+        InvokeMessageEvent("glow bada55", true);
+        InvokeMessageEvent("unglow", true);
+        InvokeMessageEvent("char 99", true);
+
+        // We only need to check if the args were actually set
+        Assert.Multiple(() =>
+        {
+            Assert.That(_jumpCommandEventArgs, Is.Not.Null);
+            Assert.That(_setNameColorEventArgs, Is.Not.Null);
+            Assert.That(_setGlowColorEventArgs, Is.Not.Null);
+            Assert.That(_disableGlowEventArgs, Is.Not.Null);
+            Assert.That(_setCharacterEventArgs, Is.Not.Null);
+        });
+
+        // The following is probably not necessary, but just as a sanity check, look at the values in the args
+        Assert.Multiple(() =>
+        {
+            Assert.That(_jumpCommandEventArgs.JumpAngle, Is.EqualTo(95));
+            Assert.That(_jumpCommandEventArgs.JumpPower, Is.EqualTo(80));
+            Assert.That(_setNameColorEventArgs.UserColorChoice, Is.EqualTo("bada55"));
+            Assert.That(_setCharacterEventArgs.UserCharacterChoice, Is.EqualTo(18));
+        });
+
+        _jumper.JumperEventsManager.OnJumpCommandEvent -= JumperJumpCommandListener;
+        _jumper.JumperEventsManager.OnSetNameColorEvent -= JumperNameColorListener;
+        _jumper.JumperEventsManager.OnSetGlowColorEvent -= JumperGlowColorListener;
+        _jumper.JumperEventsManager.OnDisableGlowEvent -= JumperDisableGlowListener;
+        _jumper.JumperEventsManager.OnSetCharacterEvent -= JumperSetCharacterListener;
     }
 
     /// <summary>
@@ -275,5 +337,45 @@ public class IntegrationTests : BaseTwitchTests
     private void GetPlayerData()
     {
         _playerData = PlayerStats.Instance.GetPlayerById(_fakeChatter.UserId) ?? throw new Exception("No jumper");
+    }
+
+    /// <summary>
+    /// Helper listener for JumpCommand Jumper event.
+    /// </summary>
+    private void JumperJumpCommandListener(object sender, JumpCommandEventArgs args)
+    {
+        _jumpCommandEventArgs = args;
+    }
+
+    /// <summary>
+    /// Helper listener for NameColor Jumper event.
+    /// </summary>
+    private void JumperNameColorListener(object sender, SetNameColorEventArgs args)
+    {
+        _setNameColorEventArgs = args;
+    }
+
+    /// <summary>
+    /// Helper listener for GlowColor Jumper event.
+    /// </summary>
+    private void JumperGlowColorListener(object sender, SetGlowColorEventArgs args)
+    {
+        _setGlowColorEventArgs = args;
+    }
+
+    /// <summary>
+    /// Helper listener for DisableGlow Jumper event.
+    /// </summary>
+    private void JumperDisableGlowListener(object sender, DisableGlowEventArgs args)
+    {
+        _disableGlowEventArgs = args;
+    }
+
+    /// <summary>
+    /// Helper listener for SetCharacter Jumper event.
+    /// </summary>
+    private void JumperSetCharacterListener(object sender, SetCharacterEventArgs args)
+    {
+        _setCharacterEventArgs = args;
     }
 }
