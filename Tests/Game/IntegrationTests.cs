@@ -25,6 +25,7 @@ public class IntegrationTests : BaseTwitchTests
     private SetGlowColorEventArgs _setGlowColorEventArgs;
     private DisableGlowEventArgs _disableGlowEventArgs;
     private SetCharacterEventArgs _setCharacterEventArgs;
+    private PlayerJoinEventArgs _playerJoinEventArgs;
 
     [SetUp]
     public new void SetUp()
@@ -48,6 +49,7 @@ public class IntegrationTests : BaseTwitchTests
         _setGlowColorEventArgs = null!;
         _disableGlowEventArgs = null!;
         _setCharacterEventArgs = null!;
+        _playerJoinEventArgs = null!;
 
         _playerData = null!;
         _jumper = null!;
@@ -282,6 +284,18 @@ public class IntegrationTests : BaseTwitchTests
         Assert.That(_playerData.GlowColor.ToLower(), Is.EqualTo("bada55"));
     }
 
+    [Test]
+    public void CanListenToPlayerJoinEvents()
+    {
+        PlayerStats.Instance.OnPlayerJoin += PlayerJoinListener;
+
+        InvokeMessageEvent("join");
+
+        Assert.That(_playerJoinEventArgs, Is.Not.Null);
+
+        PlayerStats.Instance.OnPlayerJoin -= PlayerJoinListener;
+    }
+
     /// <summary>
     /// Updates the PlayerData in the Player Stats collection, Serializes all players and reloads them from file.
     /// </summary>
@@ -377,5 +391,13 @@ public class IntegrationTests : BaseTwitchTests
     private void JumperSetCharacterListener(object sender, SetCharacterEventArgs args)
     {
         _setCharacterEventArgs = args;
+    }
+
+    /// <summary>
+    /// Helper listener for events sent by CommandHandler as the last step, which informs about new player creation.
+    /// </summary>
+    private void PlayerJoinListener(object sender, PlayerJoinEventArgs args)
+    {
+        _playerJoinEventArgs = args;
     }
 }

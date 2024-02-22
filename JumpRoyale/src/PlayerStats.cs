@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using JumpRoyale.Events;
 using JumpRoyale.Utils;
 using JumpRoyale.Utils.Exceptions;
 
@@ -26,6 +27,11 @@ public class PlayerStats
     {
         StatsFilePath = pathToStatsFile;
     }
+
+    /// <summary>
+    /// Event raised when new player has joined the game
+    /// </summary>
+    public event EventHandler<PlayerJoinEventArgs>? OnPlayerJoin;
 
     public static PlayerStats Instance
     {
@@ -95,12 +101,23 @@ public class PlayerStats
     /// <summary>
     /// Returns PlayerData indexed by specified player id, if he exists in the dictionary loaded from Json file.
     /// </summary>
-    /// <param name="playerId">Twitch User id.</param>
-    public PlayerData? GetPlayerById(string playerId)
+    /// <param name="userId">Twitch User id.</param>
+    public PlayerData? GetPlayerById(string userId)
     {
-        _allPlayerData.Players.TryGetValue(playerId, out PlayerData? playerData);
+        _allPlayerData.Players.TryGetValue(userId, out PlayerData? playerData);
 
         return playerData;
+    }
+
+    /// <summary>
+    /// Returns the Jumper indexed by specified player id, if he exists.
+    /// </summary>
+    /// <param name="userId">Twitch User id.</param>
+    public Jumper? GetJumperByUserId(string userId)
+    {
+        _jumpers.TryGetValue(userId, out Jumper? jumper);
+
+        return jumper;
     }
 
     /// <summary>
@@ -170,6 +187,11 @@ public class PlayerStats
         _allPlayerData.Players[playerData.UserId] = playerData;
     }
 
+    /// <summary>
+    /// Updates (or stores) the indexed jumper with new object. Automatically keyed by the <c>userId</c> from
+    /// provided <c>playerData</c> inside the object.
+    /// </summary>
+    /// <param name="jumper">Jumper object to store/update.</param>
     public void UpdateJumper(Jumper jumper)
     {
         NullGuard.ThrowIfNull(jumper);
@@ -177,10 +199,12 @@ public class PlayerStats
         _jumpers[jumper.PlayerData.UserId] = jumper;
     }
 
-    public Jumper? GetJumperByUserId(string userId)
+    /// <summary>
+    /// Emits new event for subscribers that new Jumper has been created.
+    /// </summary>
+    /// <param name="jumper">New Jumper object.</param>
+    public void EmitPlayerJoinEvent(Jumper jumper)
     {
-        _jumpers.TryGetValue(userId, out Jumper? jumper);
-
-        return jumper;
+        OnPlayerJoin?.Invoke(this, new PlayerJoinEventArgs(jumper));
     }
 }

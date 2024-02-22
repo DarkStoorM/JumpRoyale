@@ -113,6 +113,7 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         // Update both objects. Probably should make some relation to do both in one call...
         PlayerStats.Instance.UpdatePlayer(playerData);
         PlayerStats.Instance.UpdateJumper(jumper);
+        PlayerStats.Instance.EmitPlayerJoinEvent(jumper);
 
         // To Be Added:
         // 1) instantiate the Jumper Scene
