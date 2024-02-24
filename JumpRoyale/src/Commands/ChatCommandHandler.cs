@@ -101,7 +101,7 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         }
 
         // If this player has not joined the game yet, create a data object for this player and store privileges
-        playerData ??= new(colorHex, Math.Clamp(Rng.RandomInt(), 1, 18), colorHex);
+        playerData ??= new(colorHex, Math.Clamp(Rng.RandomInt(), 1, 18), colorHex, userId);
 
         // Update the PlayerData with new data, which could potentially change between the game sessions, e.g. player's
         // username, his sub status
