@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmrooefndxyw6"]
+[gd_scene load_steps=3 format=3 uid="uid://dmrooefndxyw6"]
 
 [ext_resource type="Script" path="res://src/SceneScripts/ArenaScene.cs" id="1_yckc0"]
+[ext_resource type="PackedScene" uid="uid://casram8f45t13" path="res://Scenes/Jumper.tscn" id="2_as2jd"]
 
 [node name="Arena" type="Node2D"]
 script = ExtResource("1_yckc0")
+JumperScene = ExtResource("2_as2jd")
