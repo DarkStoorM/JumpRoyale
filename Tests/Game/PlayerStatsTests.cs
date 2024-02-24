@@ -34,14 +34,14 @@ public class PlayerStatsTests
     [SetUp]
     public void SetUp()
     {
-        PlayerStats.Initialize(FullPath);
-        _fakePlayer = FakePlayerData.Make();
-
         // Create the directory on fresh deploy or after project cleanup
         if (!Directory.Exists(TestPath))
         {
             Directory.CreateDirectory(TestPath);
         }
+
+        PlayerStats.Initialize(FullPath);
+        _fakePlayer = FakePlayerData.Make();
     }
 
     [TearDown]
@@ -64,6 +64,8 @@ public class PlayerStatsTests
     [Test]
     public void DoesNotThrowWhenFileNotExists()
     {
+        File.Delete(FullPath);
+
         Assert.DoesNotThrow(() =>
         {
             PlayerStats.Instance.LoadPlayerData();
