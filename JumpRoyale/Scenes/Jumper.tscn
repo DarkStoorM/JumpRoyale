@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://casram8f45t13"]
+
+[ext_resource type="Script" path="res://src/SceneScripts/JumperScene.cs" id="1_g7kda"]
+[ext_resource type="Texture2D" uid="uid://d4gmhtm6ek2g4" path="res://Assets/sprites/characters/Male/Character 1/Clothes 1/Character1M_1_fall_0.png" id="2_3pp37"]
+
+[node name="Jumper" type="Node2D"]
+script = ExtResource("1_g7kda")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_3pp37")
