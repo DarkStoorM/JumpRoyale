@@ -56,14 +56,20 @@ public class PlayerStats
 
     /// <summary>
     /// Initializes the PlayerStats with provided stats file path. This path is required to point into a valid location,
-    /// where the file will be stored/read from.
+    /// where the file will be stored/read from. This should point at the file.
     /// </summary>
-    /// <param name="pathToStatsFile">Path to the "save" file with serialized player statistics.</param>
+    /// <param name="pathToStatsFile">Path pointing at the "save" file with serialized player statistics.</param>
     public static void Initialize(string pathToStatsFile)
     {
         if (pathToStatsFile is null || pathToStatsFile.Length == 0)
         {
             throw new MissingStatsFilePathException();
+        }
+
+        // Create the save file if, for some reason, it got deleted
+        if (!File.Exists(pathToStatsFile))
+        {
+            File.WriteAllText(pathToStatsFile, string.Empty);
         }
 
         lock (_lock)
