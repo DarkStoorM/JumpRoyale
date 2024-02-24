@@ -2,6 +2,8 @@ using Godot;
 using JumpRoyale.Commands;
 using JumpRoyale.Constants;
 using JumpRoyale.Events;
+using JumpRoyale.Utils;
+using JumpRoyale.Utils.Exceptions;
 using TwitchChat;
 using TwitchChat.Extensions;
 
@@ -9,6 +11,9 @@ namespace JumpRoyale;
 
 public partial class ArenaScene : Node2D
 {
+    [Export]
+    public PackedScene? JumperScene { get; private set; }
+
     public override void _Ready()
     {
         TwitchChatClient.Initialize(new());
@@ -46,7 +51,19 @@ public partial class ArenaScene : Node2D
     /// </summary>
     private void OnPlayerJoin(object sender, PlayerJoinEventArgs eventArgs)
     {
-        // TODO: Spawn a new player here
+        NullGuard.ThrowIfNull<UnassignedSceneOrComponentException>(JumperScene);
+
+        JumperScene jumperScene = (JumperScene)JumperScene.Instantiate();
+
+        // Rect2 viewport = GetViewportRect();
+        // GD.Print(viewport);
+        int x = 0;
+        int y = 40;
+
+        jumperScene.Init(eventArgs.Jumper);
+        jumperScene.Position = new Vector2(x, y);
+
+        AddChild(jumperScene);
     }
 
     /// <summary>
