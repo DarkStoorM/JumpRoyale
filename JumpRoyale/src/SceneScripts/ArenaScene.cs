@@ -1,5 +1,6 @@
 using Godot;
 using JumpRoyale.Commands;
+using JumpRoyale.Constants;
 using JumpRoyale.Events;
 using TwitchChat;
 using TwitchChat.Extensions;
@@ -11,7 +12,7 @@ public partial class ArenaScene : Node2D
     public override void _Ready()
     {
         TwitchChatClient.Initialize(new());
-        PlayerStats.Initialize(ProjectSettings.GlobalizePath("res://save_data/players.json"));
+        PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
 
         TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += OnMessageReceived;
         PlayerStats.Instance.OnPlayerJoin += OnPlayerJoin;
