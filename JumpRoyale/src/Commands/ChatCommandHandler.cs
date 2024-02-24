@@ -1,5 +1,6 @@
 using System;
 using JumpRoyale.Utils;
+using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale.Commands;
 
@@ -40,7 +41,7 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         // Retrieve the Jumper instance and execute the command
         Jumper? jumper = PlayerStats.Instance.GetJumperByUserId(UserId);
 
-        NullGuard.ThrowIfNull<Exception>(jumper);
+        NullGuard.ThrowIfNull<MissingJumperException>(jumper);
 
         callableCommand(jumper);
     }
