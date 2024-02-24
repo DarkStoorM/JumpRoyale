@@ -17,6 +17,11 @@ public class PlayerStats
     private static PlayerStats? _instance;
 
     /// <summary>
+    /// Defines where the path for player stats is located.
+    /// </summary>
+    private readonly string _statsFilePath;
+
+    /// <summary>
     /// Gets currently deserialized Json data of all players.
     /// </summary>
     private readonly AllPlayerData _allPlayerData = new();
@@ -25,7 +30,7 @@ public class PlayerStats
 
     private PlayerStats(string pathToStatsFile)
     {
-        StatsFilePath = pathToStatsFile;
+        _statsFilePath = pathToStatsFile;
     }
 
     /// <summary>
@@ -48,11 +53,6 @@ public class PlayerStats
             }
         }
     }
-
-    /// <summary>
-    /// Defines where the path for player stats is located.
-    /// </summary>
-    public string StatsFilePath { get; set; }
 
     /// <summary>
     /// Initializes the PlayerStats with provided stats file path. This path is required to point into a valid location,
@@ -133,12 +133,12 @@ public class PlayerStats
     /// </summary>
     public bool LoadPlayerData()
     {
-        if (!File.Exists(StatsFilePath))
+        if (!File.Exists(_statsFilePath))
         {
             return false;
         }
 
-        string jsonString = File.ReadAllText(StatsFilePath);
+        string jsonString = File.ReadAllText(_statsFilePath);
 
         AllPlayerData? jsonResult = JsonSerializer.Deserialize<AllPlayerData>(jsonString);
 
@@ -170,7 +170,7 @@ public class PlayerStats
     {
         string jsonString = JsonSerializer.Serialize(_allPlayerData);
 
-        File.WriteAllText(StatsFilePath, jsonString);
+        File.WriteAllText(_statsFilePath, jsonString);
     }
 
     /// <summary>
