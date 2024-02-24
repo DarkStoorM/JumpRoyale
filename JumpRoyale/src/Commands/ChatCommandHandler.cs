@@ -34,6 +34,7 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         {
             // In the join command, we don't care if the jumper exists or not, we don't need him here, hence the `null!`
             callableCommand(null!);
+            return;
         }
 
         // Retrieve the Jumper instance and execute the command
