@@ -1,6 +1,7 @@
 using JumpRoyale;
 using JumpRoyale.Commands;
 using JumpRoyale.Events;
+using JumpRoyale.Utils.Exceptions;
 using Tests.Mocks;
 using Tests.Twitch;
 using TwitchChat;
@@ -282,6 +283,24 @@ public class IntegrationTests : BaseTwitchTests
         InvokeMessageEvent("glow bada55", true);
 
         Assert.That(_playerData.GlowColor.ToLower(), Is.EqualTo("bada55"));
+    }
+
+    /// <summary>
+    /// This test makes sure that if for some reason the jumper was not retrieved, it will throw appropriate exception.
+    /// This can happen for example when jumper has wrong ID or no ID at all (incorrectly assigned Twitch UserID) or was
+    /// deleted from the dictionary, which should not happen. Jumpers will always exist in the dictionary after joining.
+    /// </summary>
+    [Test]
+    public void CanThrowIfNoJumperExistedWhenExecutingCommand()
+    {
+        InvokeMessageEvent("join", true);
+
+        _fakeChatter.UserId = "SomethingDifferent";
+
+        Assert.Throws<MissingJumperException>(() =>
+        {
+            InvokeMessageEvent("glow bada55", true);
+        });
     }
 
     [Test]
