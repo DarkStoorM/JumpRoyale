@@ -6,7 +6,7 @@ using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale;
 
-public partial class JumperScene : Node2D
+public partial class JumperScene : RigidBody2D
 {
     [AllowNull]
     private Jumper _jumper;
@@ -17,11 +17,16 @@ public partial class JumperScene : Node2D
 
         _jumper = jumper;
 
-        jumper.JumperEventsManager.OnJumpCommandEvent += OnJumpCommandEvent;
-        jumper.JumperEventsManager.OnDisableGlowEvent += OnDisableGlowEvent;
-        jumper.JumperEventsManager.OnSetCharacterEvent += OnSetCharacterEvent;
-        jumper.JumperEventsManager.OnSetGlowColorEvent += OnSetGlowColorEvent;
-        jumper.JumperEventsManager.OnSetNameColorEvent += OnSetNameColorEvent;
+        _jumper.JumperEventsManager.OnJumpCommandEvent += OnJumpCommandEvent;
+        _jumper.JumperEventsManager.OnDisableGlowEvent += OnDisableGlowEvent;
+        _jumper.JumperEventsManager.OnSetCharacterEvent += OnSetCharacterEvent;
+        _jumper.JumperEventsManager.OnSetGlowColorEvent += OnSetGlowColorEvent;
+        _jumper.JumperEventsManager.OnSetNameColorEvent += OnSetNameColorEvent;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        // TBA
     }
 
     private void OnJumpCommandEvent(object sender, JumpCommandEventArgs args)
