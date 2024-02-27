@@ -1,6 +1,5 @@
 using System;
 using JumpRoyale.Utils;
-using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale.Commands;
 

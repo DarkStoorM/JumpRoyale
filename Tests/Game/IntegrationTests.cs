@@ -1,7 +1,6 @@
 using JumpRoyale;
 using JumpRoyale.Commands;
 using JumpRoyale.Events;
-using JumpRoyale.Utils.Exceptions;
 using Tests.Mocks;
 using Tests.Twitch;
 using TwitchChat;
