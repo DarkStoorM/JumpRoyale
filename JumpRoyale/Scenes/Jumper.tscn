@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://casram8f45t13"]
+[gd_scene load_steps=4 format=3 uid="uid://d2wgas5feebve"]
 
 [ext_resource type="Script" path="res://src/SceneScripts/JumperScene.cs" id="1_g7kda"]
 [ext_resource type="Texture2D" uid="uid://d4gmhtm6ek2g4" path="res://Assets/sprites/characters/Male/Character 1/Clothes 1/Character1M_1_fall_0.png" id="2_3pp37"]
@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44rgi"]
 size = Vector2(15, 26)
 
-[node name="Jumper" type="RigidBody2D"]
+[node name="Jumper" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_g7kda")
 
