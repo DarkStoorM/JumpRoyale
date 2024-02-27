@@ -28,13 +28,29 @@ public partial class ArenaScene : Node2D
         // Fake Join
         if (Input.IsPhysicalKeyPressed(Key.J))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("join");
+            TwitchChatClient.Instance.InvokeFakeMessageEvent("join", colorHex: "bada55", isPrivileged: true);
         }
 
-        // Fake Jump
-        if (Input.IsPhysicalKeyPressed(Key.Space))
+        // Ugly, fake command execution
+        if (Input.IsPhysicalKeyPressed(Key.Q))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("jump");
+            TwitchChatClient.Instance.InvokeFakeMessageEvent("j", isPrivileged: true);
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.W))
+        {
+            TwitchChatClient.Instance.InvokeFakeMessageEvent("unglow", isPrivileged: true);
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.E))
+        {
+            TwitchChatClient.Instance.InvokeFakeMessageEvent("char 1", isPrivileged: true);
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.R))
+        {
+            TwitchChatClient.Instance.InvokeFakeMessageEvent("glow random", isPrivileged: true);
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.T))
+        {
+            TwitchChatClient.Instance.InvokeFakeMessageEvent("namecolor random", isPrivileged: true);
         }
     }
 
