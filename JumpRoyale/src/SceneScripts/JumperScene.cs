@@ -6,7 +6,7 @@ using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale;
 
-public partial class JumperScene : RigidBody2D
+public partial class JumperScene : CharacterBody2D
 {
     [AllowNull]
     private Jumper _jumper;
@@ -17,6 +17,7 @@ public partial class JumperScene : RigidBody2D
 
         _jumper = jumper;
 
+        // Listen to Command Execution events coming from twitch chat
         _jumper.JumperEventsManager.OnJumpCommandEvent += OnJumpCommandEvent;
         _jumper.JumperEventsManager.OnDisableGlowEvent += OnDisableGlowEvent;
         _jumper.JumperEventsManager.OnSetCharacterEvent += OnSetCharacterEvent;
@@ -26,7 +27,9 @@ public partial class JumperScene : RigidBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        // TBA
+        ApplyInitialVelocity(delta);
+
+        MoveAndSlide();
     }
 
     private void OnJumpCommandEvent(object sender, JumpCommandEventArgs args)
@@ -52,5 +55,14 @@ public partial class JumperScene : RigidBody2D
     private void OnSetNameColorEvent(object sender, SetNameColorEventArgs args)
     {
         // TBA
+    }
+
+    private void ApplyInitialVelocity(double delta)
+    {
+        Vector2 velocity = Velocity;
+
+        velocity.Y += IsOnFloor() ? 0 : GameConstants.Gravity * (float)delta;
+
+        Velocity = velocity;
     }
 }
