@@ -19,6 +19,13 @@ public partial class JumperScene : CharacterBody2D
         _jumper.JumperEventsManager.OnSetCharacterEvent += OnSetCharacterEvent;
         _jumper.JumperEventsManager.OnSetGlowColorEvent += OnSetGlowColorEvent;
         _jumper.JumperEventsManager.OnSetNameColorEvent += OnSetNameColorEvent;
+
+        Name = _jumper.PlayerData.Name;
+
+        // Old codebase:
+        // - Set character choice (sprite)
+        // - Set player name on the rich text component (name color)
+        // - Set glow
     }
 
     public override void _PhysicsProcess(double delta)
