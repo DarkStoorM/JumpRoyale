@@ -1,8 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Godot;
 using JumpRoyale.Events;
-using JumpRoyale.Utils;
-using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale;
 
@@ -13,8 +11,6 @@ public partial class JumperScene : CharacterBody2D
 
     public void Init(Jumper jumper)
     {
-        NullGuard.ThrowIfNull<MissingJumperException>(jumper);
-
         _jumper = jumper;
 
         // Listen to Command Execution events coming from twitch chat
