@@ -9,8 +9,14 @@ public partial class JumperScene : CharacterBody2D
     [AllowNull]
     private Jumper _jumper;
 
+    private Label _namePlate = null!;
+    private CpuParticles2D _glow = null!;
+
     public void Init(Jumper jumper)
     {
+        _namePlate = GetNode<Label>("NamePlate");
+        _glow = GetNode<CpuParticles2D>("Glow");
+
         _jumper = jumper;
 
         // Listen to Command Execution events coming from twitch chat
@@ -22,10 +28,10 @@ public partial class JumperScene : CharacterBody2D
 
         Name = _jumper.PlayerData.Name;
 
-        // Old codebase:
-        // - Set character choice (sprite)
-        // - Set player name on the rich text component (name color)
-        // - Set glow
+        // Remaining from the old codebase:
+        // - Set character choice (sprite, requires the animation switcher class)
+        HandleGlowColorEvent();
+        HandleNameColorEvent();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -37,27 +43,37 @@ public partial class JumperScene : CharacterBody2D
 
     private void OnJumpCommandEvent(object sender, JumpCommandEventArgs args)
     {
-        // TBA
+        GD.Print("OnJumpCommandEvent");
     }
 
     private void OnDisableGlowEvent(object sender, DisableGlowEventArgs args)
     {
-        // TBA
+        GD.Print("OnDisableGlowEvent");
     }
 
     private void OnSetCharacterEvent(object sender, SetCharacterEventArgs args)
     {
-        // TBA
+        GD.Print("OnSetCharacterEvent");
     }
 
     private void OnSetGlowColorEvent(object sender, SetGlowColorEventArgs args)
     {
-        // TBA
+        HandleGlowColorEvent();
     }
 
     private void OnSetNameColorEvent(object sender, SetNameColorEventArgs args)
     {
-        // TBA
+        HandleNameColorEvent();
+    }
+
+    private void HandleGlowColorEvent()
+    {
+        _glow.Color = new Color(_jumper.PlayerData.GlowColor);
+    }
+
+    private void HandleNameColorEvent()
+    {
+        _namePlate.LabelSettings.FontColor = new Color(_jumper.PlayerData.PlayerNameColor);
     }
 
     private void ApplyInitialVelocity(double delta)
