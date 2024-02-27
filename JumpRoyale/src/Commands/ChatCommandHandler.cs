@@ -38,10 +38,13 @@ public class ChatCommandHandler(string message, string userId, string displayNam
             return;
         }
 
-        // Retrieve the Jumper instance and execute the command
+        // Retrieve the Jumper instance associated with the chatter and execute the command if he has joined the game
         Jumper? jumper = PlayerStats.Instance.GetJumperByUserId(UserId);
 
-        NullGuard.ThrowIfNull<MissingJumperException>(jumper);
+        if (jumper is null)
+        {
+            return;
+        }
 
         callableCommand(jumper);
     }
