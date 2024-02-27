@@ -36,7 +36,7 @@ public static class TwitchChatClientExtensions
         libMessageBuilder
             .WithDisplayName(displayName ?? "FakeName")
             .WithUserId(userId ?? "FakeId")
-            .WithColorHex(colorHex ?? "FakeColor");
+            .WithColorHex(colorHex ?? "ffffff");
 
         ChatMessage chatMessage = messageBuilder.WithTwitchLibMessage(libMessageBuilder).Build();
         OnMessageReceivedArgs messageArgs = new() { ChatMessage = chatMessage };
