@@ -16,7 +16,7 @@ public partial class ArenaScene : Node2D
 
     public override void _Ready()
     {
-        TwitchChatClient.Initialize(new());
+        TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
 
         TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += OnMessageReceived;
@@ -25,9 +25,16 @@ public partial class ArenaScene : Node2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        // Fake Join
         if (Input.IsPhysicalKeyPressed(Key.J))
         {
             TwitchChatClient.Instance.InvokeFakeMessageEvent("join");
+        }
+
+        // Fake Jump
+        if (Input.IsPhysicalKeyPressed(Key.Space))
+        {
+            TwitchChatClient.Instance.InvokeFakeMessageEvent("jump");
         }
     }
 
@@ -57,7 +64,7 @@ public partial class ArenaScene : Node2D
 
         // Rect2 viewport = GetViewportRect();
         // GD.Print(viewport);
-        int x = 0;
+        int x = 40;
         int y = 40;
 
         jumperScene.Init(eventArgs.Jumper);
