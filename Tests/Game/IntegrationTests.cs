@@ -16,6 +16,8 @@ namespace Tests.Game;
 [TestFixture]
 public class IntegrationTests : BaseTwitchTests
 {
+    private readonly string _statsFilePath = $"{TestContext.CurrentContext.WorkDirectory}\\_TestData\\data.json";
+
     private FakeTwitchChatter _fakeChatter;
     private PlayerData _playerData;
     private Jumper _jumper;
@@ -44,7 +46,7 @@ public class IntegrationTests : BaseTwitchTests
             _fakeChatter.ColorHex
         );
 
-        PlayerStats.Initialize($"{TestContext.CurrentContext.WorkDirectory}\\_TestData\\data.json");
+        PlayerStats.Initialize(_statsFilePath);
         PlayerStats.Instance.UpdatePlayer(dummyPlayerData);
         PlayerStats.Instance.SaveAllPlayers();
 
@@ -286,6 +288,17 @@ public class IntegrationTests : BaseTwitchTests
         InvokeMessageEvent("glow bada55", true);
 
         Assert.That(_playerData.GlowColor.ToLower(), Is.EqualTo("bada55"));
+
+        // As a sanity check, save the player to file, load, then check if it has actually loaded that color.
+        PlayerStats.Instance.SaveAllPlayers();
+        PlayerStats.Destroy();
+        PlayerStats.Initialize(_statsFilePath);
+
+        InvokeMessageEvent("join", true);
+        GetPlayerData();
+
+        // TODO: Fix this test
+        Assert.That(_playerData.GlowColor, Is.EqualTo("bada55"));
     }
 
     /// <summary>
@@ -304,6 +317,25 @@ public class IntegrationTests : BaseTwitchTests
         GetPlayerData();
 
         Assert.That(_playerData.GlowColor, Is.EqualTo(initialColor));
+    }
+
+    /// <summary>
+    /// This test checks if sending an empty Glow command (no parameters) will switch to the new color we chose manually
+    /// at some point (after executing Unglow). The reason for this is that we would like to use the previous color
+    /// after disabling the glow without changing it to something new, but only if there was no parameter sent with the
+    /// Glow command.
+    /// </summary>
+    [Test]
+    public void CanUsePreviousGlowColorAfterSwitching()
+    {
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("glow 012345", true);
+        InvokeMessageEvent("unglow", true);
+        InvokeMessageEvent("glow", true);
+
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo("012345"));
     }
 
     [Test]
