@@ -77,17 +77,29 @@ public partial class JumperScene : CharacterBody2D
 
     private void HandleDisableGlowEvent()
     {
-        _glow.Emitting = false;
+        DisableParticleEmitter();
     }
 
     private void HandleGlowColorEvent()
     {
+        EnableParticleEmitter();
+
         _glow.Color = new Color(_jumper.PlayerData.GlowColor);
     }
 
     private void HandleNameColorEvent()
     {
         _namePlate.LabelSettings.FontColor = new Color(_jumper.PlayerData.PlayerNameColor);
+    }
+
+    private void DisableParticleEmitter()
+    {
+        _glow.Emitting = false;
+    }
+
+    private void EnableParticleEmitter()
+    {
+        _glow.Emitting = true;
     }
 
     private void ApplyInitialVelocity(double delta)
