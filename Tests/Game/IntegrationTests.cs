@@ -38,7 +38,11 @@ public class IntegrationTests : BaseTwitchTests
 
         // Create some fake PlayerData that we will immediately store in the player stats file so we always have a
         // player ready to read from the file
-        PlayerData dummyPlayerData = FakePlayerData.Make(_fakeChatter.UserId, _fakeChatter.DisplayName);
+        PlayerData dummyPlayerData = FakePlayerData.Make(
+            _fakeChatter.UserId,
+            _fakeChatter.DisplayName,
+            _fakeChatter.ColorHex
+        );
 
         PlayerStats.Initialize($"{TestContext.CurrentContext.WorkDirectory}\\_TestData\\data.json");
         PlayerStats.Instance.UpdatePlayer(dummyPlayerData);
@@ -282,6 +286,24 @@ public class IntegrationTests : BaseTwitchTests
         InvokeMessageEvent("glow bada55", true);
 
         Assert.That(_playerData.GlowColor.ToLower(), Is.EqualTo("bada55"));
+    }
+
+    /// <summary>
+    /// This test makes sure that when we execute Unglow, then Glow without parameters, we end up using our previous
+    /// color and a new one, random or default.
+    /// </summary>
+    [Test]
+    public void EnablingEmptyGlowShouldUsePlayerDataColor()
+    {
+        GetPlayerData();
+        string initialColor = _playerData.GlowColor;
+
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("unglow", true);
+        InvokeMessageEvent("glow", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo(initialColor));
     }
 
     [Test]
