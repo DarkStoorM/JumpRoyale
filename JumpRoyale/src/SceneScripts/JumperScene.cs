@@ -30,8 +30,17 @@ public partial class JumperScene : CharacterBody2D
 
         // Remaining from the old codebase:
         // - Set character choice (sprite, requires the animation switcher class)
-        HandleGlowColorEvent();
         HandleNameColorEvent();
+
+        if (_jumper.PlayerData.IsPrivileged)
+        {
+            HandleGlowColorEvent();
+        }
+        else
+        {
+            // Disable the glow anyway in case the player lost his privileged in-between the game sessions
+            HandleDisableGlowEvent();
+        }
     }
 
     public override void _PhysicsProcess(double delta)
@@ -48,7 +57,7 @@ public partial class JumperScene : CharacterBody2D
 
     private void OnDisableGlowEvent(object sender, DisableGlowEventArgs args)
     {
-        GD.Print("OnDisableGlowEvent");
+        HandleDisableGlowEvent();
     }
 
     private void OnSetCharacterEvent(object sender, SetCharacterEventArgs args)
@@ -64,6 +73,11 @@ public partial class JumperScene : CharacterBody2D
     private void OnSetNameColorEvent(object sender, SetNameColorEventArgs args)
     {
         HandleNameColorEvent();
+    }
+
+    private void HandleDisableGlowEvent()
+    {
+        _glow.Emitting = false;
     }
 
     private void HandleGlowColorEvent()
