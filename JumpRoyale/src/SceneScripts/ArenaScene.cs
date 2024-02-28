@@ -31,30 +31,45 @@ public partial class ArenaScene : Node2D
         // Fake Join
         if (Input.IsPhysicalKeyPressed(Key.J))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("join", colorHex: "bada55", isPrivileged: true);
+            FakeMessage("join");
         }
 
         // Ugly, fake command execution
         if (Input.IsPhysicalKeyPressed(Key.Q))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("j", isPrivileged: true);
+            FakeMessage("j");
         }
         else if (Input.IsPhysicalKeyPressed(Key.W))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("unglow", isPrivileged: true);
+            FakeMessage("unglow");
         }
         else if (Input.IsPhysicalKeyPressed(Key.E))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("char 1", isPrivileged: true);
+            FakeMessage("char 1");
         }
         else if (Input.IsPhysicalKeyPressed(Key.R))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("glow random", isPrivileged: true);
+            FakeMessage("glow");
         }
         else if (Input.IsPhysicalKeyPressed(Key.T))
         {
-            TwitchChatClient.Instance.InvokeFakeMessageEvent("namecolor random", isPrivileged: true);
+            FakeMessage("glow random");
         }
+        else if (Input.IsPhysicalKeyPressed(Key.Y))
+        {
+            FakeMessage("namecolor random");
+        }
+    }
+
+    /// <summary>
+    /// Fakes the twitch event messages send by "admin" (just the same user), because we might want to test how things
+    /// look without visiting Twitch just for that.
+    /// </summary>
+    /// <param name="message">Chat message to send to the fake event dispatcher.</param>
+    /// <param name="isPrivileged">Allows overriding the privileges for this particular chat message.</param>
+    private void FakeMessage(string message, bool isPrivileged = true)
+    {
+        TwitchChatClient.Instance.InvokeFakeMessageEvent(message, "DummyJumper", "666", "0fc", isPrivileged);
     }
 
     /// <summary>
