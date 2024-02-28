@@ -25,6 +25,9 @@ public partial class ArenaScene : Node2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        // NOTE: This simulates fake events with random data, this is not useful for actual tests on scene if there is
+        // some data that has to align with Tests.
+
         // Fake Join
         if (Input.IsPhysicalKeyPressed(Key.J))
         {
