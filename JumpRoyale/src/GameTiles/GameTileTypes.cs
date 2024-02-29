@@ -1,7 +1,7 @@
 namespace JumpRoyale;
 
 /// <summary>
-/// Defines the types of tiles or platforms for Drawing.
+/// Defines the types of objects for Drawing.
 /// </summary>
 public enum GameTileTypes
 {
