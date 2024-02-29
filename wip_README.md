@@ -8,6 +8,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [Arena Builder](#arena-builder)
     -   [Character Sprite handler](#character-sprite-handler)
     -   [Character Choice](#character-choice)
+    -   [Fireballs (Twitch command)](#fireballs-twitch-command)
 
 ---
 
@@ -42,3 +43,17 @@ There should also be a possibility of expanding this class if `privileged` cosme
 Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
 
 ---
+
+## Fireballs (Twitch command)
+
+Note from Adam:
+
+```plaintext
+🔥 FIREBALLS 🔥
+Post-prototype work:
+- Make shooting a fireball be a command
+- Add a cooldown of ~2 seconds? I don't want too much spam
+- Make it only usable at the end of the game
+```
+
+Initial design threw a fireball, which was affected by gravity and could collide with other players, pushing them back with some force.
