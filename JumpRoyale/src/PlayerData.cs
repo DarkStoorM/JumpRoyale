@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace JumpRoyale;
 
 // Note to contributors: do not rename anything in this class without updating the corresponding JSON data on disk.
-public class PlayerData(string glowColor, int characterChoice, string nameColor)
+public class PlayerData(string glowColor, int characterChoice, string nameColor, string userId)
 {
     public int CharacterChoice { get; set; } = characterChoice;
 
@@ -76,7 +76,7 @@ public class PlayerData(string glowColor, int characterChoice, string nameColor)
     /// <summary>
     /// User Twitch id.
     /// </summary>
-    public string UserId { get; set; } = string.Empty;
+    public string UserId { get; set; } = userId;
 
     /// <summary>
     /// Defines the current win streak (1st place only). Increments every time the player achieves the first place in

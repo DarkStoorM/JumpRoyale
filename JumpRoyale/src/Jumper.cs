@@ -58,7 +58,8 @@ public class Jumper(PlayerData playerData)
     }
 
     /// <summary>
-    /// Enables the particles for the player.
+    /// Enables the particles for the player. If there was no color choice, it will lookup the color from PlayerData and
+    /// use it, but if it was null from some old save data, will fall back to Twitch Chat Color.
     /// </summary>
     /// <remarks>
     /// This method invokes OnSetGlowColor event.
@@ -67,7 +68,7 @@ public class Jumper(PlayerData playerData)
     /// <param name="fallbackColor">Default glow color to fallback to, which is Twitch Chat color.</param>
     public void SetGlowColor(string? userColorChoice, string fallbackColor)
     {
-        string glowColor = userColorChoice ?? fallbackColor;
+        string glowColor = userColorChoice ?? PlayerData.GlowColor ?? fallbackColor;
 
         PlayerData.GlowColor = glowColor;
 

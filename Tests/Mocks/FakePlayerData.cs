@@ -5,12 +5,11 @@ namespace Tests.Mocks;
 
 public static class FakePlayerData
 {
-    public static PlayerData Make(string? userId = null, string? name = null)
+    public static PlayerData Make(string? userId = null, string? name = null, string? colorHex = null)
     {
         PlayerData fakePlayer =
-            new(Rng.RandomHex(), Rng.RandomInt(), Rng.RandomHex())
+            new(colorHex ?? Rng.RandomHex(), Rng.RandomInt(), Rng.RandomHex(), userId ?? Rng.RandomInt().ToString())
             {
-                UserId = userId ?? Rng.RandomInt().ToString(),
                 Num1stPlaceWins = Rng.RandomInt(),
                 Num2ndPlaceWins = Rng.RandomInt(),
                 Num3rdPlaceWins = Rng.RandomInt(),

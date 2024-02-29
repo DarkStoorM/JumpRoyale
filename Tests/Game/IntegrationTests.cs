@@ -16,6 +16,8 @@ namespace Tests.Game;
 [TestFixture]
 public class IntegrationTests : BaseTwitchTests
 {
+    private readonly string _statsFilePath = $"{TestContext.CurrentContext.WorkDirectory}\\_TestData\\data.json";
+
     private FakeTwitchChatter _fakeChatter;
     private PlayerData _playerData;
     private Jumper _jumper;
@@ -38,9 +40,13 @@ public class IntegrationTests : BaseTwitchTests
 
         // Create some fake PlayerData that we will immediately store in the player stats file so we always have a
         // player ready to read from the file
-        PlayerData dummyPlayerData = FakePlayerData.Make(_fakeChatter.UserId, _fakeChatter.DisplayName);
+        PlayerData dummyPlayerData = FakePlayerData.Make(
+            _fakeChatter.UserId,
+            _fakeChatter.DisplayName,
+            _fakeChatter.ColorHex
+        );
 
-        PlayerStats.Initialize($"{TestContext.CurrentContext.WorkDirectory}\\_TestData\\data.json");
+        PlayerStats.Initialize(_statsFilePath);
         PlayerStats.Instance.UpdatePlayer(dummyPlayerData);
         PlayerStats.Instance.SaveAllPlayers();
 
@@ -284,6 +290,43 @@ public class IntegrationTests : BaseTwitchTests
         Assert.That(_playerData.GlowColor.ToLower(), Is.EqualTo("bada55"));
     }
 
+    /// <summary>
+    /// This test makes sure that when we execute Unglow, then Glow without parameters, we end up using our previous
+    /// color and a new one, random or default.
+    /// </summary>
+    [Test]
+    public void EnablingEmptyGlowShouldUsePlayerDataColor()
+    {
+        GetPlayerData();
+        string initialColor = _playerData.GlowColor;
+
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("unglow", true);
+        InvokeMessageEvent("glow", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo(initialColor));
+    }
+
+    /// <summary>
+    /// This test checks if sending an empty Glow command (no parameters) will switch to the new color we chose manually
+    /// at some point (after executing Unglow). The reason for this is that we would like to use the previous color
+    /// after disabling the glow without changing it to something new, but only if there was no parameter sent with the
+    /// Glow command.
+    /// </summary>
+    [Test]
+    public void CanUsePreviousGlowColorAfterSwitching()
+    {
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("glow 012345", true);
+        InvokeMessageEvent("unglow", true);
+        InvokeMessageEvent("glow", true);
+
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo("012345"));
+    }
+
     [Test]
     public void CanListenToPlayerJoinEvents()
     {
@@ -297,6 +340,49 @@ public class IntegrationTests : BaseTwitchTests
     }
 
     /// <summary>
+    /// This test will make sure that when we manually set the glow color and join the next game, we will join with that
+    /// color and not default/twitch chat color.
+    /// </summary>
+    [Test]
+    public void PrivilegedUserWillRejoinWithPreviousGlowColor()
+    {
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("glow 909090", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo("909090"));
+
+        RefreshPlayerData();
+
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("glow", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo("909090"));
+    }
+
+    /// <summary>
+    /// This test will make sure that when we manually set the name color and join the next game, we will join with that
+    /// color and not default/twitch chat color.
+    /// </summary>
+    [Test]
+    public void PrivilegedUserWillRejoinWithPreviousNameColor()
+    {
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("namecolor 909090", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.PlayerNameColor, Is.EqualTo("909090"));
+
+        RefreshPlayerData();
+
+        InvokeMessageEvent("join", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.PlayerNameColor, Is.EqualTo("909090"));
+    }
+
+    /// <summary>
     /// Updates the PlayerData in the Player Stats collection, Serializes all players and reloads them from file.
     /// </summary>
     private void RefreshPlayerData()
@@ -305,6 +391,7 @@ public class IntegrationTests : BaseTwitchTests
         PlayerStats.Instance.SaveAllPlayers();
 
         PlayerStats.Instance.ClearPlayers();
+        PlayerStats.Instance.ClearJumpers();
         PlayerStats.Instance.LoadPlayerData();
     }
 

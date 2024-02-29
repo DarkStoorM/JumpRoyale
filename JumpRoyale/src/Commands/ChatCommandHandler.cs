@@ -34,12 +34,16 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         {
             // In the join command, we don't care if the jumper exists or not, we don't need him here, hence the `null!`
             callableCommand(null!);
+            return;
         }
 
-        // Retrieve the Jumper instance and execute the command
+        // Retrieve the Jumper instance associated with the chatter and execute the command if he has joined the game
         Jumper? jumper = PlayerStats.Instance.GetJumperByUserId(UserId);
 
-        NullGuard.ThrowIfNull<Exception>(jumper);
+        if (jumper is null)
+        {
+            return;
+        }
 
         callableCommand(jumper);
     }
@@ -101,7 +105,7 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         }
 
         // If this player has not joined the game yet, create a data object for this player and store privileges
-        playerData ??= new(colorHex, Math.Clamp(Rng.RandomInt(), 1, 18), colorHex);
+        playerData ??= new(colorHex, Math.Clamp(Rng.RandomInt(), 1, 18), colorHex, userId);
 
         // Update the PlayerData with new data, which could potentially change between the game sessions, e.g. player's
         // username, his sub status
