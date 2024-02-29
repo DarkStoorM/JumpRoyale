@@ -95,6 +95,11 @@ public class PlayerStats
         _allPlayerData.Players.Clear();
     }
 
+    public void ClearJumpers()
+    {
+        _jumpers.Clear();
+    }
+
     /// <summary>
     /// Returns true if the player with specified Twitch id exists in the collection.
     /// </summary>

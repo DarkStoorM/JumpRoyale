@@ -288,13 +288,6 @@ public class IntegrationTests : BaseTwitchTests
         InvokeMessageEvent("glow bada55", true);
 
         Assert.That(_playerData.GlowColor.ToLower(), Is.EqualTo("bada55"));
-
-        // As a sanity check, save the player to file, load, then check if it has actually loaded that color.
-        RefreshPlayerData();
-        InvokeMessageEvent("join", true);
-        GetPlayerData();
-
-        Assert.That(_playerData.GlowColor, Is.EqualTo("bada55"));
     }
 
     /// <summary>
@@ -347,6 +340,49 @@ public class IntegrationTests : BaseTwitchTests
     }
 
     /// <summary>
+    /// This test will make sure that when we manually set the glow color and join the next game, we will join with that
+    /// color and not default/twitch chat color.
+    /// </summary>
+    [Test]
+    public void PrivilegedUserWillRejoinWithPreviousGlowColor()
+    {
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("glow 909090", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo("909090"));
+
+        RefreshPlayerData();
+
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("glow", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.GlowColor, Is.EqualTo("909090"));
+    }
+
+    /// <summary>
+    /// This test will make sure that when we manually set the name color and join the next game, we will join with that
+    /// color and not default/twitch chat color.
+    /// </summary>
+    [Test]
+    public void PrivilegedUserWillRejoinWithPreviousNameColor()
+    {
+        InvokeMessageEvent("join", true);
+        InvokeMessageEvent("namecolor 909090", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.PlayerNameColor, Is.EqualTo("909090"));
+
+        RefreshPlayerData();
+
+        InvokeMessageEvent("join", true);
+        GetPlayerData();
+
+        Assert.That(_playerData.PlayerNameColor, Is.EqualTo("909090"));
+    }
+
+    /// <summary>
     /// Updates the PlayerData in the Player Stats collection, Serializes all players and reloads them from file.
     /// </summary>
     private void RefreshPlayerData()
@@ -355,6 +391,7 @@ public class IntegrationTests : BaseTwitchTests
         PlayerStats.Instance.SaveAllPlayers();
 
         PlayerStats.Instance.ClearPlayers();
+        PlayerStats.Instance.ClearJumpers();
         PlayerStats.Instance.LoadPlayerData();
     }
 
