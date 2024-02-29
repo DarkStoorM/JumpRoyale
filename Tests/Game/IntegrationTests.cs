@@ -290,14 +290,10 @@ public class IntegrationTests : BaseTwitchTests
         Assert.That(_playerData.GlowColor.ToLower(), Is.EqualTo("bada55"));
 
         // As a sanity check, save the player to file, load, then check if it has actually loaded that color.
-        PlayerStats.Instance.SaveAllPlayers();
-        PlayerStats.Destroy();
-        PlayerStats.Initialize(_statsFilePath);
-
+        RefreshPlayerData();
         InvokeMessageEvent("join", true);
         GetPlayerData();
 
-        // TODO: Fix this test
         Assert.That(_playerData.GlowColor, Is.EqualTo("bada55"));
     }
 
