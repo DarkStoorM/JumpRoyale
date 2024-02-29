@@ -5,17 +5,18 @@ namespace JumpRoyale;
 public abstract class BasePlatform(Vector2I left, Vector2I middle, Vector2I right)
 {
     /// <summary>
-    /// Starting point where the platform will be drawn from. This tile will be inserted automatically.
+    /// Coordinates on the Atlas of the left edge of the platform.
     /// </summary>
     public Vector2I Left { get; } = left;
 
     /// <summary>
-    /// Platform "extension", which will be drawn between <c>Left</c> and <c>Right</c> tiles.
+    /// Coordinates on the Atlas of the middle part of the platform. This part is used to draw the "extension" of a
+    /// drawn platform. This should represent a seamless sprite.
     /// </summary>
     public Vector2I Middle { get; } = middle;
 
     /// <summary>
-    /// Ending point where the last part of platform will be drawn. This tile will be inserted automatically.
+    /// Coordinates on the Atlas of the right edge of the platform.
     /// </summary>
     public Vector2I Right { get; } = right;
 }
