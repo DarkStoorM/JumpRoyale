@@ -15,7 +15,9 @@ public class ArenaBuilder
     /// <summary>
     /// Collection of all Platforms that can be used for drawing one-way collision platforms.
     /// </summary>
-    private readonly Dictionary<GameTileTypes, BaseHorizontalObject> _platforms = [];
+    private readonly Dictionary<HorizontalTileTypes, BaseHorizontalObject> _horizontalObjects = [];
+    private readonly Dictionary<HorizontalTileTypes, BaseVerticalObject> _verticalObjects = [];
+    private readonly Dictionary<HorizontalTileTypes, BaseSingleBlock> _blocks = [];
 
     private ArenaBuilder(TileSet tileSet)
     {
@@ -23,9 +25,9 @@ public class ArenaBuilder
         TileMap = new() { Name = "TileMap", TileSet = _tileSet };
 
         // Store all Drawable objects
-        _platforms.Add(GameTileTypes.PlatformConcrete, GameTiles.PlatformConcrete);
-        _platforms.Add(GameTileTypes.PlatformGold, GameTiles.PlatformGold);
-        _platforms.Add(GameTileTypes.PlatformStone, GameTiles.PlatformStone);
+        _horizontalObjects.Add(HorizontalTileTypes.PlatformConcrete, GameTiles.PlatformConcrete);
+        _horizontalObjects.Add(HorizontalTileTypes.PlatformGold, GameTiles.PlatformGold);
+        _horizontalObjects.Add(HorizontalTileTypes.PlatformStone, GameTiles.PlatformStone);
     }
 
     public static ArenaBuilder Instance
@@ -60,19 +62,23 @@ public class ArenaBuilder
     }
 
     /// <summary>
-    /// Draws a new platform on the arena in specified location.
+    /// Draws a new horizontal object on the arena in specified location.
     /// </summary>
     /// <remarks>
-    /// The shortest platform is 2 tiles long, which will always draw Left and Right. <c>length</c> parameter specifies
-    /// how many additional tiles to draw, which extend the platform.
+    /// The shortest object is 2 tiles long, which will always draw Left and Right. <c>length</c> parameter specifies
+    /// how many additional tiles to draw, which extend the object.
     /// </remarks>
-    /// <param name="location">Starting point where the platform is drawn (starting from Left).</param>
+    /// <param name="location">Starting point where the object is drawn (starting from Left).</param>
     /// <param name="length">How many Middle tiles to insert.</param>
-    /// <param name="drawWith">Type of the platform to draw.</param>
-    public void DrawPlatform(Vector2I location, int length, GameTileTypes drawWith = GameTileTypes.PlatformStone)
+    /// <param name="drawWith">Type of the object to draw.</param>
+    public void DrawHorizontal(
+        Vector2I location,
+        int length,
+        HorizontalTileTypes drawWith = HorizontalTileTypes.PlatformStone
+    )
     {
-        // Retrieves the default platform for drawing unless specified otherwise
-        BaseHorizontalObject platform = _platforms[drawWith];
+        // Retrieves the default object for drawing unless specified otherwise
+        BaseHorizontalObject platform = _horizontalObjects[drawWith];
 
         DrawCell(location, platform.Left);
 
@@ -96,16 +102,6 @@ public class ArenaBuilder
     {
         // TBA
         GD.Print(_tileSet);
-    }
-
-    /// <summary>
-    /// Draws a set of sprites on the TileMap as a horizontal line of specified length.
-    /// </summary>
-    /// <param name="location">Starting point where the line should be drawn from.</param>
-    /// <param name="length">Length of the line to draw. If the length is 0, only Left+Right is drawn.</param>
-    public void DrawLineHorizontally(Vector2I location, int length)
-    {
-        // TBA
     }
 
     public void DrawSquare(Vector2I location, int size, bool shouldFill = false)
