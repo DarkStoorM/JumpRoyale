@@ -14,13 +14,21 @@ public partial class ArenaScene : Node2D
     [Export]
     public PackedScene? JumperScene { get; private set; }
 
+    [Export]
+    public TileSet? TileSetToUse { get; private set; }
+
     public override void _Ready()
     {
+        NullGuard.ThrowIfNull(TileSetToUse);
+
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
+        ArenaBuilder.Initialize(TileSetToUse);
 
         TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += OnMessageReceived;
         PlayerStats.Instance.OnPlayerJoin += OnPlayerJoin;
+
+        AddChild(ArenaBuilder.Instance.TileMap);
     }
 
     public override void _UnhandledInput(InputEvent @event)
