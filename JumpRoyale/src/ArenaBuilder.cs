@@ -10,24 +10,34 @@ public class ArenaBuilder
 
     private static ArenaBuilder? _instance;
 
-    private readonly TileSet _tileSet;
-
     /// <summary>
     /// Collection of all Platforms that can be used for drawing one-way collision platforms.
     /// </summary>
-    private readonly Dictionary<HorizontalTileTypes, BaseHorizontalObject> _horizontalObjects = [];
-    private readonly Dictionary<HorizontalTileTypes, BaseVerticalObject> _verticalObjects = [];
-    private readonly Dictionary<HorizontalTileTypes, BaseSingleBlock> _blocks = [];
+    private readonly Dictionary<TileTypes, BaseHorizontalObject> _horizontalPlatforms = [];
+    private readonly Dictionary<TileTypes, BaseHorizontalObject> _horizontalWalls = [];
+    private readonly Dictionary<TileTypes, BaseVerticalObject> _verticalWalls = [];
+    private readonly Dictionary<TileTypes, BaseSingleBlock> _blocks = [];
 
     private ArenaBuilder(TileSet tileSet)
     {
-        _tileSet = tileSet;
-        TileMap = new() { Name = "TileMap", TileSet = _tileSet };
+        TileMap = new() { Name = "TileMap", TileSet = tileSet };
 
         // Store all Drawable objects
-        _horizontalObjects.Add(HorizontalTileTypes.PlatformConcrete, GameTiles.PlatformConcrete);
-        _horizontalObjects.Add(HorizontalTileTypes.PlatformGold, GameTiles.PlatformGold);
-        _horizontalObjects.Add(HorizontalTileTypes.PlatformStone, GameTiles.PlatformStone);
+        _horizontalPlatforms.Add(TileTypes.Concrete, GameTiles.PlatformConcrete);
+        _horizontalPlatforms.Add(TileTypes.Gold, GameTiles.PlatformGold);
+        _horizontalPlatforms.Add(TileTypes.Stone, GameTiles.PlatformStone);
+
+        _horizontalWalls.Add(TileTypes.Concrete, GameTiles.HorizontalWallConcrete);
+        _horizontalWalls.Add(TileTypes.Gold, GameTiles.HorizontalWallGold);
+        _horizontalWalls.Add(TileTypes.Stone, GameTiles.HorizontalWallStone);
+
+        _verticalWalls.Add(TileTypes.Concrete, GameTiles.VerticalWallConcrete);
+        _verticalWalls.Add(TileTypes.Gold, GameTiles.VerticalWallGold);
+        _verticalWalls.Add(TileTypes.Stone, GameTiles.VerticalWallStone);
+
+        _blocks.Add(TileTypes.Stone, GameTiles.BlockConcrete);
+        _blocks.Add(TileTypes.Stone, GameTiles.BlockGold);
+        _blocks.Add(TileTypes.Stone, GameTiles.BlockStone);
     }
 
     public static ArenaBuilder Instance
@@ -66,26 +76,23 @@ public class ArenaBuilder
     /// </summary>
     /// <remarks>
     /// The shortest object is 2 tiles long, which will always draw Left and Right. <c>length</c> parameter specifies
-    /// how many additional tiles to draw, which extend the object.
+    /// how many additional tiles to draw, which extend the object, so despite providing the length of 0, the object
+    /// will always be drawn.
     /// </remarks>
     /// <param name="location">Starting point where the object is drawn (starting from Left).</param>
     /// <param name="length">How many Middle tiles to insert.</param>
     /// <param name="drawWith">Type of the object to draw.</param>
-    public void DrawHorizontal(
-        Vector2I location,
-        int length,
-        HorizontalTileTypes drawWith = HorizontalTileTypes.PlatformStone
-    )
+    public void DrawHorizontalPlatform(Vector2I location, int length, TileTypes drawWith = TileTypes.Stone)
     {
         // Retrieves the default object for drawing unless specified otherwise
-        BaseHorizontalObject platform = _horizontalObjects[drawWith];
+        BaseHorizontalObject platform = _horizontalPlatforms[drawWith];
 
         DrawCell(location, platform.Left);
 
         // Store the cell X where the right edge of the platform will be drawn
         Vector2I end = location + Vector2I.Right * (1 + length);
 
-        // WIll only loop the middle part as long as the length is greater than 0
+        // Will only loop the middle part as long as the length is greater than 0
         for (int x = location.X; x < end.X; x++)
         {
             DrawCell(new Vector2I(x, location.Y), platform.Middle);
@@ -95,13 +102,36 @@ public class ArenaBuilder
     }
 
     /// <summary>
+    /// Work-in-progress, requires extraction later.
+    /// </summary>
+    public void DrawHorizontalWall(Vector2I location, int length, TileTypes drawWith = TileTypes.Stone)
+    {
+        // Retrieves the default object for drawing unless specified otherwise
+        BaseHorizontalObject wall = _horizontalWalls[drawWith];
+
+        DrawCell(location, wall.Left);
+
+        // Store the cell X where the right edge of the platform will be drawn
+        Vector2I end = location + Vector2I.Right * (1 + length);
+
+        // Will only loop the middle part as long as the length is greater than 0
+        for (int x = location.X; x < end.X; x++)
+        {
+            DrawCell(new Vector2I(x, location.Y), wall.Middle);
+        }
+
+        DrawCell(end, wall.Right);
+    }
+
+    /// <summary>
     /// Draws a single sprite on the TileMap at given location.
     /// </summary>
     /// <param name="location">Coordinates (location) on TileMap to draw at.</param>
-    public void DrawPoint(Vector2I location)
+    public void DrawPoint(Vector2I location, TileTypes drawWith = TileTypes.Stone)
     {
-        // TBA
-        GD.Print(_tileSet);
+        BaseSingleBlock block = _blocks[drawWith];
+
+        DrawCell(location, block.SpriteLocation);
     }
 
     public void DrawSquare(Vector2I location, int size, bool shouldFill = false)
