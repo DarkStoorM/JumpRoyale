@@ -2,8 +2,7 @@ using Godot;
 
 namespace JumpRoyale;
 
-public class VerticalWallConcrete(Vector2I top, Vector2I middle, Vector2I bottom)
-    : BaseVerticalObject(top, middle, bottom)
+public class VerticalWallConcrete(Vector2I start, Vector2I middle, Vector2I end) : BaseLineObject(start, middle, end)
 {
     // .
 }

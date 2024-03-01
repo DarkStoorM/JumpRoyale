@@ -2,4 +2,4 @@ using Godot;
 
 namespace JumpRoyale;
 
-public class BlockConcrete(Vector2I location) : BaseSingleBlock(location) { }
+public class BlockConcrete(Vector2I spriteLocation) : BasePointObject(spriteLocation) { }

@@ -5,7 +5,7 @@ namespace JumpRoyale;
 /// </summary>
 public static class GameTiles
 {
-    public static readonly BlockConcrete BlockConcrete = new(new(12, 2));
+    public static readonly BlockConcrete BlockConcrete = new(new(12, 5));
     public static readonly BlockGold BlockGold = new(new(17, 9));
     public static readonly BlockStone BlockStone = new(new(12, 1));
 
