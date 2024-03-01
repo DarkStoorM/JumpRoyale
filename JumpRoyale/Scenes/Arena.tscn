@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dmrooefndxyw6"]
 
 [ext_resource type="Script" path="res://src/SceneScripts/ArenaScene.cs" id="1_yckc0"]
-[ext_resource type="PackedScene" uid="uid://d2wgas5feebve" path="res://Scenes/Jumper.tscn" id="2_as2jd"]
+[ext_resource type="PackedScene" uid="uid://5gt7u2ubg5bn" path="res://Scenes/Jumper.tscn" id="2_as2jd"]
 [ext_resource type="TileSet" uid="uid://03x22p6x7fso" path="res://Resources/TileSet.tres" id="3_r17hm"]
 
 [node name="Arena" type="Node2D"]
