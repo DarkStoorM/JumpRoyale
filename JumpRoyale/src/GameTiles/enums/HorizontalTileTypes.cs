@@ -1,9 +1,9 @@
 namespace JumpRoyale;
 
 /// <summary>
-/// Defines the types of objects for Drawing.
+/// Defines the types of horizontal objects for Drawing.
 /// </summary>
-public enum GameTileTypes
+public enum HorizontalTileTypes
 {
     PlatformConcrete,
     PlatformGold,
