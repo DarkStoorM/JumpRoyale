@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using JumpRoyale.Utils;
 
 namespace JumpRoyale;
 
 public class ArenaBuilder
 {
     private static readonly object _lock = new();
+
     private static ArenaBuilder? _instance;
 
     private readonly TileSet _tileSet;
@@ -15,12 +15,14 @@ public class ArenaBuilder
     /// <summary>
     /// Collection of all Platforms that can be used for drawing one-way collision platforms.
     /// </summary>
-    private readonly Dictionary<GameTileTypes, BasePlatform> _platforms = [];
+    private readonly Dictionary<GameTileTypes, BaseHorizontalObject> _platforms = [];
 
     private ArenaBuilder(TileSet tileSet)
     {
         _tileSet = tileSet;
+        TileMap = new() { Name = "TileMap", TileSet = _tileSet };
 
+        // Store all Drawable objects
         _platforms.Add(GameTileTypes.PlatformConcrete, GameTiles.PlatformConcrete);
         _platforms.Add(GameTileTypes.PlatformGold, GameTiles.PlatformGold);
         _platforms.Add(GameTileTypes.PlatformStone, GameTiles.PlatformStone);
@@ -42,6 +44,8 @@ public class ArenaBuilder
         }
     }
 
+    public TileMap TileMap { get; }
+
     /// <summary>
     /// Creates ArenaBuilder instance with TileSet containing sprites to assign to platforms and other objects (walls,
     /// etc.).
@@ -49,8 +53,6 @@ public class ArenaBuilder
     /// <param name="tileSet">TileSet with atlas that should include all sprites.</param>
     public static void Initialize(TileSet tileSet)
     {
-        NullGuard.ThrowIfNull(tileSet);
-
         lock (_lock)
         {
             _instance ??= new ArenaBuilder(tileSet);
@@ -70,14 +72,20 @@ public class ArenaBuilder
     public void DrawPlatform(Vector2I location, int length, GameTileTypes drawWith = GameTileTypes.PlatformStone)
     {
         // Retrieves the default platform for drawing unless specified otherwise
-        // BasePlatform platform = _platforms[drawWith];
-        int start = location.X;
-        int end = location.X + length;
+        BaseHorizontalObject platform = _platforms[drawWith];
 
-        for (int x = start; start < end; x++)
+        DrawCell(location, platform.Left);
+
+        // Store the cell X where the right edge of the platform will be drawn
+        Vector2I end = location + Vector2I.Right * (1 + length);
+
+        // WIll only loop the middle part as long as the length is greater than 0
+        for (int x = location.X; x < end.X; x++)
         {
-            // TBA
+            DrawCell(new Vector2I(x, location.Y), platform.Middle);
         }
+
+        DrawCell(end, platform.Right);
     }
 
     /// <summary>
@@ -108,5 +116,10 @@ public class ArenaBuilder
     public void DrawRectangle(Vector2I startingPoint, Vector2I endingPoint, bool shouldFill = false)
     {
         // TBA
+    }
+
+    private void DrawCell(Vector2I location, Vector2I atlasCoords)
+    {
+        TileMap.SetCell(0, location, 0, atlasCoords);
     }
 }
