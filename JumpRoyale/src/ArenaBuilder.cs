@@ -63,7 +63,7 @@ public class ArenaBuilder : IArenaBuilder
         TileTypes fillWith = TileTypes.Stone
     )
     {
-        DrawCell(location, _blocks[fillWith].SpriteLocation);
+        DrawCell(location, _blocks[drawWith].SpriteLocation);
 
         if (size == 0)
         {
