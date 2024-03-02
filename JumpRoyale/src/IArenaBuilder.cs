@@ -63,4 +63,45 @@ public interface IArenaBuilder
     /// </summary>
     /// <param name="location">Coordinates on TileMap to draw at.</param>
     public void DrawPoint(Vector2I location, TileTypes drawWith = TileTypes.Stone);
+
+    /// <summary>
+    /// Draws a square-shaped object on the arena at the specified location. By default, a square of 1 tile will be
+    /// drawn and if the <c>size</c> is specified (>0), the object will be extended diagonally up-right by this many
+    /// units.
+    /// </summary>
+    /// <remarks>
+    /// The starting point of the square is bottom-left. The object is drawn from left-to-right, bottom-to-top.
+    /// </remarks>
+    /// <param name="location">Starting point where the object is drawn from.</param>
+    /// <param name="size">Amount of units this square will be expanded diagonally for.</param>
+    /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).</param>
+    /// <param name="drawWith">Primary object to draw the bounds with.</param>
+    /// <param name="fillWith">Secondary object used as a filler. Default Stone tile is used if shouldFill is true.</param>
+    public void DrawSquare(
+        Vector2I location,
+        int size,
+        bool shouldFill = false,
+        TileTypes drawWith = TileTypes.Stone,
+        TileTypes fillWith = TileTypes.Stone
+    );
+
+    /// <summary>
+    /// Draws a rectangle object, whose size is defined by the <c>endingPoint</c>. By default, a rectangle of 1 tile
+    /// will be drawn and if the <c>size</c> is specified (>0).
+    /// </summary>
+    /// <remarks>
+    /// The drawing method is as same as for Square, bottom-left -> top-right.
+    /// </remarks>
+    /// <param name="startingPoint">Location of the bottom-left corner to start drawing from.</param>
+    /// <param name="endingPoint">Location of the top-right corner to end the drawing at.</param>
+    /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).</param>
+    /// <param name="drawWith">Primary object to draw the bounds with.</param>
+    /// <param name="fillWith">Secondary object used as a filler. Default Stone tile is used if shouldFill is true.</param>
+    public void DrawBox(
+        Vector2I startingPoint,
+        Vector2I endingPoint,
+        bool shouldFill = false,
+        TileTypes drawWith = TileTypes.Stone,
+        TileTypes fillWith = TileTypes.Stone
+    );
 }
