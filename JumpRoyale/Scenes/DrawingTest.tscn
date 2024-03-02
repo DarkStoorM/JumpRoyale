@@ -1,0 +1,121 @@
+[gd_scene load_steps=5 format=3 uid="uid://by5lvltrd71ou"]
+
+[ext_resource type="Script" path="res://src/SceneScripts/DrawingTestScene.cs" id="1_jkxit"]
+[ext_resource type="TileSet" uid="uid://03x22p6x7fso" path="res://Resources/TileSet.tres" id="3_ign6l"]
+
+[sub_resource type="Theme" id="Theme_r6m32"]
+default_font_size = 16
+
+[sub_resource type="Theme" id="Theme_2uyhy"]
+default_font_size = 12
+
+[node name="DrawingTest" type="Node2D"]
+script = ExtResource("1_jkxit")
+TileSetToUse = ExtResource("3_ign6l")
+
+[node name="Title" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+theme = SubResource("Theme_r6m32")
+text = "This is a test scene for debugging purposes. All methods should draw three types of sprites. If any of them is missing, double check the code"
+
+[node name="PointsTest" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 48.0
+offset_right = 206.0
+offset_bottom = 71.0
+theme = SubResource("Theme_2uyhy")
+text = "Three Points should appear here =>"
+
+[node name="PlatformsTestTitle" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 80.0
+offset_right = 222.0
+offset_bottom = 103.0
+theme = SubResource("Theme_2uyhy")
+text = "Platform tests"
+
+[node name="PlatformsTest1" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 104.0
+offset_right = 222.0
+offset_bottom = 127.0
+theme = SubResource("Theme_2uyhy")
+text = "0-length platforms => "
+
+[node name="PlatformsTest2" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 120.0
+offset_right = 222.0
+offset_bottom = 143.0
+theme = SubResource("Theme_2uyhy")
+text = "1-length platforms => "
+
+[node name="PlatformsTest3" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 136.0
+offset_right = 222.0
+offset_bottom = 159.0
+theme = SubResource("Theme_2uyhy")
+text = "2-length platforms => "
+
+[node name="WallsTestTitle" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 170.0
+offset_right = 222.0
+offset_bottom = 193.0
+theme = SubResource("Theme_2uyhy")
+text = "Walls tests"
+
+[node name="WallTest1" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 192.0
+offset_right = 222.0
+offset_bottom = 215.0
+theme = SubResource("Theme_2uyhy")
+text = "0-length walls => "
+
+[node name="WallTest2" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 208.0
+offset_right = 222.0
+offset_bottom = 231.0
+theme = SubResource("Theme_2uyhy")
+text = "1-length walls => "
+
+[node name="WallTest3" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 224.0
+offset_right = 222.0
+offset_bottom = 247.0
+theme = SubResource("Theme_2uyhy")
+text = "2-length walls => "
+
+[node name="PlatformLengthLabel" type="Label" parent="."]
+offset_left = 408.0
+offset_top = 115.0
+offset_right = 715.0
+offset_bottom = 152.0
+theme = SubResource("Theme_2uyhy")
+text = "All platforms and walls should have at least 2 sprites:
+- left/top and right/bottom"
+
+[node name="SquaresTestTitle" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 320.0
+offset_right = 222.0
+offset_bottom = 343.0
+theme = SubResource("Theme_2uyhy")
+text = "Squares test"
+
+[node name="SquaresTestLabel" type="Label" parent="."]
+offset_left = 18.0
+offset_top = 350.0
+offset_right = 325.0
+offset_bottom = 427.0
+theme = SubResource("Theme_2uyhy")
+text = "There should be 4 squares without filling: (filled squares next to them, then with different filling)
+- 0-size: 1 tile
+- 1-size: 2 rows/cols
+- 2-size: 3 rows/cols
+- 3-size: 4 rows/cols"
