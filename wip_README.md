@@ -28,6 +28,8 @@ The methods should be really easy to use by external components, reducing the re
 
 There could potentially be an issue of this not being Testable, since there is nothing to store really and it references Godot's API (probably), which will crash the tests, but it has to be researched first. It would also be really useful if we could check the type of drawn cell at position to allow `Drop` command only for certain platforms.
 
+> Upon further inspection, this turned out to be untestable, so this requires a dummy, temporary method for drawing all objects of different lengths to see if they appear on screen ツ this is because it only interacts with TileMap, which loads a resource (TileSet), so can't really do anything about it from the outside of Godot's assembly.
+
 ---
 
 ## Character Sprite handler
