@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -54,18 +55,83 @@ public class ArenaBuilder : IArenaBuilder
         DrawCell(location, _blocks[drawWith].SpriteLocation);
     }
 
-    public void DrawSquare(Vector2I location, int size, bool shouldFill = false)
+    public void DrawSquare(
+        Vector2I location,
+        int size,
+        bool shouldFill = false,
+        TileTypes drawWith = TileTypes.Stone,
+        TileTypes fillWith = TileTypes.Stone
+    )
     {
-        // TBA
+        DrawCell(location, _blocks[fillWith].SpriteLocation);
+
+        if (size == 0)
+        {
+            return;
+        }
+
+        Vector2I endingPoint = new(location.X + size, location.Y - size);
+
+        DrawRectangle(location, endingPoint, shouldFill, drawWith, fillWith);
     }
 
-    public void DrawRectangle(Vector2I startingPoint, Vector2I endingPoint, bool shouldFill = false)
+    public void DrawBox(
+        Vector2I startingPoint,
+        Vector2I endingPoint,
+        bool shouldFill = false,
+        TileTypes drawWith = TileTypes.Stone,
+        TileTypes fillWith = TileTypes.Stone
+    )
     {
-        // TBA
+        DrawCell(startingPoint, _blocks[fillWith].SpriteLocation);
+
+        if (endingPoint.X < startingPoint.X || endingPoint.Y > startingPoint.Y)
+        {
+            throw new Exception("Boxes can only be drawn left-to-right, bottom-to-top");
+        }
+
+        DrawRectangle(startingPoint, endingPoint, shouldFill, drawWith, fillWith);
     }
 
     /// <summary>
-    /// Draws a horizontal line on the TileMap with specified object and given length.
+    /// Shared logic for drawing Squares and Boxes (variable size).
+    /// </summary>
+    /// <remarks>See <see cref="DrawSquare"/> for information on parameters and drawing method.</remarks>
+    private void DrawRectangle(
+        Vector2I startingPoint,
+        Vector2I endingPoint,
+        bool shouldFill = false,
+        TileTypes drawWith = TileTypes.Stone,
+        TileTypes fillWith = TileTypes.Stone
+    )
+    {
+        BasePointObject drawingObject = _blocks[drawWith];
+        BasePointObject fillerObject = _blocks[fillWith];
+
+        for (int y = startingPoint.Y; y > endingPoint.Y - 1; y--)
+        {
+            for (int x = startingPoint.X; x < endingPoint.X + 1; x++)
+            {
+                // Determine the drawing object. If we are on bounds, use primary. Secondary if "inside"
+                bool isOnBounds =
+                    x == startingPoint.X || x == endingPoint.X || y == startingPoint.Y || y == endingPoint.Y;
+
+                // Ignore the drawing if we are inside the object, but didn't ask to fill it
+                if (!shouldFill && !isOnBounds)
+                {
+                    continue;
+                }
+
+                // Select the drawing object depending on the position (bounds / inside)
+                BasePointObject obj = isOnBounds ? drawingObject : fillerObject;
+
+                DrawCell(new Vector2I(x, y), obj.SpriteLocation);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Shared logic for drawing horizontal Platforms and Walls.
     /// </summary>
     private void DrawHorizontally(Vector2I location, int length, BaseLineObject obj)
     {
@@ -84,7 +150,7 @@ public class ArenaBuilder : IArenaBuilder
     }
 
     /// <summary>
-    /// Draws a Vertical line on the TileMap with specified object and given length.
+    /// Shared logic for drawing vertical Walls.
     /// </summary>
     private void DrawVertically(Vector2I location, int length, BaseLineObject obj)
     {
