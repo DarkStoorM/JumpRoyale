@@ -76,13 +76,14 @@ public interface IArenaBuilder
     /// <param name="size">Amount of units this square will be expanded diagonally for.</param>
     /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).</param>
     /// <param name="drawWith">Primary object to draw the bounds with.</param>
-    /// <param name="fillWith">Secondary object used as a filler. Default Stone tile is used if shouldFill is true.</param>
+    /// <param name="fillWith">Secondary object used as a filler. <c>drawWith</c> is used as default if none was
+    /// specified and if <c>shouldFill</c> was true.</param>
     public void DrawSquare(
         Vector2I location,
         int size,
         bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
-        TileTypes fillWith = TileTypes.Stone
+        TileTypes? fillWith = null
     );
 
     /// <summary>
@@ -96,12 +97,13 @@ public interface IArenaBuilder
     /// <param name="endingPoint">Location of the top-right corner to end the drawing at.</param>
     /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).</param>
     /// <param name="drawWith">Primary object to draw the bounds with.</param>
-    /// <param name="fillWith">Secondary object used as a filler. Default Stone tile is used if shouldFill is true.</param>
+    /// <param name="fillWith">Secondary object used as a filler. <c>drawWith</c> is used as default if none was
+    /// specified and if <c>shouldFill</c> was true.</param>
     public void DrawBox(
         Vector2I startingPoint,
         Vector2I endingPoint,
         bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
-        TileTypes fillWith = TileTypes.Stone
+        TileTypes? fillWith = null
     );
 }

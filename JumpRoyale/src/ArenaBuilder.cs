@@ -60,13 +60,13 @@ public class ArenaBuilder : IArenaBuilder
         int size,
         bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
-        TileTypes fillWith = TileTypes.Stone
+        TileTypes? fillWith = null
     )
     {
-        DrawCell(location, _blocks[drawWith].SpriteLocation);
-
         if (size == 0)
         {
+            DrawCell(location, _blocks[drawWith].SpriteLocation);
+
             return;
         }
 
@@ -80,11 +80,9 @@ public class ArenaBuilder : IArenaBuilder
         Vector2I endingPoint,
         bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
-        TileTypes fillWith = TileTypes.Stone
+        TileTypes? fillWith = null
     )
     {
-        DrawCell(startingPoint, _blocks[fillWith].SpriteLocation);
-
         if (endingPoint.X < startingPoint.X || endingPoint.Y > startingPoint.Y)
         {
             throw new Exception("Boxes can only be drawn left-to-right, bottom-to-top");
@@ -102,11 +100,14 @@ public class ArenaBuilder : IArenaBuilder
         Vector2I endingPoint,
         bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
-        TileTypes fillWith = TileTypes.Stone
+        TileTypes? fillWith = null
     )
     {
         BasePointObject drawingObject = _blocks[drawWith];
-        BasePointObject fillerObject = _blocks[fillWith];
+        BasePointObject fillerObject = _blocks[fillWith ?? drawWith];
+
+        // Always draw the first cell no matter what
+        DrawCell(startingPoint, drawingObject.SpriteLocation);
 
         for (int y = startingPoint.Y; y > endingPoint.Y - 1; y--)
         {
