@@ -155,18 +155,18 @@ public class ArenaBuilder : IArenaBuilder
     /// </summary>
     private void DrawVertically(Vector2I location, int length, BaseLineObject obj)
     {
-        DrawCell(location, obj.Start);
+        DrawCell(location, obj.Finish);
 
         // Store the cell Y where the finish point of the object will be drawn
-        Vector2I end = location + Vector2I.Down * (1 + length);
+        Vector2I end = new(location.X, location.Y - length - 1);
 
         // Will only loop the middle part as long as the length is greater than 0
-        for (int y = location.Y + 1; y < end.Y; y++)
+        for (int y = location.Y - 1; y > end.Y - 1; y--)
         {
             DrawCell(new Vector2I(location.X, y), obj.Middle);
         }
 
-        DrawCell(end, obj.Finish);
+        DrawCell(end, obj.Start);
     }
 
     private void DrawCell(Vector2I location, Vector2I atlasCoords)

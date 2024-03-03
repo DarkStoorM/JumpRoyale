@@ -47,7 +47,7 @@ public interface IArenaBuilder
     /// combination, which consist of two edges and optional "middle" part, which is dictated by the <c>height</c>, so
     /// if no height is provided, it will be drawn as a 2-tile sprite.
     /// <para>
-    /// This draws a solid wall the player can't jump through, drawn top-to-bottom.
+    /// This draws a solid wall the player can't jump through, drawn bottom-to-top.
     /// </para>
     /// </summary>
     /// <remarks>
@@ -55,7 +55,7 @@ public interface IArenaBuilder
     /// how many additional tiles to draw, which extend the wall, so despite providing the height of 0, the wall
     /// will always be drawn.
     /// </remarks>
-    /// <param name="location">Starting point where the wall is drawn (starting from Top).</param>
+    /// <param name="location">Starting point where the wall is drawn (starting from Bottom).</param>
     /// <param name="height">How many Middle tiles to insert.</param>
     /// <param name="drawWith">Type of the wall to draw. This parameter does not have to be specified in order to
     /// draw with the default <c>Stone</c> tile. Override this if you need to draw with a different tile.</param>
