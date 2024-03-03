@@ -5,35 +5,36 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 > Below sections are sorted by priority
 
 -   [JumpRoyale](#jumproyale)
-    -   [Arena Builder](#arena-builder)
-    -   [Character Sprite handler](#character-sprite-handler)
+    -   [Add Jumping Physics](#add-jumping-physics)
+    -   [Create the Arena](#create-the-arena)
     -   [Character Choice](#character-choice)
+    -   [Fireballs (Twitch command)](#fireballs-twitch-command)
+    -   [Aim command](#aim-command)
 
 ---
 
-## Arena Builder
+## Add Jumping Physics
 
-Arena Builder is a separate class, which draws sprites on a TileMap. This class should provide a set of methods for different drawing methods:
+Up to this moment there was only background testing and just putting sprites on the arena, but to move forward, the Jumper now has to have his Jumping physics added to test if the collisions work as intended.
 
-```cs
-DrawPoint(Vector2 startingPoint);
-DrawLineHorizontally(Vector2 startingPoint, int length);
-DrawLineVertically(Vector2 startingPoint, int length);
-DrawSquare(Vector2 startingPoint, int size, bool shouldFill = false);
-DrawRectangle(Vector2 startingPoint, Vector2 EndingPoint, bool shouldFill = false);
-```
-
-The methods should be really easy to use by external components, reducing the repeated code with the requirement of knowing the location of a sprite in the tileset. The Arena Builder should aim to reduce this step as much as possible, which possibly should only require us to specify the platform type and drawing method, the builder should handle the rest automatically with a single call, not three (platform start, middle, end).
-
-There could potentially be an issue of this not being Testable, since there is nothing to store really and it references Godot's API (probably), which will crash the tests, but it has to be researched first. It would also be really useful if we could check the type of drawn cell at position to allow `Drop` command only for certain platforms.
+With all the commands in place, this should most likely leave us with *almost playable* game.
 
 ---
 
-## Character Sprite handler
+## Create the Arena
 
-The old sprite handler was already a separate singleton and it should already work when dropped in from the old codebase, but it should be reviewed first for possible refactors, mainly the resource path extraction.
+Now with the Arena Builder in place, it would be a good test to research the drawing methods. Previously, a regular Random placement was being used, which was not bad by any means, but there are also other techniques to try: Perlin Noise.
 
-There should also be a possibility of expanding this class if `privileged` cosmetics are added, like special characters - currently, there are 18 characters (3 clothings, 3 different characters, 2 genders).
+While Perlin Noise is very good for creating terrains, it should also be tested if it can do any good job with putting Platforms on the arena. There are also other noise functions to try:
+
+-   Discrete
+-   Tricubic
+-   Perlin (main goal)
+-   Simplex
+-   Spots
+-   Worley
+
+The initial idea is to use Perlin Noise for platforms and possibly mix it with another one for solid blocks, like Spots noise.
 
 ---
 
@@ -42,3 +43,32 @@ There should also be a possibility of expanding this class if `privileged` cosme
 Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
 
 ---
+
+## Fireballs (Twitch command)
+
+Note from Adam:
+
+```plaintext
+🔥 FIREBALLS 🔥
+Post-prototype work:
+- Make shooting a fireball be a command
+- Add a cooldown of ~2 seconds? I don't want too much spam
+- Make it only usable at the end of the game
+```
+
+Initial design threw a fireball, which was affected by gravity and could collide with other players, pushing them back with some force.
+
+---
+
+## Aim command
+
+Note from `Smu`:
+
+> jump royale idea: ar30 to aim 30 degrees right. It's like jumping, except there is no jump, it just draws a square function that follows your jump trajectory (without collision). It should disappear after ~5 seconds.
+
+Approx functionality:
+
+-   copy the Jump logic for the angle calculation (`j`-> `-90` - `90`)
+-   allow executing the command in the following format:
+    -   `aim` `<direction> <angle> [power]`
+    -   `a` `<direction> <angle> [power]`

@@ -11,16 +11,27 @@ namespace JumpRoyale;
 
 public partial class ArenaScene : Node2D
 {
+    private ArenaBuilder _builder = null!;
+
     [Export]
     public PackedScene? JumperScene { get; private set; }
 
+    [Export]
+    public TileSet? TileSetToUse { get; private set; }
+
     public override void _Ready()
     {
+        NullGuard.ThrowIfNull(TileSetToUse);
+
+        _builder = new ArenaBuilder(TileSetToUse);
+
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
 
         TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += OnMessageReceived;
         PlayerStats.Instance.OnPlayerJoin += OnPlayerJoin;
+
+        AddChild(_builder.TileMap);
     }
 
     public override void _UnhandledInput(InputEvent @event)
