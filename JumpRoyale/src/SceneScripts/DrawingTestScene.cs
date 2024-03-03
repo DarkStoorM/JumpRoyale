@@ -61,17 +61,17 @@ public partial class DrawingTestScene : Node2D
         _builder.DrawHorizontalWall(new Vector2I(15, 14), 2, TileTypes.Concrete);
         _builder.DrawHorizontalWall(new Vector2I(20, 14), 2, TileTypes.Gold);
 
-        _builder.DrawVerticalWall(new Vector2I(10, 16), 0, TileTypes.Stone);
-        _builder.DrawVerticalWall(new Vector2I(11, 16), 1, TileTypes.Stone);
-        _builder.DrawVerticalWall(new Vector2I(12, 16), 2, TileTypes.Stone);
+        _builder.DrawVerticalWall(new Vector2I(10, 17), 0, TileTypes.Stone);
+        _builder.DrawVerticalWall(new Vector2I(11, 18), 1, TileTypes.Stone);
+        _builder.DrawVerticalWall(new Vector2I(12, 19), 2, TileTypes.Stone);
 
-        _builder.DrawVerticalWall(new Vector2I(15, 16), 0, TileTypes.Concrete);
-        _builder.DrawVerticalWall(new Vector2I(16, 16), 1, TileTypes.Concrete);
-        _builder.DrawVerticalWall(new Vector2I(17, 16), 2, TileTypes.Concrete);
+        _builder.DrawVerticalWall(new Vector2I(15, 17), 0, TileTypes.Concrete);
+        _builder.DrawVerticalWall(new Vector2I(16, 18), 1, TileTypes.Concrete);
+        _builder.DrawVerticalWall(new Vector2I(17, 19), 2, TileTypes.Concrete);
 
-        _builder.DrawVerticalWall(new Vector2I(20, 16), 0, TileTypes.Gold);
-        _builder.DrawVerticalWall(new Vector2I(21, 16), 1, TileTypes.Gold);
-        _builder.DrawVerticalWall(new Vector2I(22, 16), 2, TileTypes.Gold);
+        _builder.DrawVerticalWall(new Vector2I(20, 17), 0, TileTypes.Gold);
+        _builder.DrawVerticalWall(new Vector2I(21, 18), 1, TileTypes.Gold);
+        _builder.DrawVerticalWall(new Vector2I(22, 19), 2, TileTypes.Gold);
     }
 
     private void DrawTestSquares()
