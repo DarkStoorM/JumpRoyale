@@ -79,17 +79,18 @@ public interface IArenaBuilder
     /// </remarks>
     /// <param name="location">Starting point where the object is drawn from.</param>
     /// <param name="size">Amount of units this square will be expanded diagonally for.</param>
-    /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).</param>
     /// <param name="drawWith">Primary object to draw the bounds with. This parameter does not have to be specified in
     /// order to draw with the default <c>Stone</c> tile. Override this if you need to draw with a different
     /// tile.</param>
+    /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).
+    /// <c>true</c> by default.</param>
     /// <param name="fillWith">Secondary object used as a filler. <c>drawWith</c> is used as default if none was
     /// specified and if <c>shouldFill</c> was true.</param>
     public void DrawSquare(
         Vector2I location,
         int size,
-        bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
+        bool shouldFill = true,
         TileTypes? fillWith = null
     );
 
@@ -102,17 +103,18 @@ public interface IArenaBuilder
     /// </remarks>
     /// <param name="startingPoint">Location of the bottom-left corner to start drawing from.</param>
     /// <param name="endingPoint">Location of the top-right corner to end the drawing at.</param>
-    /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).</param>
     /// <param name="drawWith">Primary object to draw the bounds with. This parameter does not have to be specified in
     /// order to draw with the default <c>Stone</c> tile. Override this if you need to draw with a different
     /// tile.</param>
+    /// <param name="shouldFill">If true, the object will be filled with sprites (default or manually selected).
+    /// <c>true</c> by default.</param>
     /// <param name="fillWith">Secondary object used as a filler. <c>drawWith</c> is used as default if none was
     /// specified and if <c>shouldFill</c> was true.</param>
     public void DrawBox(
         Vector2I startingPoint,
         Vector2I endingPoint,
-        bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
+        bool shouldFill = true,
         TileTypes? fillWith = null
     );
 }

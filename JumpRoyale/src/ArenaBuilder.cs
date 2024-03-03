@@ -58,8 +58,8 @@ public class ArenaBuilder : IArenaBuilder
     public void DrawSquare(
         Vector2I location,
         int size,
-        bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
+        bool shouldFill = true,
         TileTypes? fillWith = null
     )
     {
@@ -72,14 +72,14 @@ public class ArenaBuilder : IArenaBuilder
 
         Vector2I endingPoint = new(location.X + size, location.Y - size);
 
-        DrawRectangle(location, endingPoint, shouldFill, drawWith, fillWith);
+        DrawRectangle(location, endingPoint, drawWith, shouldFill, fillWith);
     }
 
     public void DrawBox(
         Vector2I startingPoint,
         Vector2I endingPoint,
-        bool shouldFill = false,
         TileTypes drawWith = TileTypes.Stone,
+        bool shouldFill = true,
         TileTypes? fillWith = null
     )
     {
@@ -88,47 +88,7 @@ public class ArenaBuilder : IArenaBuilder
             throw new Exception("Boxes can only be drawn left-to-right, bottom-to-top");
         }
 
-        DrawRectangle(startingPoint, endingPoint, shouldFill, drawWith, fillWith);
-    }
-
-    /// <summary>
-    /// Shared logic for drawing Squares and Boxes (variable size).
-    /// </summary>
-    /// <remarks>See <see cref="DrawSquare"/> for information on parameters and drawing method.</remarks>
-    private void DrawRectangle(
-        Vector2I startingPoint,
-        Vector2I endingPoint,
-        bool shouldFill = false,
-        TileTypes drawWith = TileTypes.Stone,
-        TileTypes? fillWith = null
-    )
-    {
-        BasePointObject drawingObject = _blocks[drawWith];
-        BasePointObject fillerObject = _blocks[fillWith ?? drawWith];
-
-        // Always draw the first cell no matter what
-        DrawCell(startingPoint, drawingObject.SpriteLocation);
-
-        for (int y = startingPoint.Y; y > endingPoint.Y - 1; y--)
-        {
-            for (int x = startingPoint.X; x < endingPoint.X + 1; x++)
-            {
-                // Determine the drawing object. If we are on bounds, use primary. Secondary if "inside"
-                bool isOnBounds =
-                    x == startingPoint.X || x == endingPoint.X || y == startingPoint.Y || y == endingPoint.Y;
-
-                // Ignore the drawing if we are inside the object, but didn't ask to fill it
-                if (!shouldFill && !isOnBounds)
-                {
-                    continue;
-                }
-
-                // Select the drawing object depending on the position (bounds / inside)
-                BasePointObject obj = isOnBounds ? drawingObject : fillerObject;
-
-                DrawCell(new Vector2I(x, y), obj.SpriteLocation);
-            }
-        }
+        DrawRectangle(startingPoint, endingPoint, drawWith, shouldFill, fillWith);
     }
 
     /// <summary>
@@ -167,6 +127,46 @@ public class ArenaBuilder : IArenaBuilder
         }
 
         DrawCell(end, obj.Start);
+    }
+
+    /// <summary>
+    /// Shared logic for drawing Squares and Boxes (variable size).
+    /// </summary>
+    /// <remarks>See <see cref="DrawSquare"/> for information on parameters and drawing method.</remarks>
+    private void DrawRectangle(
+        Vector2I startingPoint,
+        Vector2I endingPoint,
+        TileTypes drawWith = TileTypes.Stone,
+        bool shouldFill = false,
+        TileTypes? fillWith = null
+    )
+    {
+        BasePointObject drawingObject = _blocks[drawWith];
+        BasePointObject fillerObject = _blocks[fillWith ?? drawWith];
+
+        // Always draw the first cell no matter what
+        DrawCell(startingPoint, drawingObject.SpriteLocation);
+
+        for (int y = startingPoint.Y; y > endingPoint.Y - 1; y--)
+        {
+            for (int x = startingPoint.X; x < endingPoint.X + 1; x++)
+            {
+                // Determine the drawing object. If we are on bounds, use primary. Secondary if "inside"
+                bool isOnBounds =
+                    x == startingPoint.X || x == endingPoint.X || y == startingPoint.Y || y == endingPoint.Y;
+
+                // Ignore the drawing if we are inside the object, but didn't ask to fill it
+                if (!shouldFill && !isOnBounds)
+                {
+                    continue;
+                }
+
+                // Select the drawing object depending on the position (bounds / inside)
+                BasePointObject obj = isOnBounds ? drawingObject : fillerObject;
+
+                DrawCell(new Vector2I(x, y), obj.SpriteLocation);
+            }
+        }
     }
 
     private void DrawCell(Vector2I location, Vector2I atlasCoords)
