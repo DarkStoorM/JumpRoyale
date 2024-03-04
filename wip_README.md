@@ -5,19 +5,16 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 > Below sections are sorted by priority
 
 -   [JumpRoyale](#jumproyale)
-    -   [Add Jumping Physics](#add-jumping-physics)
-    -   [Create the Arena](#create-the-arena)
     -   [Character Choice](#character-choice)
+    -   [Create the Arena](#create-the-arena)
     -   [Fireballs (Twitch command)](#fireballs-twitch-command)
     -   [Aim command](#aim-command)
 
 ---
 
-## Add Jumping Physics
+## Character Choice
 
-Up to this moment there was only background testing and just putting sprites on the arena, but to move forward, the Jumper now has to have his Jumping physics added to test if the collisions work as intended.
-
-With all the commands in place, this should most likely leave us with *almost playable* game.
+Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
 
 ---
 
@@ -35,12 +32,6 @@ While Perlin Noise is very good for creating terrains, it should also be tested 
 -   Worley
 
 The initial idea is to use Perlin Noise for platforms and possibly mix it with another one for solid blocks, like Spots noise.
-
----
-
-## Character Choice
-
-Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
 
 ---
 
