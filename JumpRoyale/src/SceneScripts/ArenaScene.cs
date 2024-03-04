@@ -16,14 +16,16 @@ public partial class ArenaScene : Node2D
     [Export]
     public PackedScene? JumperScene { get; private set; }
 
-    [Export]
-    public TileSet? TileSetToUse { get; private set; }
-
     public override void _Ready()
     {
-        NullGuard.ThrowIfNull(TileSetToUse);
+        TileMap tileMap = GetNode<TileMap>("TileMap");
 
-        _builder = new ArenaBuilder(TileSetToUse);
+        if (tileMap.TileSet is null)
+        {
+            throw new UnassignedSceneOrComponentException();
+        }
+
+        _builder = new ArenaBuilder(tileMap);
 
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
@@ -31,10 +33,7 @@ public partial class ArenaScene : Node2D
         TwitchChatClient.Instance.OnTwitchMessageReceivedEvent += OnMessageReceived;
         PlayerStats.Instance.OnPlayerJoin += OnPlayerJoin;
 
-        AddChild(_builder.TileMap);
-
-        _builder.DrawHorizontalPlatform(new Vector2I(0, 20), 160);
-        _builder.DrawBox(new(37, 18), new(45, 3), TileTypes.Concrete, true, TileTypes.Gold);
+        GenerateArena();
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -135,5 +134,11 @@ public partial class ArenaScene : Node2D
         ChatCommandHandler commandHandler = new(message, senderId, senderName, hexColor, isPrivileged);
 
         commandHandler.ProcessMessage();
+    }
+
+    private void GenerateArena()
+    {
+        _builder.DrawVerticalWall(new(0, 63), 500);
+        _builder.DrawVerticalWall(new(119, 63), 500);
     }
 }

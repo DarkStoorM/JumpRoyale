@@ -11,9 +11,9 @@ public class ArenaBuilder : IArenaBuilder
     private readonly Dictionary<TileTypes, BaseLineObject> _verticalWalls = [];
     private readonly Dictionary<TileTypes, BasePointObject> _blocks = [];
 
-    public ArenaBuilder(TileSet tileSet)
+    public ArenaBuilder(TileMap tileMap)
     {
-        TileMap = new() { Name = "TileMap", TileSet = tileSet };
+        TileMap = tileMap;
 
         // Store all Drawable objects
         _horizontalPlatforms.Add(TileTypes.Concrete, GameTiles.PlatformConcrete);

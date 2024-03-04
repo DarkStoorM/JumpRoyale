@@ -1,5 +1,5 @@
 using Godot;
-using JumpRoyale.Utils;
+using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale;
 
@@ -12,11 +12,14 @@ public partial class DrawingTestScene : Node2D
 
     public override void _Ready()
     {
-        NullGuard.ThrowIfNull(TileSetToUse);
+        TileMap tileMap = GetNode<TileMap>("TileMap");
 
-        _builder = new ArenaBuilder(TileSetToUse);
+        if (tileMap.TileSet is null)
+        {
+            throw new UnassignedSceneOrComponentException();
+        }
 
-        AddChild(_builder.TileMap);
+        _builder = new ArenaBuilder(tileMap);
 
         DrawTestPoints();
         DrawTestPlatforms();
