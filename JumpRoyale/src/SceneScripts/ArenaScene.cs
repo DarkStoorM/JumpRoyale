@@ -32,6 +32,9 @@ public partial class ArenaScene : Node2D
         PlayerStats.Instance.OnPlayerJoin += OnPlayerJoin;
 
         AddChild(_builder.TileMap);
+
+        _builder.DrawHorizontalPlatform(new Vector2I(0, 20), 160);
+        _builder.DrawBox(new(37, 18), new(45, 3), TileTypes.Concrete, true, TileTypes.Gold);
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -48,7 +51,7 @@ public partial class ArenaScene : Node2D
         // Ugly, fake command execution
         if (Input.IsPhysicalKeyPressed(Key.Q))
         {
-            FakeMessage("j");
+            FakeMessage("r40");
         }
         else if (Input.IsPhysicalKeyPressed(Key.W))
         {
@@ -109,7 +112,7 @@ public partial class ArenaScene : Node2D
 
         // Rect2 viewport = GetViewportRect();
         // GD.Print(viewport);
-        int x = 40;
+        int x = 500;
         int y = 40;
 
         jumperScene.Init(eventArgs.Jumper);
