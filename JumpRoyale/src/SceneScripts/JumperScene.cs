@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Godot;
 using JumpRoyale.Events;
@@ -7,6 +8,11 @@ namespace JumpRoyale;
 
 public partial class JumperScene : CharacterBody2D
 {
+    /// <summary>
+    /// Stores this jumper's position in the last frame. See <see cref="StorePosition"/>.
+    /// </summary>
+    private readonly HashSet<Vector2> _recentPosition = [];
+
     [AllowNull]
     private Jumper _jumper;
 
@@ -18,6 +24,12 @@ public partial class JumperScene : CharacterBody2D
     /// Previous X Velocity value of this jumper before MoveAndSlide was called. Used to bounce the jumper off the wall.
     /// </summary>
     private float _previousXVelocity;
+
+    /// <summary>
+    /// Indicated for how many frames this jumper has been in the same place under certain conditions. See <see
+    /// cref="StorePosition"/>.
+    /// </summary>
+    private int _framesSincePositionChange;
 
     public void Init(Jumper jumper)
     {
@@ -65,6 +77,7 @@ public partial class JumperScene : CharacterBody2D
         _previousXVelocity = Velocity.X;
 
         MoveAndSlide();
+        StorePosition();
     }
 
     private void OnJumpCommandEvent(object sender, JumpCommandEventArgs args)
@@ -162,6 +175,40 @@ public partial class JumperScene : CharacterBody2D
         if (IsOnWall())
         {
             Velocity = new Vector2(_previousXVelocity * -0.5f, Velocity.Y);
+        }
+    }
+
+    /// <summary>
+    /// Attempts to store the recent position after MoveAndSlide() call. If the position was not added to the HashSet,
+    /// it means that the position already existed and the jumper did not change his position, but this logic will only
+    /// be executed if the jumper was constantly touching the wall, was not grounded and was not touching the ceiling.
+    /// All this means that the jumper was stuck inside of a wall and his position has to be adjusted after x frames.
+    /// </summary>
+    private void StorePosition()
+    {
+        if (IsOnFloor() || !IsOnWall() || IsOnCeiling())
+        {
+            return;
+        }
+
+        bool added = _recentPosition.Add(Position);
+
+        // If the position was different (the result of successful addition to the HashSet), any previous positions will
+        // be cleared and the new position is stored. On a duplicate position, it could indicate the jumper got stuck.
+        if (added)
+        {
+            _framesSincePositionChange = 0;
+
+            // Remove the previous position and re-add the current
+            _recentPosition.Clear();
+            _recentPosition.Add(Position);
+        }
+
+        _framesSincePositionChange++;
+
+        if (_framesSincePositionChange >= 60)
+        {
+            Position += Vector2.Up * 16;
         }
     }
 }
