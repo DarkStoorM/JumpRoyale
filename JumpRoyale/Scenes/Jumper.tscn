@@ -7,6 +7,7 @@
 size = Vector2(15, 26)
 
 [sub_resource type="LabelSettings" id="LabelSettings_qejxd"]
+resource_local_to_scene = true
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
