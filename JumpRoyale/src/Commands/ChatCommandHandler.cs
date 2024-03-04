@@ -120,9 +120,6 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         PlayerStats.Instance.EmitPlayerJoinEvent(jumper);
 
         // To Be Added:
-        // 1) instantiate the Jumper Scene
-        // 2) place Jumper on the scene within arena bounds
-        // 3) Add instantiated Jumper scene as child to the Arena
-        // 4) Emit a signal that Jumpers count should be incremented
+        // 1) place Jumper on the scene within arena bounds (requires new PR with Arena Generation)
     }
 }
