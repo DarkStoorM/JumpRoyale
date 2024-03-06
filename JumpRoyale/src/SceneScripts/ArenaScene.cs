@@ -138,7 +138,21 @@ public partial class ArenaScene : Node2D
 
     private void GenerateArena()
     {
-        _builder.DrawVerticalWall(new(0, 63), 500);
-        _builder.DrawVerticalWall(new(119, 63), 500);
+        DrawSideWalls();
+
+        // Randomly draw the platforms as base grounding
+        for (int y = 60; y > -1000; y--)
+        {
+            for (int x = 2; x < 118; x++)
+            {
+                // Insert a platform here and maybe some logic, like changing the sprites
+            }
+        }
+    }
+
+    private void DrawSideWalls()
+    {
+        _builder.DrawVerticalWall(new(0, 63), 1000);
+        _builder.DrawVerticalWall(new(119, 63), 1000);
     }
 }
