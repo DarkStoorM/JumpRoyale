@@ -19,6 +19,11 @@ public static class Rng
         return _rng.Next();
     }
 
+    public static float RandomFloat()
+    {
+        return _rng.NextSingle();
+    }
+
     /// <summary>
     /// Returns a random Godot Color.
     /// </summary>
