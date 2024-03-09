@@ -13,6 +13,41 @@ public partial class ArenaScene : Node2D
 {
     private ArenaBuilder _builder = null!;
 
+    private Rect2 _viewport;
+
+    private int _maximumArenaHeight = -600;
+
+    /// <summary>
+    /// How many tiles to skip from the bottom of the screen before we start generating platforms.
+    /// </summary>
+    private int _platformDrawingOffsetInTiles = 5;
+
+    /// <summary>
+    /// Unscaled viewport size.
+    /// </summary>
+    public Vector2 ViewportSizeInPixels => _viewport.Size;
+
+    /// <summary>
+    /// Describes the visible TileMap portion of the viewport in tiles.
+    /// </summary>
+    public Vector2I ViewportSizeInTiles => new((int)_viewport.Size.X / 16, (int)_viewport.Size.Y / 16);
+
+    /// <summary>
+    /// Describes the "playable" arena field, which excludes the side walls (1 tile each) and is offset by 1 tile on
+    /// x-axis on both sides - reducing the usable field by 4 tiles.
+    /// </summary>
+    /// <remarks>
+    /// This property is constructed from values provided by <see cref="ViewportSizeInTiles"/>, where the Position
+    /// (including End property) and Size have been converted from pixels to tiles.
+    /// </remarks>
+    public Rect2 ArenaRectInTiles =>
+        new()
+        {
+            Position = new(2, 0),
+            Size = new(ViewportSizeInTiles.X - 4, ViewportSizeInTiles.Y),
+            End = new(ViewportSizeInTiles.X - 2, ViewportSizeInTiles.Y),
+        };
+
     [Export]
     public PackedScene? JumperScene { get; private set; }
 
@@ -25,6 +60,7 @@ public partial class ArenaScene : Node2D
             throw new UnassignedSceneOrComponentException();
         }
 
+        _viewport = GetViewportRect();
         _builder = new ArenaBuilder(tileMap);
 
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
@@ -140,10 +176,18 @@ public partial class ArenaScene : Node2D
     {
         DrawSideWalls();
 
+        // Start drawing from the bottom, excluding the main floor up to the set maximum
+        int startY = ViewportSizeInTiles.Y - _platformDrawingOffsetInTiles;
+        int endY = _maximumArenaHeight;
+
+        // Draw on the playable arena field, excluding the current platform length to prevent from drawing off screen.
+        int startX = (int)ArenaRectInTiles.Position.X;
+        int endX = (int)ArenaRectInTiles.End.X - 8; // <- note: 8 is temporary, this becomes PlatformLength later
+
         // Randomly draw the platforms as base grounding
-        for (int y = 60; y > -1000; y--)
+        for (int y = startY; y > endY; y--)
         {
-            for (int x = 2; x < 118; x++)
+            for (int x = startX; x < endX; x++)
             {
                 // Insert a platform here and maybe some logic, like changing the sprites
             }
