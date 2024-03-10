@@ -49,6 +49,9 @@ public partial class Arena : Node2D
 
     public override void _Ready()
     {
+        // Game is either twice as slow or twice as fast 🤣
+        Engine.TimeScale = new Random().NextSingle() < 0.5f ? 2f : 0.5f;
+
         ViewportHeight = (int)GetViewportRect().Size.Y;
         PlayerStats.Instance.StatsFilePath = ProjectSettings.GlobalizePath(ResourcePathsConstants.PathToPlayerStats);
         PlayerStats.Instance.LoadPlayerData();
