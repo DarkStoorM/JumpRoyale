@@ -210,7 +210,8 @@ public partial class Jumper : CharacterBody2D
 
         if (IsOnWall())
         {
-            velocity.X = _previousXVelocity * -0.75f;
+            velocity.X = _previousXVelocity * -4;
+            velocity.Y = -250; // Gravity is -98, so go above that for a slight "bump"
         }
 
         Velocity = velocity;
