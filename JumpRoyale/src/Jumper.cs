@@ -60,6 +60,11 @@ public partial class Jumper : CharacterBody2D
         SetCharacter();
         SetPlayerName();
         SetGlow();
+
+        // Forgot to add random float to the Rng 👀
+        Random rng = new();
+        float newXScale = Math.Max(0.5f, rng.NextSingle() * 5);
+        GetNode<AnimatedSprite2D>("Sprite").Scale = new(newXScale, 1);
     }
 
     /// <summary>
