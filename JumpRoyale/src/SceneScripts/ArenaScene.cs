@@ -14,8 +14,17 @@ public partial class ArenaScene : Node2D
     private ArenaBuilder _builder = null!;
 
     private Rect2 _viewport;
+    private float _chanceToGeneratePlatform = 0.0075f;
 
-    private int _maximumArenaHeight = -600;
+    /// <summary>
+    /// Note: Y up goes negative, hence the sign.
+    /// </summary>
+    private int _maximumArenaHeightInTiles = -600;
+
+    /// <summary>
+    /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
+    /// </summary>
+    private int _maximumPlatformsPerRow = 3;
 
     /// <summary>
     /// How many tiles to skip from the bottom of the screen before we start generating platforms.
@@ -172,24 +181,48 @@ public partial class ArenaScene : Node2D
         commandHandler.ProcessMessage();
     }
 
+    /// <summary>
+    /// Pre-generates the entire arena, column-by-column, row-by-row, including extra blocks and different platform/wall
+    /// shapes.
+    /// </summary>
     private void GenerateArena()
     {
         DrawSideWalls();
 
         // Start drawing from the bottom, excluding the main floor up to the set maximum
         int startY = ViewportSizeInTiles.Y - _platformDrawingOffsetInTiles;
-        int endY = _maximumArenaHeight;
+        int endY = _maximumArenaHeightInTiles;
 
         // Draw on the playable arena field, excluding the current platform length to prevent from drawing off screen.
-        int startX = (int)ArenaRectInTiles.Position.X;
-        int endX = (int)ArenaRectInTiles.End.X - 8; // <- note: 8 is temporary, this becomes PlatformLength later
+        int startingColumn = (int)ArenaRectInTiles.Position.X;
+        int endingColumn = (int)ArenaRectInTiles.End.X - 18; // <- note: 18 is temporary, this becomes PlatformLength later
 
         // Randomly draw the platforms as base grounding
         for (int y = startY; y > endY; y--)
         {
-            for (int x = startX; x < endX; x++)
+            int platformsGeneratedThisRow = 0;
+            int currentColumn = startingColumn - 1;
+
+            while (currentColumn < endingColumn)
             {
-                // Insert a platform here and maybe some logic, like changing the sprites
+                currentColumn++;
+
+                if (Rng.RandomFloat() > _chanceToGeneratePlatform)
+                {
+                    continue;
+                }
+
+                _builder.DrawHorizontalPlatform(new(currentColumn, y), 15);
+                platformsGeneratedThisRow++;
+
+                // Skip as many columns as it took to draw the platform + offset (1 space + platform edges: L/R)
+                currentColumn += 18; // <- add platform length here
+
+                // Force skipping to the next row if we already generated enough platforms
+                if (platformsGeneratedThisRow == _maximumPlatformsPerRow)
+                {
+                    break;
+                }
             }
         }
     }
