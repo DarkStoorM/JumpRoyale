@@ -5,33 +5,20 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 > Below sections are sorted by priority
 
 -   [JumpRoyale](#jumproyale)
-    -   [Character Choice](#character-choice)
     -   [Create the Arena](#create-the-arena)
+    -   [Character Choice](#character-choice)
     -   [Fireballs (Twitch command)](#fireballs-twitch-command)
     -   [Aim command](#aim-command)
+
+---
+
+## Create the Arena
 
 ---
 
 ## Character Choice
 
 Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
-
----
-
-## Create the Arena
-
-Now with the Arena Builder in place, it would be a good test to research the drawing methods. Previously, a regular Random placement was being used, which was not bad by any means, but there are also other techniques to try: Perlin Noise.
-
-While Perlin Noise is very good for creating terrains, it should also be tested if it can do any good job with putting Platforms on the arena. There are also other noise functions to try:
-
--   Discrete
--   Tricubic
--   Perlin (main goal)
--   Simplex
--   Spots
--   Worley
-
-The initial idea is to use Perlin Noise for platforms and possibly mix it with another one for solid blocks, like Spots noise.
 
 ---
 
