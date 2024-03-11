@@ -14,6 +14,13 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 ## Create the Arena
 
+The previous (noise generation) idea is not really worth implementing in such simple game, regular, random generation is totally fine here, so moving on.
+
+TODOs:
+
+-   change sprite every 1500 height (*)
+
+> (*) in regular games, we were able to exceed 5000 height, but on average, the height was around 3500, so it would make sense to change every 1500 or 2000 height.
 ---
 
 ## Character Choice
