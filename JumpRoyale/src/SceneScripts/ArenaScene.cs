@@ -23,16 +23,6 @@ public partial class ArenaScene : Node2D
     private int _platformDrawingOffsetInTiles = 5;
 
     /// <summary>
-    /// Unscaled viewport size.
-    /// </summary>
-    public Vector2 ViewportSizeInPixels => _viewport.Size;
-
-    /// <summary>
-    /// Describes the visible TileMap portion of the viewport in tiles.
-    /// </summary>
-    public Vector2I ViewportSizeInTiles => new((int)_viewport.Size.X / 16, (int)_viewport.Size.Y / 16);
-
-    /// <summary>
     /// Describes the "playable" arena field, which excludes the side walls (1 tile each) and is offset by 1 tile on
     /// x-axis on both sides - reducing the usable field by 4 tiles.
     /// </summary>
@@ -50,6 +40,16 @@ public partial class ArenaScene : Node2D
 
     [Export]
     public PackedScene? JumperScene { get; private set; }
+
+    /// <summary>
+    /// Unscaled viewport size.
+    /// </summary>
+    public Vector2 ViewportSizeInPixels => _viewport.Size;
+
+    /// <summary>
+    /// Describes the visible TileMap portion of the viewport in tiles.
+    /// </summary>
+    public Vector2I ViewportSizeInTiles => new((int)_viewport.Size.X / 16, (int)_viewport.Size.Y / 16);
 
     public override void _Ready()
     {
