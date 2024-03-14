@@ -18,9 +18,14 @@ The previous (noise generation) idea is not really worth implementing in such si
 
 TODOs:
 
+-   migrate from vectors to regular `int`s...
 -   change sprite every 1500 height (*)
+-   make a range of random platform length depending on the current drawing-Y
 
 > (*) in regular games, we were able to exceed 5000 height, but on average, the height was around 3500, so it would make sense to change every 1500 or 2000 height.
+
+Changing the sprite could be done either by the Builder or inside the Arena, but I don't really feel adding this into the Builder would fit well as this kind of defeats the purpose of having a "general purpose" drawing class, but since the constructor already has the "hardcoded" tile population, it should not be the problem. Just keep the "configuration" in the constructor and automatically get the drawing tile from a dictionary, where the tile depends on the provided Y, since we provide the coordinates where to draw anyway.
+
 ---
 
 ## Character Choice
