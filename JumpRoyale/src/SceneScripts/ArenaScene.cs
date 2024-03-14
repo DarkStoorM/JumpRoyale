@@ -229,7 +229,29 @@ public partial class ArenaScene : Node2D
 
     private void DrawSideWalls()
     {
-        _builder.DrawVerticalWall(new(0, 63), 1000);
-        _builder.DrawVerticalWall(new(119, 63), 1000);
+        // The very bottom of the stage (-1 to still draw on-screen and -3, since the floor is 3 tiles tall)
+        int startingYPoint = ViewportSizeInTiles.Y - 4;
+
+        // Wall length to draw per "step", including two tiles for both edges
+        int wallHeight = 92; // temporary until some calculation is in place
+
+        // Tiles to pick depending on the current drawing "step"
+        TileTypes[] tiles = [TileTypes.Stone, TileTypes.Concrete, TileTypes.Gold];
+
+        // We need to manually define the sprite differences on given height, since we are not using the same sprite to
+        // draw everything, only the generated platform will change automatically.
+        for (int i = 0; i < 3; i++)
+        {
+            // Left wall
+            _builder.DrawVerticalWall(new(0, startingYPoint - (wallHeight * i)), wallHeight - 2, tiles[i]);
+
+            // Right wall
+            // Note: Viewport is 120 tiles long, but we have to draw on the last column, otherwise we end up off screen
+            _builder.DrawVerticalWall(
+                new(ViewportSizeInTiles.X - 1, startingYPoint - (wallHeight * i)),
+                wallHeight - 2,
+                tiles[i]
+            );
+        }
     }
 }
