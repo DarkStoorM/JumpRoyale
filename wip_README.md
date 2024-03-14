@@ -18,7 +18,6 @@ The previous (noise generation) idea is not really worth implementing in such si
 
 TODOs:
 
--   migrate from vectors to regular `int`s...
 -   change sprite every 1500 height (*)
 -   make a range of random platform length depending on the current drawing-Y
 
