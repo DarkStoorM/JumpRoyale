@@ -70,7 +70,7 @@ public partial class ArenaScene : Node2D
         }
 
         _viewport = GetViewportRect();
-        _builder = new ArenaBuilder(tileMap);
+        _builder = new ArenaBuilder(tileMap, 160);
 
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
@@ -232,25 +232,21 @@ public partial class ArenaScene : Node2D
         // The very bottom of the stage (-1 to still draw on-screen and -3, since the floor is 3 tiles tall)
         int startingYPoint = ViewportSizeInTiles.Y - 4;
 
-        // Wall length to draw per "step", including two tiles for both edges
-        int wallHeight = 92; // temporary until some calculation is in place
-
-        // Tiles to pick depending on the current drawing "step"
-        TileTypes[] tiles = [TileTypes.Stone, TileTypes.Concrete, TileTypes.Gold];
+        // Wall height to draw per "step", excluding two tiles for both edges, they are added automatically
+        int wallHeightPerStep = 10; // temporary until some calculation is in place
 
         // We need to manually define the sprite differences on given height, since we are not using the same sprite to
         // draw everything, only the generated platform will change automatically.
         for (int i = 0; i < 3; i++)
         {
             // Left wall
-            _builder.DrawVerticalWall(new(0, startingYPoint - (wallHeight * i)), wallHeight - 2, tiles[i]);
+            _builder.DrawVerticalWall(new(0, startingYPoint - (wallHeightPerStep * i)), wallHeightPerStep - 2);
 
             // Right wall
             // Note: Viewport is 120 tiles long, but we have to draw on the last column, otherwise we end up off screen
             _builder.DrawVerticalWall(
-                new(ViewportSizeInTiles.X - 1, startingYPoint - (wallHeight * i)),
-                wallHeight - 2,
-                tiles[i]
+                new(ViewportSizeInTiles.X - 1, startingYPoint - (wallHeightPerStep * i)),
+                wallHeightPerStep - 2
             );
         }
     }
