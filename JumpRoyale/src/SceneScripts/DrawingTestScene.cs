@@ -19,7 +19,7 @@ public partial class DrawingTestScene : Node2D
             throw new UnassignedSceneOrComponentException();
         }
 
-        _builder = new ArenaBuilder(tileMap);
+        _builder = new ArenaBuilder(tileMap, 9999);
 
         DrawTestPoints();
         DrawTestPlatforms();
