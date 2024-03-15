@@ -1,7 +1,8 @@
 namespace JumpRoyale;
 
 /// <summary>
-/// Provides a set of object instances for drawing on the tilemap.
+/// Provides a set of object instances for drawing on the tilemap. The instantiated objects store Atlas coordinates of
+/// the tiles corresponding to the type of the object we want to draw.
 /// </summary>
 public static class GameTiles
 {
