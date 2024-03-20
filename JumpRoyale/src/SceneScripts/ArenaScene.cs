@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using JumpRoyale.Commands;
 using JumpRoyale.Constants;
@@ -11,9 +14,20 @@ namespace JumpRoyale;
 
 public partial class ArenaScene : Node2D
 {
+    /// <summary>
+    /// Stores a dictionary of "Levels", where each level represents the range of platform lengths for that level.
+    /// <para>
+    /// "Level" changes every [x] platforms.
+    /// </para>
+    /// </summary>
+    private readonly Dictionary<int, int[]> _platformLengths = Enumerable
+        .Range(0, 11)
+        .ToDictionary(i => i, i => new int[] { i, i + 6 });
+
     private ArenaBuilder _builder = null!;
 
     private Rect2 _viewport;
+
     private float _chanceToGeneratePlatform = 0.0075f;
 
     /// <summary>
@@ -193,13 +207,16 @@ public partial class ArenaScene : Node2D
         int startY = ViewportSizeInTiles.Y - _platformDrawingOffsetInTiles;
         int endY = _maximumArenaHeightInTiles;
 
-        // Draw on the playable arena field, excluding the current platform length to prevent from drawing off screen.
-        int startingColumn = (int)ArenaRectInTiles.Position.X;
-        int endingColumn = (int)ArenaRectInTiles.End.X - 18; // <- note: 18 is temporary, this becomes PlatformLength later
-
         // Randomly draw the platforms as base grounding
         for (int y = startY; y > endY; y--)
         {
+            int platformLength = GetPlatformLength(y);
+
+            // Draw on the playable arena field, excluding the current platform length to prevent from drawing off
+            // screen.
+            int startingColumn = (int)ArenaRectInTiles.Position.X;
+            int endingColumn = (int)ArenaRectInTiles.End.X - platformLength - 3;
+
             int platformsGeneratedThisRow = 0;
             int currentColumn = startingColumn - 1;
 
@@ -212,11 +229,11 @@ public partial class ArenaScene : Node2D
                     continue;
                 }
 
-                _builder.DrawHorizontalPlatform(new(currentColumn, y), 15);
+                _builder.DrawHorizontalPlatform(new(currentColumn, y), platformLength);
                 platformsGeneratedThisRow++;
 
                 // Skip as many columns as it took to draw the platform + offset (1 space + platform edges: L/R)
-                currentColumn += 18; // <- add platform length here
+                currentColumn += platformLength;
 
                 // Force skipping to the next row if we already generated enough platforms
                 if (platformsGeneratedThisRow == _maximumPlatformsPerRow)
@@ -225,6 +242,16 @@ public partial class ArenaScene : Node2D
                 }
             }
         }
+    }
+
+    private int GetPlatformLength(int currentY)
+    {
+        // NOTE: make a max/level step
+        int index = Math.Abs(_maximumArenaHeightInTiles / currentY);
+        int[] lengths = _platformLengths[index];
+        int platformLength = Rng.IntRange(lengths[0], lengths[1]);
+
+        return platformLength;
     }
 
     private void DrawSideWalls()
