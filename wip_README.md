@@ -7,6 +7,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 -   [JumpRoyale](#jumproyale)
     -   [Create the Arena](#create-the-arena)
     -   [Character Choice](#character-choice)
+    -   [Make a new background](#make-a-new-background)
     -   [Fireballs (Twitch command)](#fireballs-twitch-command)
     -   [Aim command](#aim-command)
 
@@ -30,6 +31,12 @@ Changing the sprite could be done either by the Builder or inside the Arena, but
 ## Character Choice
 
 Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
+
+---
+
+## Make a new background
+
+In the old codebase there were 7 (? :thinking:) different backgrounds, chosen randomly. Find out if it's going to look better if the backgrounds are darker, possibly create something completely new.
 
 ---
 
