@@ -189,6 +189,8 @@ public class ArenaBuilder : IArenaBuilder
 
     private void DrawCell(Vector2I location, Vector2I atlasCoords)
     {
+        // NOTE: This could potentially perform a check if the cell is already occupied if we don't want to override the
+        // previously drawn sprite
         TileMap.SetCell(0, location, 0, atlasCoords);
     }
 
