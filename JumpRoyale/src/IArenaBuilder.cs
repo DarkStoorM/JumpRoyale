@@ -5,6 +5,12 @@ namespace JumpRoyale;
 public interface IArenaBuilder
 {
     /// <summary>
+    /// Allows direct access by index to the tile types. Index is automatically clamped between 0 and the length of
+    /// defined tile types array.
+    /// </summary>
+    TileTypes TileTypeByIndex(int index);
+
+    /// <summary>
     /// Draws a horizontal platform on the TileMap in specified location. Horizontal objects represent a 3-tile sprite
     /// combination, which consist of two edges and optional "middle" part, which is dictated by the <c>length</c>, so
     /// if no length is provided, it will be drawn as a 2-tile sprite.

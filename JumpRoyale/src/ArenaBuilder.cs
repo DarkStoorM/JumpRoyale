@@ -12,7 +12,7 @@ public class ArenaBuilder : IArenaBuilder
     private readonly Dictionary<TileTypes, BasePointObject> _blocks = [];
 
     /// <summary>
-    /// Sprites will change every [Y] height, defined by this value.
+    /// Sprites will change every [Y] height in tiles, defined by this value.
     /// </summary>
     private readonly int _tileChangeHeightFactor;
 
@@ -46,6 +46,11 @@ public class ArenaBuilder : IArenaBuilder
     }
 
     public TileMap TileMap { get; }
+
+    public TileTypes TileTypeByIndex(int index)
+    {
+        return _nextTilesByHeight[Math.Clamp(index, 0, _nextTilesByHeight.Length - 1)];
+    }
 
     public void DrawHorizontalPlatform(Vector2I location, int length, TileTypes? drawWith = null)
     {
@@ -199,7 +204,10 @@ public class ArenaBuilder : IArenaBuilder
     /// </summary>
     private TileTypes TileTypeByHeight(int currentY)
     {
-        int tileIndex = Math.Clamp(currentY * 16 / _tileChangeHeightFactor, 0, _nextTilesByHeight.Length - 1);
+        int tileIndex = Math.Abs(currentY / _tileChangeHeightFactor);
+
+        // On some arena maxHeight values, this will evaluate to +1 above the limit, so we have to clamp the index
+        tileIndex = Math.Clamp(tileIndex, 0, _nextTilesByHeight.Length - 1);
 
         return _nextTilesByHeight[tileIndex];
     }

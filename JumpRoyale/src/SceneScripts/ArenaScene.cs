@@ -20,30 +20,34 @@ public partial class ArenaScene : Node2D
     /// "Level" changes every [x] platforms.
     /// </para>
     /// </summary>
+    /// <remarks>
+    /// The platforms are indexed ascending, with descending values, that way we get smaller platforms as we go up.
+    /// First level gives a range of 10-15 tiles, the highest.
+    /// </remarks>
     private readonly Dictionary<int, int[]> _platformLengths = Enumerable
         .Range(0, 11)
-        .ToDictionary(i => i, i => new int[] { i, i + 6 });
+        .ToDictionary(i => i, i => new int[] { 17 - 5 - i, 17 - i });
 
     private ArenaBuilder _builder = null!;
 
     private Rect2 _viewport;
 
+    /// <summary>
+    /// Chance to generate a new platform every column. Should be fine-tuned to generate around 2 or 3 platforms per
+    /// row.
+    /// </summary>
     private float _chanceToGeneratePlatform = 0.0075f;
 
     /// <summary>
-    /// Note: Y up goes negative, hence the sign.
+    /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 370 value
+    /// defines a 5920px tall arena.
     /// </summary>
-    private int _maximumArenaHeightInTiles = -600;
+    private int _maximumArenaHeightInTiles = -370;
 
     /// <summary>
     /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
     /// </summary>
     private int _maximumPlatformsPerRow = 3;
-
-    /// <summary>
-    /// How many tiles to skip from the bottom of the screen before we start generating platforms.
-    /// </summary>
-    private int _platformDrawingOffsetInTiles = 5;
 
     /// <summary>
     /// Describes the "playable" arena field, which excludes the side walls (1 tile each) and is offset by 1 tile on
@@ -65,7 +69,7 @@ public partial class ArenaScene : Node2D
     public PackedScene? JumperScene { get; private set; }
 
     /// <summary>
-    /// Unscaled viewport size.
+    /// Scaled viewport size. Assuming the viewport was set to always be of the same size despite the window size.
     /// </summary>
     public Vector2 ViewportSizeInPixels => _viewport.Size;
 
@@ -84,7 +88,7 @@ public partial class ArenaScene : Node2D
         }
 
         _viewport = GetViewportRect();
-        _builder = new ArenaBuilder(tileMap, 160);
+        _builder = new ArenaBuilder(tileMap, _maximumArenaHeightInTiles / 3);
 
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
@@ -197,14 +201,14 @@ public partial class ArenaScene : Node2D
 
     /// <summary>
     /// Pre-generates the entire arena, column-by-column, row-by-row, including extra blocks and different platform/wall
-    /// shapes.
+    /// shapes. Platforms will always be drawn in a way so they leave one tile next to the wall (left and right side).
     /// </summary>
     private void GenerateArena()
     {
         DrawSideWalls();
 
         // Start drawing from the bottom, excluding the main floor up to the set maximum
-        int startY = ViewportSizeInTiles.Y - _platformDrawingOffsetInTiles;
+        int startY = 0;
         int endY = _maximumArenaHeightInTiles;
 
         // Randomly draw the platforms as base grounding
@@ -213,9 +217,9 @@ public partial class ArenaScene : Node2D
             int platformLength = GetPlatformLength(y);
 
             // Draw on the playable arena field, excluding the current platform length to prevent from drawing off
-            // screen.
+            // screen
             int startingColumn = (int)ArenaRectInTiles.Position.X;
-            int endingColumn = (int)ArenaRectInTiles.End.X - platformLength - 3;
+            int endingColumn = (int)ArenaRectInTiles.End.X - platformLength - 2;
 
             int platformsGeneratedThisRow = 0;
             int currentColumn = startingColumn - 1;
@@ -233,47 +237,66 @@ public partial class ArenaScene : Node2D
                 platformsGeneratedThisRow++;
 
                 // Skip as many columns as it took to draw the platform + offset (1 space + platform edges: L/R)
-                currentColumn += platformLength;
+                currentColumn += platformLength + 3;
 
-                // Force skipping to the next row if we already generated enough platforms
+                // Force skipping to the next row if we already generated enough platforms in the current row
                 if (platformsGeneratedThisRow == _maximumPlatformsPerRow)
                 {
                     break;
                 }
             }
         }
+
+        // After the platforms were generated, overlay the blocks on them. Should we care about the actual overlap or
+        // just skip the draw if the cell is occupied?
     }
 
+    /// <summary>
+    /// Returns the platform length based on the current "Level", which is defined by how high on the arena we are.
+    /// </summary>
+    /// <param name="currentY">Current arena height.</param>
     private int GetPlatformLength(int currentY)
     {
-        // NOTE: make a max/level step
-        int index = Math.Abs(_maximumArenaHeightInTiles / currentY);
-        int[] lengths = _platformLengths[index];
-        int platformLength = Rng.IntRange(lengths[0], lengths[1]);
+        // Calculate the dictionary index for platform lengths based on how many "steps" we fit into the current Y
+        // Example:
+        // - Maximum height is 600 and we predefined 10 levels = Step is 60 (level up every 60 tiles)
+        // - Current Y is 240, the index evaluates to 4 (fifth index from 0)
+        // Note: Y is negative
+        int index = Math.Abs(currentY / (_maximumArenaHeightInTiles / _platformLengths.Count));
 
-        return platformLength;
+        // Prevent index overflow
+        index = Math.Clamp(index, 0, _platformLengths.Count - 1);
+        int[] lengths = _platformLengths[index];
+
+        return Rng.IntRange(lengths[0], lengths[1]);
     }
 
     private void DrawSideWalls()
     {
-        // The very bottom of the stage (-1 to still draw on-screen and -3, since the floor is 3 tiles tall)
-        int startingYPoint = ViewportSizeInTiles.Y - 4;
+        // The very bottom of the stage (right above the ground)
+        int startingYPoint = 0;
 
-        // Wall height to draw per "step", excluding two tiles for both edges, they are added automatically
-        int wallHeightPerStep = 10; // temporary until some calculation is in place
+        // Wall height to draw per "step"
+        int wallHeightPerStep = Math.Abs(_maximumArenaHeightInTiles / 3);
 
         // We need to manually define the sprite differences on given height, since we are not using the same sprite to
         // draw everything, only the generated platform will change automatically.
         for (int i = 0; i < 3; i++)
         {
             // Left wall
-            _builder.DrawVerticalWall(new(0, startingYPoint - (wallHeightPerStep * i)), wallHeightPerStep - 2);
+            _builder.DrawVerticalWall(
+                new(0, startingYPoint - (wallHeightPerStep * i)),
+                wallHeightPerStep - 2,
+                _builder.TileTypeByIndex(i)
+            );
 
             // Right wall
-            // Note: Viewport is 120 tiles long, but we have to draw on the last column, otherwise we end up off screen
+            // Note: Viewport is 120 tiles long, but we have to draw on the last column, so -1, otherwise we end up off
+            // screen
             _builder.DrawVerticalWall(
                 new(ViewportSizeInTiles.X - 1, startingYPoint - (wallHeightPerStep * i)),
-                wallHeightPerStep - 2
+                wallHeightPerStep - 2,
+                _builder.TileTypeByIndex(i)
             );
         }
     }
