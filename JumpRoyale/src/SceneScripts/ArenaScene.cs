@@ -42,7 +42,7 @@ public partial class ArenaScene : Node2D
     /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 370 value
     /// defines a 5920px tall arena.
     /// </summary>
-    private int _maximumArenaHeightInTiles = -370;
+    private int _maximumArenaHeightInTiles = -375;
 
     /// <summary>
     /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
