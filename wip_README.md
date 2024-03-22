@@ -15,7 +15,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 ## Create the Arena
 
--   Check if it's possible to write tests for Arena Builder, because it references Godot's API and it might just crash, which would probably require those references to be removed and injected at init-phase.
+-   TODOs: TBA
 
 ---
 
