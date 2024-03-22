@@ -4,12 +4,12 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 > Below sections are sorted by priority
 
-- [JumpRoyale](#jumproyale)
-  - [Create the Arena](#create-the-arena)
-  - [Character Choice](#character-choice)
-  - [Make a new background](#make-a-new-background)
-  - [Fireballs (Twitch command)](#fireballs-twitch-command)
-  - [Aim command](#aim-command)
+-   [JumpRoyale](#jumproyale)
+    -   [Create the Arena](#create-the-arena)
+    -   [Character Choice](#character-choice)
+    -   [Make a new background](#make-a-new-background)
+    -   [Fireballs (Twitch command)](#fireballs-twitch-command)
+    -   [Aim command](#aim-command)
 
 ---
 
