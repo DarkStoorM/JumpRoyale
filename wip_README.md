@@ -15,13 +15,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 ## Create the Arena
 
-The previous (noise generation) idea is not really worth implementing in such simple game, regular, random generation is totally fine here, so moving on.
-
-TODOs:
-
--   make a range of random platform length depending on the current drawing-Y
-
-Changing the sprite could be done either by the Builder or inside the Arena, but I don't really feel adding this into the Builder would fit well as this kind of defeats the purpose of having a "general purpose" drawing class, but since the constructor already has the "hardcoded" tile population, it should not be the problem. Just keep the "configuration" in the constructor and automatically get the drawing tile from a dictionary, where the tile depends on the provided Y, since we provide the coordinates where to draw anyway.
+-   Check if it's possible to write tests for Arena Builder, because it references Godot's API and it might just crash, which would probably require those references to be removed and injected at init-phase.
 
 ---
 
