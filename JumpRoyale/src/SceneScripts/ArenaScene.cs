@@ -28,26 +28,26 @@ public partial class ArenaScene : Node2D
         .Range(0, 11)
         .ToDictionary(i => i, i => new int[] { 17 - 5 - i, 17 - i });
 
-    private ArenaBuilder _builder = null!;
+    /// <summary>
+    /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 375 value
+    /// defines a 6000px tall arena.
+    /// </summary>
+    private readonly int _maximumArenaHeightInTiles = -375;
 
-    private Rect2 _viewport;
+    /// <summary>
+    /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
+    /// </summary>
+    private readonly int _maximumPlatformsPerRow = 3;
 
     /// <summary>
     /// Chance to generate a new platform every column. Should be fine-tuned to generate around 2 or 3 platforms per
     /// row.
     /// </summary>
-    private float _chanceToGeneratePlatform = 0.0075f;
+    private readonly float _chanceToGeneratePlatform = 0.0075f;
 
-    /// <summary>
-    /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 370 value
-    /// defines a 5920px tall arena.
-    /// </summary>
-    private int _maximumArenaHeightInTiles = -375;
+    private ArenaBuilder _builder = null!;
 
-    /// <summary>
-    /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
-    /// </summary>
-    private int _maximumPlatformsPerRow = 3;
+    private Rect2 _viewport;
 
     /// <summary>
     /// Describes the "playable" arena field, which excludes the side walls (1 tile each) and is offset by 1 tile on
