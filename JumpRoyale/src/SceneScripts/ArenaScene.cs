@@ -30,7 +30,9 @@ public partial class ArenaScene : Node2D
 
     /// <summary>
     /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 375 value
-    /// defines a 6000px tall arena.
+    /// defines a 6000px tall arena. There are always (n - 1) steps, so if there are e.g. three levels, there will be
+    /// two sprite changes on the arena, since the first one is selected by default. If we implement more sprites per
+    /// "level", e.g. 10 in total, there are 9 steps (sprite changes).
     /// </summary>
     private readonly int _maximumArenaHeightInTiles = -375;
 
