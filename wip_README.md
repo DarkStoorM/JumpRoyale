@@ -10,6 +10,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [Make a new background](#make-a-new-background)
     -   [Fireballs (Twitch command)](#fireballs-twitch-command)
     -   [Aim command](#aim-command)
+    -   [New sprites](#new-sprites)
     -   [Benchmarking](#benchmarking)
 
 ---
@@ -17,6 +18,9 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 ## Create the Arena
 
 -   print Jumper's current height
+-   measure the real-world achievable height in the new system
+
+The new height has to be measured, because with 6000 height, there might be not enough variety when new sprites are considered. Although, 6k sounds like impossible height to climb on a single session, it just has to be checked due to the different block generation system.
 
 ---
 
@@ -60,6 +64,30 @@ Approx functionality:
 -   allow executing the command in the following format:
     -   `aim` `<direction> <angle> [power]`
     -   `a` `<direction> <angle> [power]`
+
+---
+
+## New sprites
+
+The currently imported sprites come from a paid asset, so it would be bad to create something completely new. It was not much though, but still.
+
+Currently, we only have 3 sprites for platforms, but there 5 potential sprites that can be used for Walls (solid objects, not pass-through).
+
+There is a possibility for me to make new sprites for platforms, as I know some pixel art, and adjusting a duplicate, changed sprite to the current style should not be that hard.
+
+Also, currently, the sprite change depends on the height the objects are being drawn at, and since we only have three sprites, we change that every third of the arena height. This does not create any good variety, so I would like to aim more at something that resembles Icy Tower's *system*, where new floor has a different sprite up to 1000, which gives 10 different sprites.
+
+Since the average height we get on livestreams is around 4k (250 tiles), it creates a small problem of picking the optimal height for changing the sprites. The screen is 67.5 tiles tall (67) and I would like to see at least 10 sprite changes, if possible, but probably our average height will not allow that, but...
+
+The old system was creating huge blocks at around 3500 height, which made is impossible to progress and the new system literally makes one block per row with certain chance, which reduces the amount of big blocks and potentially opens more possibilities for top height. It comes with a small catch, though: the player stats will now change, because we may potentially climb way higher, increasing the total score. Should we care anyway?
+
+With higher average height, we might get a better opportunity for different sprites per "level", but we also might end up with more hardcoding of the values, BUT... if all Walls and Platforms will have their own sprites, the change in tile types will be equal and it can be just calculated and automatically changed, so only the Arena Builder has to have the tile types populated in the correct order. This might even be totally fine to change sprites per one screen.
+
+If we change the sprite once per screen, which is 68 tiles (+1 to we change it off screen), we get to change it 5 times:
+
+0 -> 68 -> 136 -> 204 -> 272 -> 340
+
+0, being the default sprite, so we can get 6. We could change it more frequently, but I need to measure what is the actual achievable height, because right now it looks impossible to even reach the fourth change (4352px height).
 
 ---
 
