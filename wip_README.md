@@ -15,7 +15,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 ## Create the Arena
 
--   TODOs: TBA
+-   print Jumper's current height
 
 ---
 
