@@ -10,6 +10,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [Make a new background](#make-a-new-background)
     -   [Fireballs (Twitch command)](#fireballs-twitch-command)
     -   [Aim command](#aim-command)
+    -   [Benchmarking](#benchmarking)
 
 ---
 
@@ -59,3 +60,13 @@ Approx functionality:
 -   allow executing the command in the following format:
     -   `aim` `<direction> <angle> [power]`
     -   `a` `<direction> <angle> [power]`
+
+---
+
+## Benchmarking
+
+In the old codebase, there is a method that takes all payers, sorts them by height and takes the top one. While this does not sound any harmful at all in regards to the performance, since this is a simple sort, there is also one small thing to check, which is how it actually performs if there are many players.
+
+So far, we have tested this on raids with a couple hundred players and while nothing noticeable was happening, it almost felt like the game was losing in puts (?).
+
+Sadly, Godot's profiler is not as good as Unity's, so I will have to rely on simple deltas reports for methods :thinking:
