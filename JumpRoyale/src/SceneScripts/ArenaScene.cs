@@ -117,6 +117,26 @@ public partial class ArenaScene : Node2D
         {
             FakeMessage("r40");
         }
+        else if (Input.IsPhysicalKeyPressed(Key.A))
+        {
+            FakeMessage("l10");
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.S))
+        {
+            FakeMessage("l5");
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.D))
+        {
+            FakeMessage("u");
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.F))
+        {
+            FakeMessage("r5");
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.G))
+        {
+            FakeMessage("r10");
+        }
         else if (Input.IsPhysicalKeyPressed(Key.W))
         {
             FakeMessage("unglow");
