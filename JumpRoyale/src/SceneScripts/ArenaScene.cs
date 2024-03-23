@@ -40,6 +40,8 @@ public partial class ArenaScene : Node2D
     /// </summary>
     private readonly int _maximumArenaHeightInTiles = -400;
 
+    private readonly int _maximumFloorLevels = 10;
+
     /// <summary>
     /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
     /// </summary>
@@ -248,10 +250,12 @@ public partial class ArenaScene : Node2D
             GeneratePlatformAtY(y);
         }
 
-        // After the platforms were generated, overlay the blocks on them. Should we care about the actual overlap or
-        // just skip the draw if the cell is occupied?
+        // Note: this has to be a separate loop, because if we do this in the same loop, platforms will overwrite the
+        // blocks on the next row anyway, so it would be better if the blocks overwrote the platforms instead
         for (int y = startY; y > endY; y -= 2)
         {
+            // After the platforms were generated, overlay the blocks. At this point we don't care if there is anything
+            // already drawn on the arena
             GenerateBlockAtY(y);
         }
     }
@@ -320,10 +324,8 @@ public partial class ArenaScene : Node2D
         // - Maximum height is 600 and we predefined 10 levels = Step is 60 (level up every 60 tiles)
         // - Current Y is 240, the index evaluates to 4 (fifth index from 0)
         // Note: Y is negative
-        int index = Math.Abs(currentY / (_maximumArenaHeightInTiles / _platformLengths.Count));
+        int index = GetLevelCurrentLevel(currentY);
 
-        // Prevent index overflow
-        index = Math.Clamp(index, 0, _platformLengths.Count - 1);
         int[] lengths = _platformLengths[index];
 
         return Rng.IntRange(lengths[0], lengths[1]);
@@ -336,11 +338,21 @@ public partial class ArenaScene : Node2D
     /// <param name="currentY">Current arena height.</param>
     private Tuple<int, float> GetBlockData(int currentY)
     {
-        int index = Math.Abs(currentY / (_maximumArenaHeightInTiles / _blockSizes.Count));
-        index = Math.Clamp(index, 0, _blockSizes.Count - 1);
+        int index = GetLevelCurrentLevel(currentY);
+
         float[] blockData = _blockSizes[index];
 
         return new((int)blockData[0], blockData[1]);
+    }
+
+    private int GetLevelCurrentLevel(int currentY)
+    {
+        int index = Math.Abs(currentY / (_maximumArenaHeightInTiles / _blockSizes.Count));
+
+        // Prevent index overflow for components that
+        index = Math.Clamp(index, 0, _maximumFloorLevels - 1);
+
+        return index;
     }
 
     private void DrawSideWalls()
