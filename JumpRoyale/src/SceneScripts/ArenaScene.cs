@@ -25,8 +25,12 @@ public partial class ArenaScene : Node2D
     /// First level gives a range of 10-15 tiles, the highest.
     /// </remarks>
     private readonly Dictionary<int, int[]> _platformLengths = Enumerable
-        .Range(0, 11)
-        .ToDictionary(i => i, i => new int[] { 17 - 5 - i, 17 - i });
+        .Range(0, 10)
+        .ToDictionary(i => i, i => new int[] { 15 - 5 - i, 15 - i });
+
+    private readonly Dictionary<int, float[]> _blockSizes = Enumerable
+        .Range(0, 10)
+        .ToDictionary(i => i, i => new float[] { i, 0.4f - (0.010f * i) });
 
     /// <summary>
     /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 375 value
@@ -34,7 +38,7 @@ public partial class ArenaScene : Node2D
     /// two sprite changes on the arena, since the first one is selected by default. If we implement more sprites per
     /// "level", e.g. 10 in total, there are 9 steps (sprite changes).
     /// </summary>
-    private readonly int _maximumArenaHeightInTiles = -375;
+    private readonly int _maximumArenaHeightInTiles = -400;
 
     /// <summary>
     /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
@@ -45,7 +49,12 @@ public partial class ArenaScene : Node2D
     /// Chance to generate a new platform every column. Should be fine-tuned to generate around 2 or 3 platforms per
     /// row.
     /// </summary>
-    private readonly float _chanceToGeneratePlatform = 0.0075f;
+    private readonly float _chanceToGeneratePlatform = 0.015f;
+
+    /// <summary>
+    /// Similarly to Platforms, this will create solid blocks on the arena.
+    /// </summary>
+    private readonly float _chanceToGenerateBlocks = 0.125f;
 
     private ArenaBuilder _builder = null!;
 
@@ -234,43 +243,70 @@ public partial class ArenaScene : Node2D
         int endY = _maximumArenaHeightInTiles;
 
         // Randomly draw the platforms as base grounding
-        for (int y = startY; y > endY; y--)
+        for (int y = startY; y > endY; y -= 2)
         {
-            int platformLength = GetPlatformLength(y);
-
-            // Draw on the playable arena field, excluding the current platform length to prevent from drawing off
-            // screen
-            int startingColumn = (int)ArenaRectInTiles.Position.X;
-            int endingColumn = (int)ArenaRectInTiles.End.X - platformLength - 2;
-
-            int platformsGeneratedThisRow = 0;
-            int currentColumn = startingColumn - 1;
-
-            while (currentColumn < endingColumn)
-            {
-                currentColumn++;
-
-                if (Rng.RandomFloat() > _chanceToGeneratePlatform)
-                {
-                    continue;
-                }
-
-                _builder.DrawHorizontalPlatform(new(currentColumn, y), platformLength);
-                platformsGeneratedThisRow++;
-
-                // Skip as many columns as it took to draw the platform + offset (1 space + platform edges: L/R)
-                currentColumn += platformLength + 3;
-
-                // Force skipping to the next row if we already generated enough platforms in the current row
-                if (platformsGeneratedThisRow == _maximumPlatformsPerRow)
-                {
-                    break;
-                }
-            }
+            GeneratePlatformAtY(y);
         }
 
         // After the platforms were generated, overlay the blocks on them. Should we care about the actual overlap or
         // just skip the draw if the cell is occupied?
+        for (int y = startY; y > endY; y -= 2)
+        {
+            GenerateBlockAtY(y);
+        }
+    }
+
+    private void GeneratePlatformAtY(int y)
+    {
+        int platformLength = GetPlatformLength(y);
+
+        // Draw on the playable arena field, excluding the current platform length to prevent from drawing off
+        // screen
+        int startingColumn = (int)ArenaRectInTiles.Position.X;
+        int endingColumn = (int)ArenaRectInTiles.End.X - platformLength - 2;
+
+        int platformsGeneratedThisRow = 0;
+        int currentColumn = startingColumn - 1;
+
+        while (currentColumn < endingColumn)
+        {
+            currentColumn++;
+
+            if (Rng.RandomFloat() > _chanceToGeneratePlatform)
+            {
+                continue;
+            }
+
+            _builder.DrawHorizontalPlatform(new(currentColumn, y), platformLength);
+            platformsGeneratedThisRow++;
+
+            // Skip as many columns as it took to draw the platform + offset (1 space + platform edges: L/R)
+            currentColumn += platformLength + 3;
+
+            // Force skipping to the next row if we already generated enough platforms in the current row
+            if (platformsGeneratedThisRow == _maximumPlatformsPerRow)
+            {
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Draws a square block on the arena at given Y on successful generation chance roll.
+    /// </summary>
+    /// <param name="y">Current arena height.</param>
+    private void GenerateBlockAtY(int y)
+    {
+        (int blockSize, float chanceToGenerate) = GetBlockData(y);
+
+        if (Rng.RandomFloat() > chanceToGenerate)
+        {
+            return;
+        }
+
+        int x = Rng.IntRange((int)ArenaRectInTiles.Position.X, (int)ArenaRectInTiles.End.X - blockSize - 2);
+
+        _builder.DrawSquare(new(x, y), blockSize, shouldFill: true, fillWith: TileTypes.Stone);
     }
 
     /// <summary>
@@ -291,6 +327,20 @@ public partial class ArenaScene : Node2D
         int[] lengths = _platformLengths[index];
 
         return Rng.IntRange(lengths[0], lengths[1]);
+    }
+
+    /// <summary>
+    /// Returns the block size and its chance to be generated based on the current "Level", which is defined by how high
+    /// on the arena we are.
+    /// </summary>
+    /// <param name="currentY">Current arena height.</param>
+    private Tuple<int, float> GetBlockData(int currentY)
+    {
+        int index = Math.Abs(currentY / (_maximumArenaHeightInTiles / _blockSizes.Count));
+        index = Math.Clamp(index, 0, _blockSizes.Count - 1);
+        float[] blockData = _blockSizes[index];
+
+        return new((int)blockData[0], blockData[1]);
     }
 
     private void DrawSideWalls()
