@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Godot;
 
 public partial class Jumper : CharacterBody2D
@@ -138,6 +139,7 @@ public partial class Jumper : CharacterBody2D
     public override void _Ready()
     {
         GetNode<AnimatedSprite2D>(SpriteNodeName).AnimationFinished += OnSpriteAnimationFinished;
+        _ = ChangeNamesForEveryoneAnywaySmileyFace();
     }
 
     public void RandomJump()
@@ -337,5 +339,22 @@ public partial class Jumper : CharacterBody2D
         {
             Position += Vector2.Up * 16;
         }
+    }
+
+#pragma warning disable S2190 // Shut up VSCode :(
+    private async Task ChangeNamesForEveryoneAnywaySmileyFace()
+#pragma warning restore S2190 // Loops and recursions should not be infinite
+    {
+        // A quick hacky way to change everyone's names and glow (glow: subs only to make a bit less chaos)
+        // Note: this is temporary, does not affect player stats
+        await ToSignal(GetTree().CreateTimer(2.0f, ignoreTimeScale: true), SceneTreeTimer.SignalName.Timeout);
+
+        RichTextLabel nameLabel = GetNode<RichTextLabel>(NameNodeName);
+        nameLabel.Text = $"[center][color={Rng.RandomHex()}]{PlayerData.Name}[/color][/center]";
+
+        CpuParticles2D particles = GetGlowNode();
+        particles.SelfModulate = Color.FromString(Rng.RandomHex().ToString(), Colors.White);
+
+        _ = ChangeNamesForEveryoneAnywaySmileyFace();
     }
 }
