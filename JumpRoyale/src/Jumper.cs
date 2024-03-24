@@ -221,7 +221,7 @@ public partial class Jumper : CharacterBody2D
             velocity.X = Math.Clamp(_previousXVelocity * -99999, -2000, 2000);
 
             // Gravity is -98, so go above that for a slight "bump"
-            velocity.Y = -400;
+            velocity.Y = -250;
         }
 
         Velocity = velocity;
