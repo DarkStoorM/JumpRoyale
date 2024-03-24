@@ -66,6 +66,16 @@ public partial class Jumper : CharacterBody2D
         Random rng = new();
         float newXScale = Math.Max(0.5f, rng.NextSingle() * 5);
         GetNode<AnimatedSprite2D>("Sprite").Scale = new(newXScale, 1);
+
+        // More hacky workarounds, we don't care :D
+        // 5% chance to make someone actually huge
+        if (rng.NextSingle() < 0.05)
+        {
+            GetNode<AnimatedSprite2D>("Sprite").Scale = new(5, 5);
+
+            // Well, the pivot it at the center of the character, so we have to reposition the sprite 👀
+            GetNode<AnimatedSprite2D>("Sprite").Position = new(0, -80);
+        }
     }
 
     /// <summary>
