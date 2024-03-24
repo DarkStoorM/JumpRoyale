@@ -182,21 +182,26 @@ public partial class Jumper : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        AnimatedSprite2D sprite = GetNode<AnimatedSprite2D>(SpriteNodeName);
         Vector2 velocity = Velocity;
 
         if (IsOnFloor())
         {
             velocity.Y = 0;
             velocity.X = 0;
+
+            // Reset rotation on floor, because we keep rotating when jumping
+            sprite.Rotation = 0;
         }
 
         // Add the gravity.
         if (!IsOnFloor())
         {
             velocity.Y += _gravity * (float)delta;
-        }
 
-        AnimatedSprite2D sprite = GetNode<AnimatedSprite2D>(SpriteNodeName);
+            // Rotate in the direction of our velocity (we don't care about vertical jumps, just make it rotate 😂)
+            sprite.RotationDegrees += 500 * (float)delta * (velocity.X < 0 ? -1 : 1);
+        }
 
         if (_jumpVelocity != Vector2.Zero)
         {
