@@ -2,8 +2,6 @@
 
 Placeholder work-in-progress readme file, which will eventually be updated.
 
-> Below sections are sorted by priority
-
 -   [JumpRoyale](#jumproyale)
     -   [Create the Arena](#create-the-arena)
     -   [Character Choice](#character-choice)
