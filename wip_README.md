@@ -15,10 +15,26 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 ## Create the Arena
 
--   print Jumper's current height
--   measure the real-world achievable height in the new system
+1)   print Jumper's current height
+2)   measure the real-world achievable height in the new system
 
-The new height has to be measured, because with 6000 height, there might be not enough variety when new sprites are considered. Although, 6k sounds like impossible height to climb on a single session, it just has to be checked due to the different block generation system.
+~~The new height has to be measured, because with 6000 height, there might be not enough variety when new sprites are considered. Although, 6k sounds like impossible height to climb on a single session, it just has to be checked due to the different block generation system.~~
+
+The height has been set to 6400, which evaluates to 400 tiles, which then divides into even 10 difficulty levels of 40 tiles.
+
+(2) While I would make a good use of this right now, this requires to implement the variable camera movement first and possibly the camera speed per game difficulty, which is a different difficulty level than the current arena height. This depends on the timer, which changes the camera speed every [x] seconds.
+
+Since I already have a dictionary initialization for a range of values, I could also make something similar with the camera speed. The game time is 150 seconds, so for example:
+
+|    current time    | camera speed |
+| :----------------: | :----------: |
+|         0          |     4px      |
+|         30         |     8px      |
+|         60         |     16px     |
+|         90         |     32px     |
+| 120 (final change) |     64px     |
+
+Which, in the end, is just $4*n ^{(n-1)}$
 
 ---
 
