@@ -211,7 +211,7 @@ public partial class Jumper : CharacterBody2D
         if (IsOnWall())
         {
             // The maximum "safe" velocity is 2400 (assuming 60fps), but make it 2000 just in case
-            velocity.X = Math.Clamp(_previousXVelocity * -4, -2000, 2000);
+            velocity.X = Math.Clamp(_previousXVelocity * -99999, -2000, 2000);
 
             // Gravity is -98, so go above that for a slight "bump"
             velocity.Y = -400;
