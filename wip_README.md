@@ -89,6 +89,9 @@ If we change the sprite once per screen, which is 68 tiles (+1 to we change it o
 
 0, being the default sprite, so we can get 6. We could change it more frequently, but I need to measure what is the actual achievable height, because right now it looks impossible to even reach the fourth change (4352px height).
 
+[Edit]
+After some tests on bigger screen, the new platforms seem like they are too thin... they will have to be bigger, otherwise this might look really bad on stream.
+
 ---
 
 ## Benchmarking
