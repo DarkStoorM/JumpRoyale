@@ -197,7 +197,7 @@ public partial class Arena : Node2D
             _lobbyTilemap.SetCell(0, new Vector2I(_widthInTiles - 1, y), 0, new Vector2I(12, 1));
         }
 
-        for (int y = wallStartY; y >= _ceilingHeight - 200; y--)
+        for (int y = wallStartY; y >= _ceilingHeight - 600; y--)
         {
             _lobbyTilemap.SetCell(0, new Vector2I(0, y), 0, new Vector2I(12, 1));
             _lobbyTilemap.SetCell(0, new Vector2I(_widthInTiles - 1, y), 0, new Vector2I(12, 1));
