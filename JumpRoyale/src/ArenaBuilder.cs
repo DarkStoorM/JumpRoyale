@@ -28,21 +28,20 @@ public class ArenaBuilder : IArenaBuilder
         _tileChangeHeightFactor = tileChangeHeightFactor;
 
         // Store all Drawable objects
-        _horizontalPlatforms.Add(TileTypes.Concrete, GameTiles.PlatformConcrete);
-        _horizontalPlatforms.Add(TileTypes.Gold, GameTiles.PlatformGold);
         _horizontalPlatforms.Add(TileTypes.Stone, GameTiles.PlatformStone);
-
-        _horizontalWalls.Add(TileTypes.Concrete, GameTiles.HorizontalWallConcrete);
-        _horizontalWalls.Add(TileTypes.Gold, GameTiles.HorizontalWallGold);
         _horizontalWalls.Add(TileTypes.Stone, GameTiles.HorizontalWallStone);
-
-        _verticalWalls.Add(TileTypes.Concrete, GameTiles.VerticalWallConcrete);
-        _verticalWalls.Add(TileTypes.Gold, GameTiles.VerticalWallGold);
         _verticalWalls.Add(TileTypes.Stone, GameTiles.VerticalWallStone);
-
-        _blocks.Add(TileTypes.Concrete, GameTiles.BlockConcrete);
-        _blocks.Add(TileTypes.Gold, GameTiles.BlockGold);
         _blocks.Add(TileTypes.Stone, GameTiles.BlockStone);
+
+        _horizontalPlatforms.Add(TileTypes.Concrete, GameTiles.PlatformConcrete);
+        _horizontalWalls.Add(TileTypes.Concrete, GameTiles.HorizontalWallConcrete);
+        _verticalWalls.Add(TileTypes.Concrete, GameTiles.VerticalWallConcrete);
+        _blocks.Add(TileTypes.Concrete, GameTiles.BlockConcrete);
+
+        _horizontalPlatforms.Add(TileTypes.Gold, GameTiles.PlatformGold);
+        _horizontalWalls.Add(TileTypes.Gold, GameTiles.HorizontalWallGold);
+        _verticalWalls.Add(TileTypes.Gold, GameTiles.VerticalWallGold);
+        _blocks.Add(TileTypes.Gold, GameTiles.BlockGold);
     }
 
     public TileMap TileMap { get; }
