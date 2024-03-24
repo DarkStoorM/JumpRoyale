@@ -15,32 +15,36 @@ namespace JumpRoyale;
 public partial class ArenaScene : Node2D
 {
     /// <summary>
-    /// Stores a dictionary of "Levels", where each level represents the range of platform lengths for that level.
+    /// Stores a dictionary of platform lengths per difficulty level.
     /// <para>
     /// "Level" changes every [x] platforms.
     /// </para>
     /// </summary>
     /// <remarks>
     /// The platforms are indexed ascending, with descending values, that way we get smaller platforms as we go up.
-    /// First level gives a range of 10-15 tiles, the highest.
+    /// First level gives a range of 10-15 tiles, the highest level end at 1-6.
     /// </remarks>
-    private readonly Dictionary<int, int[]> _platformLengths = Enumerable
-        .Range(0, 10)
-        .ToDictionary(i => i, i => new int[] { 15 - 5 - i, 15 - i });
-
-    private readonly Dictionary<int, float[]> _blockSizes = Enumerable
-        .Range(0, 10)
-        .ToDictionary(i => i, i => new float[] { i, 0.4f - (0.010f * i) });
+    private readonly Dictionary<int, int[]> _platformLengths;
 
     /// <summary>
-    /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 375 value
-    /// defines a 6000px tall arena. There are always (n - 1) steps, so if there are e.g. three levels, there will be
+    /// Similarly to <see cref="_platformLengths"/>, stores solid block size and its generation change per difficulty
+    /// level.
+    /// </summary>
+    private readonly Dictionary<int, Tuple<int, float>> _blockSizes;
+
+    /// <summary>
+    /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 400 value
+    /// defines a 6400px tall arena. There are always (n - 1) steps, so if there are e.g. three levels, there will be
     /// two sprite changes on the arena, since the first one is selected by default. If we implement more sprites per
-    /// "level", e.g. 10 in total, there are 9 steps (sprite changes).
+    /// "level", e.g. 10 in total, there are 9 steps (sprite changes), so make sure this value divides nicely by the
+    /// amount of difficulty levels.
     /// </summary>
     private readonly int _maximumArenaHeightInTiles = -400;
 
-    private readonly int _maximumFloorLevels = 10;
+    /// <summary>
+    /// Amount of difficulty levels.
+    /// </summary>
+    private readonly int _difficultyLevelsCount = 10;
 
     /// <summary>
     /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
@@ -49,18 +53,30 @@ public partial class ArenaScene : Node2D
 
     /// <summary>
     /// Chance to generate a new platform every column. Should be fine-tuned to generate around 2 or 3 platforms per
-    /// row.
+    /// row. Note: column = x, iterating through all columns, trying to generate a platform from that spot.
     /// </summary>
     private readonly float _chanceToGeneratePlatform = 0.015f;
 
     /// <summary>
-    /// Similarly to Platforms, this will create solid blocks on the arena.
+    /// Chance to generate a solid block on the arena. This chance is reduced as we go up in height, reduced by certain
+    /// factor every difficulty level.
     /// </summary>
-    private readonly float _chanceToGenerateBlocks = 0.125f;
+    private readonly float _chanceToGenerateBlocks = 0.4f;
 
     private ArenaBuilder _builder = null!;
 
     private Rect2 _viewport;
+
+    public ArenaScene()
+    {
+        _platformLengths = Enumerable
+            .Range(0, _difficultyLevelsCount)
+            .ToDictionary(i => i, i => new int[] { 10 - i, 15 - i });
+
+        _blockSizes = Enumerable
+            .Range(0, _difficultyLevelsCount)
+            .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
+    }
 
     /// <summary>
     /// Describes the "playable" arena field, which excludes the side walls (1 tile each) and is offset by 1 tile on
@@ -236,11 +252,14 @@ public partial class ArenaScene : Node2D
     /// Pre-generates the entire arena, column-by-column, row-by-row, including extra blocks and different platform/wall
     /// shapes. Platforms will always be drawn in a way so they leave one tile next to the wall (left and right side).
     /// </summary>
+    /// <remarks>
+    /// Platforms are generated every second row, because they are too close to each other if we generate them every
+    /// row.
+    /// </remarks>
     private void GenerateArena()
     {
         DrawSideWalls();
 
-        // Start drawing from the bottom, excluding the main floor up to the set maximum
         int startY = 0;
         int endY = _maximumArenaHeightInTiles;
 
@@ -251,7 +270,8 @@ public partial class ArenaScene : Node2D
         }
 
         // Note: this has to be a separate loop, because if we do this in the same loop, platforms will overwrite the
-        // blocks on the next row anyway, so it would be better if the blocks overwrote the platforms instead
+        // blocks on the next row anyway, so it would be better if the blocks overwrote the platforms instead, it looks
+        // ugly with holes in the blocks
         for (int y = startY; y > endY; y -= 2)
         {
             // After the platforms were generated, overlay the blocks. At this point we don't care if there is anything
@@ -262,7 +282,7 @@ public partial class ArenaScene : Node2D
 
     private void GeneratePlatformAtY(int y)
     {
-        int platformLength = GetPlatformLength(y);
+        int platformLength = GetNextPlatformLength(y);
 
         // Draw on the playable arena field, excluding the current platform length to prevent from drawing off
         // screen
@@ -272,10 +292,12 @@ public partial class ArenaScene : Node2D
         int platformsGeneratedThisRow = 0;
         int currentColumn = startingColumn - 1;
 
+        // Loop through the range of allowed columns on X-axis
         while (currentColumn < endingColumn)
         {
             currentColumn++;
 
+            // Go to the next column and try to generate a new platform
             if (Rng.RandomFloat() > _chanceToGeneratePlatform)
             {
                 continue;
@@ -285,6 +307,7 @@ public partial class ArenaScene : Node2D
             platformsGeneratedThisRow++;
 
             // Skip as many columns as it took to draw the platform + offset (1 space + platform edges: L/R)
+            // This way we don't draw over the previous platform
             currentColumn += platformLength + 3;
 
             // Force skipping to the next row if we already generated enough platforms in the current row
@@ -296,13 +319,15 @@ public partial class ArenaScene : Node2D
     }
 
     /// <summary>
-    /// Draws a square block on the arena at given Y on successful generation chance roll.
+    /// Draws a square block on the arena at given Y on successful generation chance roll. The X component is chosen at
+    /// random, generating only one block per row.
     /// </summary>
     /// <param name="y">Current arena height.</param>
     private void GenerateBlockAtY(int y)
     {
-        (int blockSize, float chanceToGenerate) = GetBlockData(y);
+        (int blockSize, float chanceToGenerate) = GetNextBlockData(y);
 
+        // Skip this row and try to generate a new block
         if (Rng.RandomFloat() > chanceToGenerate)
         {
             return;
@@ -314,17 +339,12 @@ public partial class ArenaScene : Node2D
     }
 
     /// <summary>
-    /// Returns the platform length based on the current "Level", which is defined by how high on the arena we are.
+    /// Returns the platform length for the current difficulty level.
     /// </summary>
     /// <param name="currentY">Current arena height.</param>
-    private int GetPlatformLength(int currentY)
+    private int GetNextPlatformLength(int currentY)
     {
-        // Calculate the dictionary index for platform lengths based on how many "steps" we fit into the current Y
-        // Example:
-        // - Maximum height is 600 and we predefined 10 levels = Step is 60 (level up every 60 tiles)
-        // - Current Y is 240, the index evaluates to 4 (fifth index from 0)
-        // Note: Y is negative
-        int index = GetLevelCurrentLevel(currentY);
+        int index = GetDifficultyLevelFromHeight(currentY);
 
         int[] lengths = _platformLengths[index];
 
@@ -336,25 +356,37 @@ public partial class ArenaScene : Node2D
     /// on the arena we are.
     /// </summary>
     /// <param name="currentY">Current arena height.</param>
-    private Tuple<int, float> GetBlockData(int currentY)
+    private Tuple<int, float> GetNextBlockData(int currentY)
     {
-        int index = GetLevelCurrentLevel(currentY);
+        int index = GetDifficultyLevelFromHeight(currentY);
 
-        float[] blockData = _blockSizes[index];
+        (int blockSize, float chanceToGenerate) = _blockSizes[index];
 
-        return new((int)blockData[0], blockData[1]);
+        return new(blockSize, chanceToGenerate);
     }
 
-    private int GetLevelCurrentLevel(int currentY)
+    /// <summary>
+    /// Calculates the dictionary index for platform lengths and block sizes based on how many "steps" we fit into the
+    /// current Y, where "step" is the amount of tiles required to switch to the higher level on Y-axis.
+    /// <para>Example:</para>
+    /// <para>- Maximum height is 600 and we predefined 10 levels = Step is 60 (level up every 60 tiles).</para>
+    /// <para>- Current Y is 240, the index evaluates to 4 (fifth index from 0).</para>
+    /// </summary>
+    /// <param name="currentY">Current arena height.</param>
+    private int GetDifficultyLevelFromHeight(int currentY)
     {
+        // Note: Y is negative.
         int index = Math.Abs(currentY / (_maximumArenaHeightInTiles / _blockSizes.Count));
 
-        // Prevent index overflow for components that
-        index = Math.Clamp(index, 0, _maximumFloorLevels - 1);
+        // Prevent index overflow for components that depend on the difficulty level, e.g. platform length per level
+        index = Math.Clamp(index, 0, _difficultyLevelsCount - 1);
 
         return index;
     }
 
+    /// <summary>
+    /// Draws arena boundaries - left and right walls up to the defined maximum height.
+    /// </summary>
     private void DrawSideWalls()
     {
         // The very bottom of the stage (right above the ground)
