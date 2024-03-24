@@ -68,8 +68,8 @@ public partial class Jumper : CharacterBody2D
         GetNode<AnimatedSprite2D>("Sprite").Scale = new(newXScale, 1);
 
         // More hacky workarounds, we don't care :D
-        // 5% chance to make someone actually huge
-        if (rng.NextSingle() < 0.05)
+        // 10% chance to make someone actually huge
+        if (rng.NextSingle() < 0.1)
         {
             GetNode<AnimatedSprite2D>("Sprite").Scale = new(5, 5);
 
