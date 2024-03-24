@@ -97,7 +97,8 @@ script = ExtResource("1_jn4ug")
 visible = false
 z_index = 10
 position = Vector2(0, -14)
-amount = 60
+scale = Vector2(2, 2)
+amount = 100
 lifetime = 2.0
 emission_shape = 2
 emission_sphere_radius = 1.0
@@ -112,7 +113,8 @@ radial_accel_max = 100.0
 damping_min = 100.0
 damping_max = 100.0
 angle_max = 360.0
-scale_amount_max = 40.0
+scale_amount_min = 0.0
+scale_amount_max = 80.0
 scale_amount_curve = SubResource("Curve_plqpj")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
