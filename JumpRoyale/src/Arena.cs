@@ -317,7 +317,8 @@ public partial class Arena : Node2D
 
         string[] winners = ActiveJumpers.Instance.ComputeStats();
 
-        PlayerStats.Instance.SaveAllPlayers();
+        // We probably don't want to save the player data during this "event" 🤣
+        // PlayerStats.Instance.SaveAllPlayers();
         ShowEndScreen(winners);
         GenerateEndArena(winners);
     }
