@@ -23,12 +23,12 @@ public interface IArenaBuilder
     /// how many additional tiles to draw, which extend the platform, so despite providing the length of 0, the platform
     /// will always be drawn.
     /// </remarks>
-    /// <param name="location">Starting point where the platform is drawn (starting from Left).</param>
+    /// <param name="startingPoint">Starting point where the platform is drawn (starting from Left).</param>
     /// <param name="length">How many Middle tiles to insert.</param>
     /// <param name="drawWith">Type of the platform to draw. This parameter does not have to be specified in order to
     /// draw with the default tile, which is automatically chosen depending on the currently drawn Y. Override this if
     /// you need to draw with a different tile.</param>
-    public void DrawHorizontalPlatform(Vector2I location, int length, TileTypes? drawWith = null);
+    public void DrawHorizontalPlatform(Vector2I startingPoint, int length, TileTypes? drawWith = null);
 
     /// <summary>
     /// Draws a horizontal wall on the TileMap in specified location. Horizontal walls represent a 3-tile sprite
@@ -43,12 +43,12 @@ public interface IArenaBuilder
     /// how many additional tiles to draw, which extend the wall, so despite providing the length of 0, the wall
     /// will always be drawn.
     /// </remarks>
-    /// <param name="location">Starting point where the wall is drawn (starting from Left).</param>
+    /// <param name="startingPoint">Starting point where the wall is drawn (starting from Left).</param>
     /// <param name="length">How many Middle tiles to insert.</param>
     /// <param name="drawWith">Type of the wall to draw. This parameter does not have to be specified in order to
     /// draw with the default tile, which is automatically chosen depending on the currently drawn Y. Override this if
     /// you need to draw with a different tile.</param>
-    public void DrawHorizontalWall(Vector2I location, int length, TileTypes? drawWith = null);
+    public void DrawHorizontalWall(Vector2I startingPoint, int length, TileTypes? drawWith = null);
 
     /// <summary>
     /// Draws a vertical wall on the TileMap in specified location. vertical walls represent a 3-tile sprite
@@ -63,12 +63,12 @@ public interface IArenaBuilder
     /// how many additional tiles to draw, which extend the wall, so despite providing the height of 0, the wall
     /// will always be drawn.
     /// </remarks>
-    /// <param name="location">Starting point where the wall is drawn (starting from Bottom).</param>
+    /// <param name="startingPoint">Starting point where the wall is drawn (starting from Bottom).</param>
     /// <param name="height">How many Middle tiles to insert.</param>
     /// <param name="drawWith">Type of the wall to draw. This parameter does not have to be specified in order to
     /// draw with the default tile, which is automatically chosen depending on the currently drawn Y. Override this if
     /// you need to draw with a different tile.</param>
-    public void DrawVerticalWall(Vector2I location, int height, TileTypes? drawWith = null);
+    public void DrawVerticalWall(Vector2I startingPoint, int height, TileTypes? drawWith = null);
 
     /// <summary>
     /// Draws a single sprite on the TileMap at given location.
@@ -87,7 +87,7 @@ public interface IArenaBuilder
     /// <remarks>
     /// The starting point of the square is bottom-left. The object is drawn from left-to-right, bottom-to-top.
     /// </remarks>
-    /// <param name="location">Starting point where the object is drawn from.</param>
+    /// <param name="bottomLeft">Starts drawing from this location.</param>
     /// <param name="size">Amount of units this square will be expanded diagonally for.</param>
     /// <param name="drawWith">Primary object to draw the bounds with. This parameter does not have to be specified in
     /// order to draw with the default tile, which is automatically chosen depending on the currently drawn Y. Override
@@ -97,7 +97,7 @@ public interface IArenaBuilder
     /// <param name="fillWith">Secondary object used as a filler. <c>drawWith</c> is used as default if none was
     /// specified and if <c>shouldFill</c> was true.</param>
     public void DrawSquare(
-        Vector2I location,
+        Vector2I bottomLeft,
         int size,
         TileTypes? drawWith = null,
         bool shouldFill = true,
@@ -111,8 +111,8 @@ public interface IArenaBuilder
     /// <remarks>
     /// The drawing method is as same as for Square, bottom-left -> top-right.
     /// </remarks>
-    /// <param name="startingPoint">Location of the bottom-left corner to start drawing from.</param>
-    /// <param name="endingPoint">Location of the top-right corner to end the drawing at.</param>
+    /// <param name="bottomLeft">Starts drawing from this location.</param>
+    /// <param name="topRight">Ends drawing at this location.</param>
     /// <param name="drawWith">Primary object to draw the bounds with. This parameter does not have to be specified in
     /// order to draw with the default tile, which is automatically chosen depending on the currently drawn Y. Override
     /// this if you need to draw with a different tile.</param>
@@ -121,10 +121,17 @@ public interface IArenaBuilder
     /// <param name="fillWith">Secondary object used as a filler. <c>drawWith</c> is used as default if none was
     /// specified and if <c>shouldFill</c> was true.</param>
     public void DrawBox(
-        Vector2I startingPoint,
-        Vector2I endingPoint,
+        Vector2I bottomLeft,
+        Vector2I topRight,
         TileTypes? drawWith = null,
         bool shouldFill = true,
         TileTypes? fillWith = null
     );
+
+    /// <summary>
+    /// "Draws" a rectangle of empty cells, allowing to remove any drawn sprites on the TimeMap within specified bounds.
+    /// </summary>
+    /// <param name="bottomLeft">Starts drawing from this location.</param>
+    /// <param name="topRight">Ends drawing at this location.</param>
+    public void EraseSpritesAtArea(Vector2I bottomLeft, Vector2I topRight);
 }

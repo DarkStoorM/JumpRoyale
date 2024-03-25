@@ -15,8 +15,9 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 ## Create the Arena
 
-1)   print Jumper's current height
-2)   measure the real-world achievable height in the new system
+1)   Print Jumper's current height
+2)   Measure the real-world achievable height in the new system
+3)   Generate a tunnel
 
 ~~The new height has to be measured, because with 6000 height, there might be not enough variety when new sprites are considered. Although, 6k sounds like impossible height to climb on a single session, it just has to be checked due to the different block generation system.~~
 
@@ -35,6 +36,22 @@ Since I already have a dictionary initialization for a range of values, I could 
 | 120 (final change) |     64px     |
 
 Which, in the end, is just $4*n ^{(n-1)}$
+
+(3) Tunnels:
+
+Tunnel is a very simple feature, which draws a set of the following objects:
+
+-   Ceiling
+-   Floor
+-   Support ground
+
+I could just draw two walls and a platform, but there is a potential issue with the tunnel being blocked from the inside if there was a set of blocks generated. To make this work, everything has to be deleted on the tilemap where the tunnel is generated.
+
+To make this work, the Arena Builder needs to implement some sort of TileMap eraser first, where we just provide two corners and everything that was drawn within that area's bounds will just be erased so we can then draw something there.
+
+This will also make it easier to clear the arena later as we can just clear everything and draw something else, like the Podium for winners and extra platforms the players can jump on.
+
+The tunnel should probably be as tall as player's max jump height or maybe smaller. Max jump height would be preferable, because I would want to generate extra stuff inside, like small boxes or walls the players have to navigate through. Below the tunnel, there should be a one-way platform with 100% width to make it actually possible to jump into, because sometimes there can be a situation where the randomly generated platforms just won't allow reaching the tunnel if there was no *safe ground*.
 
 ---
 

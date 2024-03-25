@@ -51,19 +51,19 @@ public class ArenaBuilder : IArenaBuilder
         return _nextTilesByHeight[Math.Clamp(index, 0, _nextTilesByHeight.Length - 1)];
     }
 
-    public void DrawHorizontalPlatform(Vector2I location, int length, TileTypes? drawWith = null)
+    public void DrawHorizontalPlatform(Vector2I startingPoint, int length, TileTypes? drawWith = null)
     {
-        DrawHorizontally(location, length, _horizontalPlatforms[drawWith ?? TileTypeByHeight(location.Y)]);
+        DrawHorizontally(startingPoint, length, _horizontalPlatforms[drawWith ?? TileTypeByHeight(startingPoint.Y)]);
     }
 
-    public void DrawHorizontalWall(Vector2I location, int length, TileTypes? drawWith = null)
+    public void DrawHorizontalWall(Vector2I startingPoint, int length, TileTypes? drawWith = null)
     {
-        DrawHorizontally(location, length, _horizontalWalls[drawWith ?? TileTypeByHeight(location.Y)]);
+        DrawHorizontally(startingPoint, length, _horizontalWalls[drawWith ?? TileTypeByHeight(startingPoint.Y)]);
     }
 
-    public void DrawVerticalWall(Vector2I location, int height, TileTypes? drawWith = null)
+    public void DrawVerticalWall(Vector2I startingPoint, int height, TileTypes? drawWith = null)
     {
-        DrawVertically(location, height, _verticalWalls[drawWith ?? TileTypeByHeight(location.Y)]);
+        DrawVertically(startingPoint, height, _verticalWalls[drawWith ?? TileTypeByHeight(startingPoint.Y)]);
     }
 
     public void DrawPoint(Vector2I location, TileTypes? drawWith = null)
@@ -72,45 +72,56 @@ public class ArenaBuilder : IArenaBuilder
     }
 
     public void DrawSquare(
-        Vector2I location,
+        Vector2I bottomLeft,
         int size,
         TileTypes? drawWith = null,
         bool shouldFill = true,
         TileTypes? fillWith = null
     )
     {
-        TileTypes drawingTile = drawWith ?? TileTypeByHeight(location.Y);
-        TileTypes fillingTile = fillWith ?? TileTypeByHeight(location.Y);
+        TileTypes drawingTile = drawWith ?? TileTypeByHeight(bottomLeft.Y);
+        TileTypes fillingTile = fillWith ?? TileTypeByHeight(bottomLeft.Y);
 
         if (size == 0)
         {
-            DrawCell(location, _blocks[drawingTile].SpriteLocation);
+            DrawCell(bottomLeft, _blocks[drawingTile].SpriteLocation);
 
             return;
         }
 
-        Vector2I endingPoint = new(location.X + size, location.Y - size);
+        Vector2I endingPoint = new(bottomLeft.X + size, bottomLeft.Y - size);
 
-        DrawRectangle(location, endingPoint, drawingTile, shouldFill, fillingTile);
+        DrawRectangle(bottomLeft, endingPoint, drawingTile, shouldFill, fillingTile);
     }
 
     public void DrawBox(
-        Vector2I startingPoint,
-        Vector2I endingPoint,
+        Vector2I bottomLeft,
+        Vector2I topRight,
         TileTypes? drawWith = null,
         bool shouldFill = true,
         TileTypes? fillWith = null
     )
     {
-        TileTypes drawingTile = drawWith ?? TileTypeByHeight(startingPoint.Y);
-        TileTypes fillingTile = fillWith ?? TileTypeByHeight(startingPoint.Y);
+        TileTypes drawingTile = drawWith ?? TileTypeByHeight(bottomLeft.Y);
+        TileTypes fillingTile = fillWith ?? TileTypeByHeight(bottomLeft.Y);
 
-        if (endingPoint.X < startingPoint.X || endingPoint.Y > startingPoint.Y)
+        if (topRight.X < bottomLeft.X || topRight.Y > bottomLeft.Y)
         {
             throw new Exception("Boxes can only be drawn left-to-right, bottom-to-top");
         }
 
-        DrawRectangle(startingPoint, endingPoint, drawingTile, shouldFill, fillingTile);
+        DrawRectangle(bottomLeft, topRight, drawingTile, shouldFill, fillingTile);
+    }
+
+    public void EraseSpritesAtArea(Vector2I bottomLeft, Vector2I topRight)
+    {
+        for (int y = bottomLeft.Y; y >= topRight.Y; y--)
+        {
+            for (int x = bottomLeft.X; x <= topRight.X; x++)
+            {
+                EraseCellAt(new(x, y));
+            }
+        }
     }
 
     /// <summary>
@@ -191,11 +202,25 @@ public class ArenaBuilder : IArenaBuilder
         }
     }
 
-    private void DrawCell(Vector2I location, Vector2I atlasCoords)
+    /// <summary>
+    /// Draws on the TileMap at given location with sprite defined at <c>atlasCoords</c>.
+    /// </summary>
+    /// <param name="drawAt">Location to draw the cell at.</param>
+    /// <param name="atlasCoords">Sprite location on the TileMap.</param>
+    private void DrawCell(Vector2I drawAt, Vector2I atlasCoords)
     {
         // NOTE: This could potentially perform a check if the cell is already occupied if we don't want to override the
         // previously drawn sprite
-        TileMap.SetCell(0, location, 0, atlasCoords);
+        TileMap.SetCell(0, drawAt, 0, atlasCoords);
+    }
+
+    /// <summary>
+    /// Erases TimeMap Cell at given location.
+    /// </summary>
+    /// <param name="location">TimeMap coords to remove the cell at (set to empty).</param>
+    private void EraseCellAt(Vector2I location)
+    {
+        TileMap.SetCell(0, location, 0, new(-1, -1));
     }
 
     /// <summary>
