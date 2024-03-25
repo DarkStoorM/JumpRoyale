@@ -26,6 +26,7 @@ public partial class DrawingTestScene : Node2D
         DrawTestWalls();
         DrawTestSquares();
         DrawTestRectangles();
+        DrawTestErase();
     }
 
     private void DrawTestPoints()
@@ -181,5 +182,10 @@ public partial class DrawingTestScene : Node2D
         _builder.DrawBox(new Vector2I(85, 33), new Vector2I(87, 30), TileTypes.Stone, true, TileTypes.Concrete);
         _builder.DrawBox(new Vector2I(85, 38), new Vector2I(87, 35), TileTypes.Concrete, true, TileTypes.Gold);
         _builder.DrawBox(new Vector2I(85, 43), new Vector2I(87, 40), TileTypes.Gold, true, TileTypes.Stone);
+    }
+
+    private void DrawTestErase()
+    {
+        _builder.EraseSpritesAtArea(new(62, 11), new(66, 7));
     }
 }
