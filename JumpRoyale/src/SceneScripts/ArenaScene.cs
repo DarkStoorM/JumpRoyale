@@ -416,4 +416,14 @@ public partial class ArenaScene : Node2D
             );
         }
     }
+
+    private void Test(string a = "", string b = "")
+    {
+        // We will call this with named parameters
+    }
+
+    private void Test2()
+    {
+        Test(b: "test");
+    }
 }
