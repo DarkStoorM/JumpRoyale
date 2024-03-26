@@ -2,13 +2,14 @@
 
 Placeholder work-in-progress readme file, which will eventually be updated.
 
-> Below sections are sorted by priority
-
 -   [JumpRoyale](#jumproyale)
     -   [Character Choice](#character-choice)
     -   [Create the Arena](#create-the-arena)
+    -   [Make a new background](#make-a-new-background)
     -   [Fireballs (Twitch command)](#fireballs-twitch-command)
     -   [Aim command](#aim-command)
+    -   [New sprites](#new-sprites)
+    -   [Benchmarking](#benchmarking)
 
 ---
 
@@ -20,18 +21,32 @@ Old codebase had a hardcoded maximum value, this should be delegated to the spri
 
 ## Create the Arena
 
-Now with the Arena Builder in place, it would be a good test to research the drawing methods. Previously, a regular Random placement was being used, which was not bad by any means, but there are also other techniques to try: Perlin Noise.
+1)   Print Jumper's current height
+2)   Measure the real-world achievable height in the new system
 
-While Perlin Noise is very good for creating terrains, it should also be tested if it can do any good job with putting Platforms on the arena. There are also other noise functions to try:
+~~The new height has to be measured, because with 6000 height, there might be not enough variety when new sprites are considered. Although, 6k sounds like impossible height to climb on a single session, it just has to be checked due to the different block generation system.~~
 
--   Discrete
--   Tricubic
--   Perlin (main goal)
--   Simplex
--   Spots
--   Worley
+The height has been set to 6400, which evaluates to 400 tiles, which then divides into even 10 difficulty levels of 40 tiles.
 
-The initial idea is to use Perlin Noise for platforms and possibly mix it with another one for solid blocks, like Spots noise.
+(2) While I would make a good use of this right now, this requires to implement the variable camera movement first and possibly the camera speed per game difficulty, which is a different difficulty level than the current arena height. This depends on the timer, which changes the camera speed every [x] seconds.
+
+Since I already have a dictionary initialization for a range of values, I could also make something similar with the camera speed. The game time is 150 seconds, so for example:
+
+|    current time    | camera speed |
+| :----------------: | :----------: |
+|         0          |     4px      |
+|         30         |     8px      |
+|         60         |     16px     |
+|         90         |     32px     |
+| 120 (final change) |     64px     |
+
+Which, in the end, is just $4*n ^{(n-1)}$
+
+---
+
+## Make a new background
+
+In the old codebase there were 7 (? :thinking:) different backgrounds, chosen randomly. Find out if it's going to look better if the backgrounds are darker, possibly create something completely new.
 
 ---
 
@@ -63,3 +78,40 @@ Approx functionality:
 -   allow executing the command in the following format:
     -   `aim` `<direction> <angle> [power]`
     -   `a` `<direction> <angle> [power]`
+
+---
+
+## New sprites
+
+The currently imported sprites come from a paid asset, so it would be bad to create something completely new. It was not much though, but still.
+
+Currently, we only have 3 sprites for platforms, but there 5 potential sprites that can be used for Walls (solid objects, not pass-through).
+
+There is a possibility for me to make new sprites for platforms, as I know some pixel art, and adjusting a duplicate, changed sprite to the current style should not be that hard.
+
+Also, currently, the sprite change depends on the height the objects are being drawn at, and since we only have three sprites, we change that every third of the arena height. This does not create any good variety, so I would like to aim more at something that resembles Icy Tower's *system*, where new floor has a different sprite up to 1000, which gives 10 different sprites.
+
+Since the average height we get on livestreams is around 4k (250 tiles), it creates a small problem of picking the optimal height for changing the sprites. The screen is 67.5 tiles tall (67) and I would like to see at least 10 sprite changes, if possible, but probably our average height will not allow that, but...
+
+The old system was creating huge blocks at around 3500 height, which made is impossible to progress and the new system literally makes one block per row with certain chance, which reduces the amount of big blocks and potentially opens more possibilities for top height. It comes with a small catch, though: the player stats will now change, because we may potentially climb way higher, increasing the total score. Should we care anyway?
+
+With higher average height, we might get a better opportunity for different sprites per "level", but we also might end up with more hardcoding of the values, BUT... if all Walls and Platforms will have their own sprites, the change in tile types will be equal and it can be just calculated and automatically changed, so only the Arena Builder has to have the tile types populated in the correct order. This might even be totally fine to change sprites per one screen.
+
+If we change the sprite once per screen, which is 68 tiles (+1 to we change it off screen), we get to change it 5 times:
+
+0 -> 68 -> 136 -> 204 -> 272 -> 340
+
+0, being the default sprite, so we can get 6. We could change it more frequently, but I need to measure what is the actual achievable height, because right now it looks impossible to even reach the fourth change (4352px height).
+
+[Edit]
+After some tests on bigger screen, the new platforms seem like they are too thin... they will have to be bigger, otherwise this might look really bad on stream.
+
+---
+
+## Benchmarking
+
+In the old codebase, there is a method that takes all payers, sorts them by height and takes the top one. While this does not sound any harmful at all in regards to the performance, since this is a simple sort, there is also one small thing to check, which is how it actually performs if there are many players.
+
+So far, we have tested this on raids with a couple hundred players and while nothing noticeable was happening, it almost felt like the game was losing in puts (?).
+
+Sadly, Godot's profiler is not as good as Unity's, so I will have to rely on simple deltas reports for methods :thinking:

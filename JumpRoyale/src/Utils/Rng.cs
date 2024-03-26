@@ -14,9 +14,19 @@ public static class Rng
         return _rng.Next(min, max);
     }
 
+    public static bool RandomBool()
+    {
+        return _rng.NextSingle() < 0.5;
+    }
+
     public static int RandomInt()
     {
         return _rng.Next();
+    }
+
+    public static float RandomFloat()
+    {
+        return _rng.NextSingle();
     }
 
     /// <summary>

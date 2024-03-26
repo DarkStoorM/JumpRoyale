@@ -11,84 +11,117 @@ public class ArenaBuilder : IArenaBuilder
     private readonly Dictionary<TileTypes, BaseLineObject> _verticalWalls = [];
     private readonly Dictionary<TileTypes, BasePointObject> _blocks = [];
 
-    public ArenaBuilder(TileSet tileSet)
+    /// <summary>
+    /// Sprites will change every [Y] height in tiles, defined by this value.
+    /// </summary>
+    private readonly int _tileChangeHeightFactor;
+
+    /// <summary>
+    /// Defines an array of tile types that will be used to draw a default tile depending on the current height. The
+    /// order of the defined elements is important, they will be drawn in this order.
+    /// </summary>
+    private readonly TileTypes[] _nextTilesByHeight = [TileTypes.Stone, TileTypes.Concrete, TileTypes.Gold];
+
+    public ArenaBuilder(TileMap tileMap, int tileChangeHeightFactor)
     {
-        TileMap = new() { Name = "TileMap", TileSet = tileSet };
+        TileMap = tileMap;
+        _tileChangeHeightFactor = tileChangeHeightFactor;
 
         // Store all Drawable objects
-        _horizontalPlatforms.Add(TileTypes.Concrete, GameTiles.PlatformConcrete);
-        _horizontalPlatforms.Add(TileTypes.Gold, GameTiles.PlatformGold);
         _horizontalPlatforms.Add(TileTypes.Stone, GameTiles.PlatformStone);
-
-        _horizontalWalls.Add(TileTypes.Concrete, GameTiles.HorizontalWallConcrete);
-        _horizontalWalls.Add(TileTypes.Gold, GameTiles.HorizontalWallGold);
         _horizontalWalls.Add(TileTypes.Stone, GameTiles.HorizontalWallStone);
-
-        _verticalWalls.Add(TileTypes.Concrete, GameTiles.VerticalWallConcrete);
-        _verticalWalls.Add(TileTypes.Gold, GameTiles.VerticalWallGold);
         _verticalWalls.Add(TileTypes.Stone, GameTiles.VerticalWallStone);
-
-        _blocks.Add(TileTypes.Concrete, GameTiles.BlockConcrete);
-        _blocks.Add(TileTypes.Gold, GameTiles.BlockGold);
         _blocks.Add(TileTypes.Stone, GameTiles.BlockStone);
+
+        _horizontalPlatforms.Add(TileTypes.Concrete, GameTiles.PlatformConcrete);
+        _horizontalWalls.Add(TileTypes.Concrete, GameTiles.HorizontalWallConcrete);
+        _verticalWalls.Add(TileTypes.Concrete, GameTiles.VerticalWallConcrete);
+        _blocks.Add(TileTypes.Concrete, GameTiles.BlockConcrete);
+
+        _horizontalPlatforms.Add(TileTypes.Gold, GameTiles.PlatformGold);
+        _horizontalWalls.Add(TileTypes.Gold, GameTiles.HorizontalWallGold);
+        _verticalWalls.Add(TileTypes.Gold, GameTiles.VerticalWallGold);
+        _blocks.Add(TileTypes.Gold, GameTiles.BlockGold);
     }
 
     public TileMap TileMap { get; }
 
-    public void DrawHorizontalPlatform(Vector2I location, int length, TileTypes drawWith = TileTypes.Stone)
+    public TileTypes TileTypeByIndex(int index)
     {
-        DrawHorizontally(location, length, _horizontalPlatforms[drawWith]);
+        return _nextTilesByHeight[Math.Clamp(index, 0, _nextTilesByHeight.Length - 1)];
     }
 
-    public void DrawHorizontalWall(Vector2I location, int length, TileTypes drawWith = TileTypes.Stone)
+    public void DrawHorizontalPlatform(Vector2I startingPoint, int length, TileTypes? drawWith = null)
     {
-        DrawHorizontally(location, length, _horizontalWalls[drawWith]);
+        DrawHorizontally(startingPoint, length, _horizontalPlatforms[drawWith ?? TileTypeByHeight(startingPoint.Y)]);
     }
 
-    public void DrawVerticalWall(Vector2I location, int height, TileTypes drawWith = TileTypes.Stone)
+    public void DrawHorizontalWall(Vector2I startingPoint, int length, TileTypes? drawWith = null)
     {
-        DrawVertically(location, height, _verticalWalls[drawWith]);
+        DrawHorizontally(startingPoint, length, _horizontalWalls[drawWith ?? TileTypeByHeight(startingPoint.Y)]);
     }
 
-    public void DrawPoint(Vector2I location, TileTypes drawWith = TileTypes.Stone)
+    public void DrawVerticalWall(Vector2I startingPoint, int height, TileTypes? drawWith = null)
     {
-        DrawCell(location, _blocks[drawWith].SpriteLocation);
+        DrawVertically(startingPoint, height, _verticalWalls[drawWith ?? TileTypeByHeight(startingPoint.Y)]);
+    }
+
+    public void DrawPoint(Vector2I location, TileTypes? drawWith = null)
+    {
+        DrawCell(location, _blocks[drawWith ?? TileTypeByHeight(location.Y)].SpriteLocation);
     }
 
     public void DrawSquare(
-        Vector2I location,
+        Vector2I bottomLeft,
         int size,
-        TileTypes drawWith = TileTypes.Stone,
+        TileTypes? drawWith = null,
         bool shouldFill = true,
         TileTypes? fillWith = null
     )
     {
+        TileTypes drawingTile = drawWith ?? TileTypeByHeight(bottomLeft.Y);
+        TileTypes fillingTile = fillWith ?? TileTypeByHeight(bottomLeft.Y);
+
         if (size == 0)
         {
-            DrawCell(location, _blocks[drawWith].SpriteLocation);
+            DrawCell(bottomLeft, _blocks[drawingTile].SpriteLocation);
 
             return;
         }
 
-        Vector2I endingPoint = new(location.X + size, location.Y - size);
+        Vector2I endingPoint = new(bottomLeft.X + size, bottomLeft.Y - size);
 
-        DrawRectangle(location, endingPoint, drawWith, shouldFill, fillWith);
+        DrawRectangle(bottomLeft, endingPoint, drawingTile, shouldFill, fillingTile);
     }
 
     public void DrawBox(
-        Vector2I startingPoint,
-        Vector2I endingPoint,
-        TileTypes drawWith = TileTypes.Stone,
+        Vector2I bottomLeft,
+        Vector2I topRight,
+        TileTypes? drawWith = null,
         bool shouldFill = true,
         TileTypes? fillWith = null
     )
     {
-        if (endingPoint.X < startingPoint.X || endingPoint.Y > startingPoint.Y)
+        TileTypes drawingTile = drawWith ?? TileTypeByHeight(bottomLeft.Y);
+        TileTypes fillingTile = fillWith ?? TileTypeByHeight(bottomLeft.Y);
+
+        if (topRight.X < bottomLeft.X || topRight.Y > bottomLeft.Y)
         {
             throw new Exception("Boxes can only be drawn left-to-right, bottom-to-top");
         }
 
-        DrawRectangle(startingPoint, endingPoint, drawWith, shouldFill, fillWith);
+        DrawRectangle(bottomLeft, topRight, drawingTile, shouldFill, fillingTile);
+    }
+
+    public void EraseSpritesAtArea(Vector2I bottomLeft, Vector2I topRight)
+    {
+        for (int y = bottomLeft.Y; y >= topRight.Y; y--)
+        {
+            for (int x = bottomLeft.X; x <= topRight.X; x++)
+            {
+                EraseCellAt(new(x, y));
+            }
+        }
     }
 
     /// <summary>
@@ -169,8 +202,37 @@ public class ArenaBuilder : IArenaBuilder
         }
     }
 
-    private void DrawCell(Vector2I location, Vector2I atlasCoords)
+    /// <summary>
+    /// Draws on the TileMap at given location with sprite defined at <c>atlasCoords</c>.
+    /// </summary>
+    /// <param name="drawAt">Location to draw the cell at.</param>
+    /// <param name="atlasCoords">Sprite location on the TileMap.</param>
+    private void DrawCell(Vector2I drawAt, Vector2I atlasCoords)
     {
-        TileMap.SetCell(0, location, 0, atlasCoords);
+        // NOTE: This could potentially perform a check if the cell is already occupied if we don't want to override the
+        // previously drawn sprite
+        TileMap.SetCell(0, drawAt, 0, atlasCoords);
+    }
+
+    /// <summary>
+    /// Erases TileMap Cell at given location.
+    /// </summary>
+    /// <param name="location">TileMap coords to remove the cell at (set to empty).</param>
+    private void EraseCellAt(Vector2I location)
+    {
+        TileMap.SetCell(0, location, 0, new(-1, -1));
+    }
+
+    /// <summary>
+    /// Returns the tile type indexed by the amount of Height Factors in the current Y.
+    /// </summary>
+    private TileTypes TileTypeByHeight(int currentY)
+    {
+        int tileIndex = Math.Abs(currentY / _tileChangeHeightFactor);
+
+        // On some arena maxHeight values, this will evaluate to +1 above the limit, so we have to clamp the index
+        tileIndex = Math.Clamp(tileIndex, 0, _nextTilesByHeight.Length - 1);
+
+        return _nextTilesByHeight[tileIndex];
     }
 }

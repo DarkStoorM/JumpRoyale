@@ -1,5 +1,5 @@
 using Godot;
-using JumpRoyale.Utils;
+using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale;
 
@@ -12,17 +12,21 @@ public partial class DrawingTestScene : Node2D
 
     public override void _Ready()
     {
-        NullGuard.ThrowIfNull(TileSetToUse);
+        TileMap tileMap = GetNode<TileMap>("TileMap");
 
-        _builder = new ArenaBuilder(TileSetToUse);
+        if (tileMap.TileSet is null)
+        {
+            throw new UnassignedSceneOrComponentException();
+        }
 
-        AddChild(_builder.TileMap);
+        _builder = new ArenaBuilder(tileMap, 9999);
 
         DrawTestPoints();
         DrawTestPlatforms();
         DrawTestWalls();
         DrawTestSquares();
         DrawTestRectangles();
+        DrawTestErase();
     }
 
     private void DrawTestPoints()
@@ -147,20 +151,20 @@ public partial class DrawingTestScene : Node2D
 
         // Filled
         _builder.DrawBox(new Vector2I(59, 30), new Vector2I(59, 30));
-        _builder.DrawBox(new Vector2I(59, 35), new Vector2I(59, 35), TileTypes.Concrete);
-        _builder.DrawBox(new Vector2I(59, 40), new Vector2I(59, 40), TileTypes.Gold);
+        _builder.DrawBox(new Vector2I(59, 35), new Vector2I(59, 35), TileTypes.Concrete, true, TileTypes.Concrete);
+        _builder.DrawBox(new Vector2I(59, 40), new Vector2I(59, 40), TileTypes.Gold, true, TileTypes.Gold);
 
         _builder.DrawBox(new Vector2I(61, 31), new Vector2I(63, 30));
-        _builder.DrawBox(new Vector2I(61, 36), new Vector2I(63, 35), TileTypes.Concrete);
-        _builder.DrawBox(new Vector2I(61, 41), new Vector2I(63, 40), TileTypes.Gold);
+        _builder.DrawBox(new Vector2I(61, 36), new Vector2I(63, 35), TileTypes.Concrete, true, TileTypes.Concrete);
+        _builder.DrawBox(new Vector2I(61, 41), new Vector2I(63, 40), TileTypes.Gold, true, TileTypes.Gold);
 
         _builder.DrawBox(new Vector2I(65, 32), new Vector2I(68, 30));
-        _builder.DrawBox(new Vector2I(65, 37), new Vector2I(68, 35), TileTypes.Concrete);
-        _builder.DrawBox(new Vector2I(65, 42), new Vector2I(68, 40), TileTypes.Gold);
+        _builder.DrawBox(new Vector2I(65, 37), new Vector2I(68, 35), TileTypes.Concrete, true, TileTypes.Concrete);
+        _builder.DrawBox(new Vector2I(65, 42), new Vector2I(68, 40), TileTypes.Gold, true, TileTypes.Gold);
 
         _builder.DrawBox(new Vector2I(70, 33), new Vector2I(72, 30));
-        _builder.DrawBox(new Vector2I(70, 38), new Vector2I(72, 35), TileTypes.Concrete);
-        _builder.DrawBox(new Vector2I(70, 43), new Vector2I(72, 40), TileTypes.Gold);
+        _builder.DrawBox(new Vector2I(70, 38), new Vector2I(72, 35), TileTypes.Concrete, true, TileTypes.Concrete);
+        _builder.DrawBox(new Vector2I(70, 43), new Vector2I(72, 40), TileTypes.Gold, true, TileTypes.Gold);
 
         // Different filling
         _builder.DrawBox(new Vector2I(74, 30), new Vector2I(74, 30));
@@ -178,5 +182,10 @@ public partial class DrawingTestScene : Node2D
         _builder.DrawBox(new Vector2I(85, 33), new Vector2I(87, 30), TileTypes.Stone, true, TileTypes.Concrete);
         _builder.DrawBox(new Vector2I(85, 38), new Vector2I(87, 35), TileTypes.Concrete, true, TileTypes.Gold);
         _builder.DrawBox(new Vector2I(85, 43), new Vector2I(87, 40), TileTypes.Gold, true, TileTypes.Stone);
+    }
+
+    private void DrawTestErase()
+    {
+        _builder.EraseSpritesAtArea(new(62, 11), new(66, 7));
     }
 }
