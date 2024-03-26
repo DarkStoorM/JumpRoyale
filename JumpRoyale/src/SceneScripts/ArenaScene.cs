@@ -55,7 +55,7 @@ public partial class ArenaScene : Node2D
     /// Chance to generate a new platform every column. Should be fine-tuned to generate around 2 or 3 platforms per
     /// row. Note: column = x, iterating through all columns, trying to generate a platform from that spot.
     /// </summary>
-    private readonly float _chanceToGeneratePlatform = 0.015f;
+    private readonly float _chanceToGeneratePlatform = 0.0125f;
 
     /// <summary>
     /// Chance to generate a solid block on the arena. This chance is reduced as we go up in height, reduced by certain
