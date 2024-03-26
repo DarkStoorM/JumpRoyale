@@ -129,7 +129,7 @@ public interface IArenaBuilder
     );
 
     /// <summary>
-    /// "Draws" a rectangle of empty cells, allowing to remove any drawn sprites on the TimeMap within specified bounds.
+    /// "Draws" a rectangle of empty cells, allowing to remove any drawn sprites on the TileMap within specified bounds.
     /// </summary>
     /// <param name="bottomLeft">Starts drawing from this location.</param>
     /// <param name="topRight">Ends drawing at this location.</param>

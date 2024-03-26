@@ -215,9 +215,9 @@ public class ArenaBuilder : IArenaBuilder
     }
 
     /// <summary>
-    /// Erases TimeMap Cell at given location.
+    /// Erases TileMap Cell at given location.
     /// </summary>
-    /// <param name="location">TimeMap coords to remove the cell at (set to empty).</param>
+    /// <param name="location">TileMap coords to remove the cell at (set to empty).</param>
     private void EraseCellAt(Vector2I location)
     {
         TileMap.SetCell(0, location, 0, new(-1, -1));
