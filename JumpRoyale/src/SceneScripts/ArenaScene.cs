@@ -281,10 +281,10 @@ public partial class ArenaScene : Node2D
         }
 
         // Create a set of separation walls of a fixed height, but only once, at certain height
-        GenerateSeparationWalls();
+        int stoppedDrawingAtY = GenerateSeparationWalls();
 
-        // Create tunnels, but only once at random Y
-        GenerateTunnel();
+        // Create a tunnel, but only once at random Y __above separation walls__
+        GenerateTunnel(stoppedDrawingAtY);
     }
 
     private void GeneratePlatformAtY(int y)
@@ -347,15 +347,16 @@ public partial class ArenaScene : Node2D
 
     /// <summary>
     /// Draws vertical walls in steps: 1 -> 2 -> 3, with the main wall being the tallest, then two sets of smaller walls
-    /// (50% size).
+    /// (50% size). This will return the Y position where the walls were finished drawing + offset.
     /// </summary>
-    private void GenerateSeparationWalls()
+    private int GenerateSeparationWalls()
     {
         // Generate the wall only at certain point, somewhere around the middle of the arena + 2 smaller walls, then 3
         int centerPoint = _maximumArenaHeightInTiles / 2;
         int randomY = Rng.IntRange((int)(centerPoint / 1.5), centerPoint / 2);
         int fullWallSize = 60;
         int smallWall = fullWallSize / 2;
+        int wallsVerticalOffset = 10;
 
         // Marker at the quarter of the arena for easier positioning
         int quarterArenaSize = (int)ArenaRectInTiles.Size.X / 4;
@@ -364,57 +365,70 @@ public partial class ArenaScene : Node2D
         _builder.DrawVerticalWall(new(quarterArenaSize * 2, randomY), fullWallSize);
 
         // Offset the next walls by the first wall length and with some breathing room
-        int nextWallYPosition = randomY - fullWallSize - 10;
+        int nextWallYPosition = randomY - fullWallSize - wallsVerticalOffset;
 
         // Two smaller walls above the main wall
         _builder.DrawVerticalWall(new(quarterArenaSize, nextWallYPosition), smallWall);
         _builder.DrawVerticalWall(new(quarterArenaSize * 3, nextWallYPosition), smallWall);
 
         // Offset the next walls + some breathing room again
-        nextWallYPosition -= fullWallSize - 10;
+        nextWallYPosition -= smallWall + wallsVerticalOffset;
 
         // Three smaller walls above the secondary, smaller walls dividing the arena into 4 parts: middle + at the
         // center of the separated parts
         _builder.DrawVerticalWall(new(quarterArenaSize / 2, nextWallYPosition), smallWall);
         _builder.DrawVerticalWall(new(quarterArenaSize * 2, nextWallYPosition), smallWall);
         _builder.DrawVerticalWall(new((int)(quarterArenaSize * 3.5), nextWallYPosition), smallWall);
+
+        // Return the position above the walls, because we actually want them to be generated and we don't want them to
+        // be overwritten by the tunnel
+        return nextWallYPosition - smallWall;
     }
 
     /// <summary>
     /// Generates an obstacle in a horizontal tunnel shape, blocking the path.
     /// </summary>
-    private void GenerateTunnel()
+    private void GenerateTunnel(int previousY)
     {
-        // TODO: Pick a different Y
+        // Rather than picking a random Y where we will generate the tunnel, we will advance up from where the walls
+        // were previously generated (inserting it above the walls), and only then add an offset, roughly one screen at
+        // most
+        int randomY = Rng.IntRange(previousY - 70, previousY);
+        int arenaWidth = (int)ArenaRectInTiles.Size.X;
 
-        // Pick a random Y position, which should be offset by almost at least two screens from the bottom/top
-        int offset = (int)(ViewportSizeInTiles.Y * 1.5) * -1;
-        int randomY = Rng.IntRange(_maximumArenaHeightInTiles - offset * 2, offset);
+        // Height of the entire tunnel part, including the safe platforms below it
+        int tunnelHeight = 40;
+
+        // Gap in the floor and ceiling (entrance/exit)
+        int tunnelOpening = 30;
 
         // Erase the entire area, where the tunnel will be inserted
         _builder.EraseSpritesAtArea(
             new((int)ArenaRectInTiles.Position.X - 1, randomY),
-            new((int)ArenaRectInTiles.Size.X + 2, randomY - 40)
+            new(arenaWidth + 2, randomY - tunnelHeight)
         );
 
         // Draw the safe floor first, this will fill the entire width. Due to how the blocks are generated, we will
         // actually need two platforms
-        _builder.DrawHorizontalPlatform(new(1, randomY), (int)ArenaRectInTiles.Size.X);
-        _builder.DrawHorizontalPlatform(new(1, randomY - 10), (int)ArenaRectInTiles.Size.X);
+        _builder.DrawHorizontalPlatform(new(1, randomY), arenaWidth);
+        _builder.DrawHorizontalPlatform(new(1, randomY - 10), arenaWidth);
 
         // Make openings at random, left or right
-        bool startsFromLeft = Rng.RandomFloat() < 0.5;
-        int floorX = startsFromLeft ? 1 : 31;
-        int ceilingX = startsFromLeft ? 31 : 1;
-        int wallLength = (int)ArenaRectInTiles.Size.X - 30;
-        int platformX = startsFromLeft ? 1 : wallLength;
+        bool startsFromLeft = Rng.RandomBool();
+        int drawFloorAtX = startsFromLeft ? 1 : tunnelOpening;
+        int drawCeilingAtX = startsFromLeft ? tunnelOpening : 1;
+        int wallLength = arenaWidth - tunnelOpening + 1;
+        int drawPlatformAtX = startsFromLeft ? 1 : wallLength;
 
         // Draw the tunnel floor and ceiling with openings on the opposite sides
-        _builder.DrawHorizontalWall(new(floorX, randomY - 20), wallLength);
-        _builder.DrawHorizontalWall(new(ceilingX, randomY - 40), wallLength);
+        _builder.DrawHorizontalWall(new(drawFloorAtX, randomY - 20), wallLength);
+        _builder.DrawHorizontalWall(new(drawCeilingAtX, randomY - 40), wallLength);
 
-        // Draw helper "escape platform"
-        _builder.DrawHorizontalPlatform(new(platformX, randomY - 31), 31);
+        // Draw helper "escape platform" below the ceiling to allow escaping
+        _builder.DrawHorizontalPlatform(new(drawPlatformAtX, randomY - 30), tunnelOpening);
+
+        // Note: we could generate a small block inside the tunnel, but no idea how difficult it would be to navigate
+        // through it for the players, but maybe just a tiny 1-tile cell in the middle would also be fine
     }
 
     /// <summary>
