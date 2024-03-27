@@ -11,6 +11,10 @@ public class CharacterSpriteProvider
     private static readonly object _lock = new();
     private static CharacterSpriteProvider? _instance;
 
+    private readonly int _charactersCount = 3;
+    private readonly int _clothingsCount = 3;
+    private readonly string[] _genders = ["Male", "Female"];
+
     private readonly Dictionary<JumperAnimations, CharacterAnimationData> _animations =
         new()
         {
@@ -26,15 +30,11 @@ public class CharacterSpriteProvider
 
     private CharacterSpriteProvider()
     {
-        int charactersCount = 3;
-        int clothingsCount = 3;
-        string[] genders = ["Male", "Female"];
-
-        foreach (string gender in genders)
+        foreach (string gender in _genders)
         {
-            for (int charNumber = 1; charNumber <= charactersCount; charNumber++)
+            for (int charNumber = 1; charNumber <= _charactersCount; charNumber++)
             {
-                for (int clothingNumber = 1; clothingNumber <= clothingsCount; clothingNumber++)
+                for (int clothingNumber = 1; clothingNumber <= _clothingsCount; clothingNumber++)
                 {
                     Create(gender, charNumber, clothingNumber);
                 }
@@ -84,8 +84,9 @@ public class CharacterSpriteProvider
 
             for (int frameNumber = 0; frameNumber < animationData.FramesCount; frameNumber++)
             {
-                string pathToImage = GetPathToCharacter(gender, charNumber, clothingNumber, animationName, frameNumber);
-                Texture2D texture = ResourceLoader.Load<Texture2D>(pathToImage);
+                Texture2D texture = ResourceLoader.Load<Texture2D>(
+                    GetPathToCharacter(gender, charNumber, clothingNumber, animationName, frameNumber)
+                );
 
                 spriteFrames.AddFrame(animationName, texture, 1);
             }
@@ -98,7 +99,7 @@ public class CharacterSpriteProvider
     }
 
     /// <summary>
-    /// Constructs a full path to the existing resources (character sprite file).
+    /// Constructs a full path to the existing resources (character sprite file) based on the provided parameters.
     /// </summary>
     private string GetPathToCharacter(
         string gender,
@@ -115,8 +116,14 @@ public class CharacterSpriteProvider
         return $"{pathToFolder}{fileName}";
     }
 
-    private string GetAnimationHash(string gender, int charNumber, int clothingNumber)
+    /// <summary>
+    /// Creates an access string for SpriteFrames retrieval.
+    /// </summary>
+    /// <param name="gender">Male or Female (case sensitive).</param>
+    /// <param name="characterNumber">Character variant, range from 1 to 3.</param>
+    /// <param name="clothingNumber">Clothing variant, range from 1 to 3.</param>
+    private string GetAnimationHash(string gender, int characterNumber, int clothingNumber)
     {
-        return $"{gender}_{charNumber}_{clothingNumber}";
+        return $"{gender}_{characterNumber}_{clothingNumber}";
     }
 }
