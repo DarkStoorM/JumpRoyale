@@ -40,8 +40,6 @@ public class CharacterSpriteProvider
                 }
             }
         }
-
-        GD.Print("initialized");
     }
 
     public static CharacterSpriteProvider Instance
