@@ -119,6 +119,7 @@ public partial class ArenaScene : Node2D
         _viewport = GetViewportRect();
         _builder = new ArenaBuilder(tileMap, _maximumArenaHeightInTiles / 3);
 
+        CharacterSpriteProvider.Initialize();
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
 
