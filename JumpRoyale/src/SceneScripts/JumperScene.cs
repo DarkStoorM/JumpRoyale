@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Godot;
 using JumpRoyale.Events;
+using JumpRoyale.Utils;
 
 namespace JumpRoyale;
 
@@ -48,8 +49,7 @@ public partial class JumperScene : CharacterBody2D
         Name = _jumper.PlayerData.Name;
         _namePlate.Text = Name;
 
-        // Remaining from the old codebase:
-        // - Set character choice (sprite, requires the animation switcher class)
+        HandleCharacterSetEvent();
         HandleNameColorEvent();
 
         if (_jumper.PlayerData.IsPrivileged)
@@ -92,7 +92,7 @@ public partial class JumperScene : CharacterBody2D
 
     private void OnSetCharacterEvent(object sender, SetCharacterEventArgs args)
     {
-        GD.Print("OnSetCharacterEvent");
+        HandleCharacterSetEvent();
     }
 
     private void OnSetGlowColorEvent(object sender, SetGlowColorEventArgs args)
@@ -120,6 +120,24 @@ public partial class JumperScene : CharacterBody2D
     private void HandleDisableGlowEvent()
     {
         DisableParticleEmitter();
+    }
+
+    private void HandleCharacterSetEvent()
+    {
+        AnimatedSprite2D sprite = GetNode<AnimatedSprite2D>("Sprite2D");
+        int choice = _jumper.PlayerData.CharacterChoice;
+        string gender = choice > 9 ? "Female" : "Male";
+        int charNumber = ((choice - 1) % 9 / 3) + 1;
+        int clothingNumber = ((choice - 1) % 3) + 1;
+
+        GD.Print("Choice: " + choice + " Gender: " + gender + " Char: " + charNumber + " Clothing: " + clothingNumber);
+
+        sprite.SpriteFrames = CharacterSpriteProvider.Instance.GetSpriteFrames(gender, charNumber, clothingNumber);
+
+        if (IsOnFloor())
+        {
+            sprite.Play(JumperAnimations.IDLE.ToString().ToLower());
+        }
     }
 
     private void HandleGlowColorEvent()
