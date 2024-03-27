@@ -8,3 +8,11 @@ public enum JumperEventTypes
     OnSetGlowColor,
     OnSetNameColor,
 }
+
+public enum JumperAnimations
+{
+    FALL,
+    IDLE,
+    JUMP,
+    LAND,
+}
