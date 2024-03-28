@@ -15,7 +15,15 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 ## Character Choice
 
-Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
+~~Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.~~
+
+We don't need this, since the characters will never change anyway, so there is no need to automatically calculate how many character combinations there are.
+
+In order to properly test this, I need to spawn the player in the same area as we do in the live version, that is, spawning the player midair, which should trigger the Fall animation first, but to do that, I need to switch focus on another feature, which is calculating the arena field properly.
+
+I have the arena size, drawing Start/End points on X axis, but in order to get the Y component, I **have to** get the current position, which should be taken from the Camera, not the stored viewport (I think? :thinking: ). The viewport is not moving, we operate on the camera instead in the live version, so I have to do the same thing here, which should be easier since I already have a separate Camera scene with its own script, but I need to figure out how to get this out in the code (It's a packed scene)
+
+-   Figure out how to store the camera instantiated inside Arena scene
 
 ---
 
