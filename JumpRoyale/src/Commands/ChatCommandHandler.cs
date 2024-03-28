@@ -1,4 +1,3 @@
-using System;
 using JumpRoyale.Utils;
 
 namespace JumpRoyale.Commands;
