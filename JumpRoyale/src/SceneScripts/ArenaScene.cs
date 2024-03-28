@@ -134,14 +134,13 @@ public partial class ArenaScene : Node2D
         // NOTE: This simulates fake events with random data, this is not useful for actual tests on scene if there is
         // some data that has to align with Tests.
 
+        // Ugly, fake command execution
         // Fake Join
         if (Input.IsPhysicalKeyPressed(Key.J))
         {
             FakeMessage("join");
         }
-
-        // Ugly, fake command execution
-        if (Input.IsPhysicalKeyPressed(Key.Q))
+        else if (Input.IsPhysicalKeyPressed(Key.Q))
         {
             FakeMessage("r40");
         }
@@ -184,6 +183,10 @@ public partial class ArenaScene : Node2D
         else if (Input.IsPhysicalKeyPressed(Key.Y))
         {
             FakeMessage("namecolor random");
+        }
+        else if (Input.IsPhysicalKeyPressed(Key.U))
+        {
+            FakeMessage($"char {Rng.IntRange(1, 18)}");
         }
     }
 
