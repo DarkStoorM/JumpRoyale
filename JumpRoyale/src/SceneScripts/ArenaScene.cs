@@ -65,6 +65,14 @@ public partial class ArenaScene : Node2D
 
     private ArenaBuilder _builder = null!;
 
+    private ArenaDrawingArea _arenaDrawingArea = null!;
+
+    /// <summary>
+    /// Viewport Rect2.
+    /// </summary>
+    /// <remarks>
+    /// This should not be used for Position checking. Use Camera definition instead.
+    /// </remarks>
     private Rect2 _viewport;
 
     public ArenaScene()
@@ -77,22 +85,6 @@ public partial class ArenaScene : Node2D
             .Range(0, _difficultyLevelsCount)
             .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
     }
-
-    /// <summary>
-    /// Describes the "playable" arena field, which excludes the side walls (1 tile each) and is offset by 1 tile on
-    /// x-axis on both sides - reducing the usable field by 4 tiles.
-    /// </summary>
-    /// <remarks>
-    /// This property is constructed from values provided by <see cref="ViewportSizeInTiles"/>, where the Position
-    /// (including End property) and Size have been converted from pixels to tiles.
-    /// </remarks>
-    public Rect2 ArenaRectInTiles =>
-        new()
-        {
-            Position = new(2, 0),
-            Size = new(ViewportSizeInTiles.X - 4, ViewportSizeInTiles.Y),
-            End = new(ViewportSizeInTiles.X - 2, ViewportSizeInTiles.Y),
-        };
 
     [Export]
     public PackedScene? JumperScene { get; private set; }
@@ -116,8 +108,16 @@ public partial class ArenaScene : Node2D
             throw new UnassignedSceneOrComponentException();
         }
 
-        _viewport = GetViewportRect();
         _builder = new ArenaBuilder(tileMap, _maximumArenaHeightInTiles / 3);
+        _viewport = GetViewportRect();
+
+        // Construct the "playable" arena field from the viewport
+        _arenaDrawingArea = new()
+        {
+            StartX = 2,
+            EndX = ViewportSizeInTiles.X - 2,
+            SizeInTiles = ViewportSizeInTiles.X - 4,
+        };
 
         CharacterSpriteProvider.Initialize();
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
@@ -228,10 +228,9 @@ public partial class ArenaScene : Node2D
         AddChild(jumperScene);
         jumperScene.Init(eventArgs.Jumper);
 
-        // Rect2 viewport = GetViewportRect();
-        // GD.Print(viewport);
         int x = 500;
         int y = 40;
+
         jumperScene.Position = new Vector2(x, y);
     }
 
@@ -296,8 +295,8 @@ public partial class ArenaScene : Node2D
 
         // Draw on the playable arena field, excluding the current platform length to prevent from drawing off
         // screen
-        int startingColumn = (int)ArenaRectInTiles.Position.X;
-        int endingColumn = (int)ArenaRectInTiles.End.X - platformLength - 2;
+        int startingColumn = _arenaDrawingArea.StartX;
+        int endingColumn = _arenaDrawingArea.EndX - platformLength - 2;
 
         int platformsGeneratedThisRow = 0;
         int currentColumn = startingColumn - 1;
@@ -343,7 +342,7 @@ public partial class ArenaScene : Node2D
             return;
         }
 
-        int x = Rng.IntRange((int)ArenaRectInTiles.Position.X, (int)ArenaRectInTiles.End.X - blockSize - 2);
+        int x = Rng.IntRange(_arenaDrawingArea.StartX, _arenaDrawingArea.EndX - blockSize - 2);
 
         _builder.DrawSquare(new(x, y), blockSize, shouldFill: true, fillWith: TileTypes.Stone);
     }
@@ -362,7 +361,7 @@ public partial class ArenaScene : Node2D
         int wallsVerticalOffset = 10;
 
         // Marker at the quarter of the arena for easier positioning
-        int quarterArenaSize = (int)ArenaRectInTiles.Size.X / 4;
+        int quarterArenaSize = _arenaDrawingArea.SizeInTiles / 4;
 
         // Draw the main wall in the middle of the arena
         _builder.DrawVerticalWall(new(quarterArenaSize * 2, randomY), fullWallSize);
@@ -397,7 +396,7 @@ public partial class ArenaScene : Node2D
         // were previously generated (inserting it above the walls), and only then add an offset, roughly one screen at
         // most
         int randomY = Rng.IntRange(previousY - 70, previousY);
-        int arenaWidth = (int)ArenaRectInTiles.Size.X;
+        int arenaWidth = _arenaDrawingArea.SizeInTiles;
 
         // Height of the entire tunnel part, including the safe platforms below it
         int tunnelHeight = 40;
@@ -407,7 +406,7 @@ public partial class ArenaScene : Node2D
 
         // Erase the entire area, where the tunnel will be inserted
         _builder.EraseSpritesAtArea(
-            new((int)ArenaRectInTiles.Position.X - 1, randomY),
+            new(_arenaDrawingArea.StartX - 1, randomY),
             new(arenaWidth + 2, randomY - tunnelHeight)
         );
 
