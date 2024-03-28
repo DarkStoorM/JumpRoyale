@@ -17,8 +17,15 @@ public partial class JumperScene : CharacterBody2D
     [AllowNull]
     private Jumper _jumper;
 
+    [AllowNull]
+    private AnimatedSprite2D _animatedSprite2D = null!;
+
+    [AllowNull]
     private Label _namePlate = null!;
+
+    [AllowNull]
     private CpuParticles2D _glow = null!;
+
     private Vector2 _jumpVelocity;
 
     /// <summary>
@@ -32,11 +39,15 @@ public partial class JumperScene : CharacterBody2D
     /// </summary>
     private int _framesSincePositionChange;
 
-    public void Init(Jumper jumper)
+    public override void _Ready()
     {
+        _animatedSprite2D = GetNode<AnimatedSprite2D>("Sprite2D");
         _namePlate = GetNode<Label>("NamePlate");
         _glow = GetNode<CpuParticles2D>("Glow");
+    }
 
+    public void Init(Jumper jumper)
+    {
         _jumper = jumper;
 
         // Listen to Command Execution events coming from twitch chat
@@ -124,7 +135,6 @@ public partial class JumperScene : CharacterBody2D
 
     private void HandleCharacterSetEvent()
     {
-        AnimatedSprite2D sprite = GetNode<AnimatedSprite2D>("Sprite2D");
         int choice = _jumper.PlayerData.CharacterChoice;
         string gender = choice > 9 ? "Female" : "Male";
         int charNumber = ((choice - 1) % 9 / 3) + 1;
@@ -132,11 +142,15 @@ public partial class JumperScene : CharacterBody2D
 
         GD.Print("Choice: " + choice + " Gender: " + gender + " Char: " + charNumber + " Clothing: " + clothingNumber);
 
-        sprite.SpriteFrames = CharacterSpriteProvider.Instance.GetSpriteFrames(gender, charNumber, clothingNumber);
+        _animatedSprite2D.SpriteFrames = CharacterSpriteProvider.Instance.GetSpriteFrames(
+            gender,
+            charNumber,
+            clothingNumber
+        );
 
         if (IsOnFloor())
         {
-            sprite.Play(JumperAnimations.IDLE.ToString().ToLower());
+            _animatedSprite2D.Play(JumperAnimations.IDLE.ToString().ToLower());
         }
     }
 
