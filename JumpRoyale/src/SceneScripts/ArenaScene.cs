@@ -225,15 +225,14 @@ public partial class ArenaScene : Node2D
 
         JumperScene jumperScene = (JumperScene)JumperScene.Instantiate();
 
+        AddChild(jumperScene);
+        jumperScene.Init(eventArgs.Jumper);
+
         // Rect2 viewport = GetViewportRect();
         // GD.Print(viewport);
         int x = 500;
         int y = 40;
-
-        jumperScene.Init(eventArgs.Jumper);
         jumperScene.Position = new Vector2(x, y);
-
-        AddChild(jumperScene);
     }
 
     /// <summary>
