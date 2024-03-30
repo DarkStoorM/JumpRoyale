@@ -6,4 +6,5 @@
 script = ExtResource("1_vrvaw")
 
 [node name="CameraNode" type="Camera2D" parent="."]
-position = Vector2(960, -448)
+position = Vector2(0, -984)
+anchor_mode = 0
