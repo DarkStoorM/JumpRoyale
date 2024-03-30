@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://src/SceneScripts/CameraScene.cs" id="1_vrvaw"]
 
-[node name="Camera" type="Node2D"]
+[node name="CameraScene" type="Node2D"]
 script = ExtResource("1_vrvaw")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="CameraNode" type="Camera2D" parent="."]
 position = Vector2(960, -448)

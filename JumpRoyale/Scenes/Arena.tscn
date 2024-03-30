@@ -20,4 +20,4 @@ z_index = -1
 tile_set = ExtResource("3_r17hm")
 format = 2
 
-[node name="Camera" parent="." instance=ExtResource("4_qgcx5")]
+[node name="CameraScene" parent="." instance=ExtResource("4_qgcx5")]
