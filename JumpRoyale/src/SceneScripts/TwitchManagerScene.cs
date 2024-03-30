@@ -11,11 +11,21 @@ namespace JumpRoyale;
 
 public partial class TwitchManagerScene : Node2D
 {
+    private ArenaScene _arena = null!;
+
+    private Camera2D _camera = null!;
+
+    private Rect2 _viewport;
+
     [Export]
     public PackedScene? JumperScene { get; private set; }
 
     public override void _Ready()
     {
+        _arena = GetParent<ArenaScene>();
+        _camera = Owner.GetNode<Camera2D>("CameraScene/CameraNode");
+        _viewport = GetViewportRect();
+
         CharacterSpriteProvider.Initialize();
         TwitchChatClient.Initialize(new(skipLocalConfig: false));
         PlayerStats.Initialize(ProjectSettings.GlobalizePath(ResourcePaths.StatsFilePath));
@@ -124,8 +134,10 @@ public partial class TwitchManagerScene : Node2D
         AddChild(jumperScene);
         jumperScene.Init(eventArgs.Jumper);
 
-        int x = 500;
-        int y = 40;
+        // The spawning "Lobby is a small area at the bottom of the arena, which is 15 tiles tall
+        float x = Rng.IntRange(_arena.ArenaDrawingArea.StartX, _arena.ArenaDrawingArea.EndX) * 16;
+        int randomHeight = Rng.IntRange(5, 20);
+        float y = _viewport.Size.Y + _camera.Position.Y - (randomHeight * 16);
 
         jumperScene.Position = new Vector2(x, y);
     }
