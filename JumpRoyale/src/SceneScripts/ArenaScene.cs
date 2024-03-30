@@ -62,8 +62,6 @@ public partial class ArenaScene : Node2D
 
     private Camera2D _camera = null!;
 
-    private ArenaDrawingArea _arenaDrawingArea = null!;
-
     /// <summary>
     /// Viewport Rect2.
     /// </summary>
@@ -83,6 +81,8 @@ public partial class ArenaScene : Node2D
             .Range(0, _difficultyLevelsCount)
             .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
     }
+
+    public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
 
     /// <summary>
     /// Scaled viewport size. Assuming the viewport was set to always be of the same size despite the window size.
@@ -109,7 +109,7 @@ public partial class ArenaScene : Node2D
 
         // Construct the "playable" arena field from the viewport
         // Note: node has to enter the scene first, so we can't use this in the constructor
-        _arenaDrawingArea = new()
+        ArenaDrawingArea = new()
         {
             StartX = 2,
             EndX = ViewportSizeInTiles.X - 2,
@@ -164,8 +164,8 @@ public partial class ArenaScene : Node2D
 
         // Draw on the playable arena field, excluding the current platform length to prevent from drawing off
         // screen
-        int startingColumn = _arenaDrawingArea.StartX;
-        int endingColumn = _arenaDrawingArea.EndX - platformLength - 2;
+        int startingColumn = ArenaDrawingArea.StartX;
+        int endingColumn = ArenaDrawingArea.EndX - platformLength - 2;
 
         int platformsGeneratedThisRow = 0;
         int currentColumn = startingColumn - 1;
@@ -211,7 +211,7 @@ public partial class ArenaScene : Node2D
             return;
         }
 
-        int x = Rng.IntRange(_arenaDrawingArea.StartX, _arenaDrawingArea.EndX - blockSize - 2);
+        int x = Rng.IntRange(ArenaDrawingArea.StartX, ArenaDrawingArea.EndX - blockSize - 2);
 
         _builder.DrawSquare(new(x, y), blockSize, shouldFill: true, fillWith: TileTypes.Stone);
     }
@@ -230,7 +230,7 @@ public partial class ArenaScene : Node2D
         int wallsVerticalOffset = 10;
 
         // Marker at the quarter of the arena for easier positioning
-        int quarterArenaSize = _arenaDrawingArea.SizeInTiles / 4;
+        int quarterArenaSize = ArenaDrawingArea.SizeInTiles / 4;
 
         // Draw the main wall in the middle of the arena
         _builder.DrawVerticalWall(new(quarterArenaSize * 2, randomY), fullWallSize);
@@ -265,7 +265,7 @@ public partial class ArenaScene : Node2D
         // were previously generated (inserting it above the walls), and only then add an offset, roughly one screen at
         // most
         int randomY = Rng.IntRange(previousY - 70, previousY);
-        int arenaWidth = _arenaDrawingArea.SizeInTiles;
+        int arenaWidth = ArenaDrawingArea.SizeInTiles;
 
         // Height of the entire tunnel part, including the safe platforms below it
         int tunnelHeight = 40;
@@ -275,7 +275,7 @@ public partial class ArenaScene : Node2D
 
         // Erase the entire area, where the tunnel will be inserted
         _builder.EraseSpritesAtArea(
-            new(_arenaDrawingArea.StartX - 1, randomY),
+            new(ArenaDrawingArea.StartX - 1, randomY),
             new(arenaWidth + 2, randomY - tunnelHeight)
         );
 
