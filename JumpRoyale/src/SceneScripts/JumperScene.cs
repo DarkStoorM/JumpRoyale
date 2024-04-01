@@ -290,9 +290,12 @@ public partial class JumperScene : CharacterBody2D
     /// </summary>
     private void PlayNotGroundedAnimation()
     {
-        if (Velocity.Y < 0)
+        // Going up -> Jump, down -> Fall. Removing the check causes infinite animation start
+        if (!IsOnFloor())
         {
-            _animatedSprite2D.Play(JumperAnimationNames.Fall);
+            string animation = Velocity.Y < 0 ? JumperAnimationNames.Jump : JumperAnimationNames.Fall;
+
+            _animatedSprite2D.Play(animation);
         }
 
         // Defines a situation when we stopped, but the animation is still playing the Jump/Fall frames
