@@ -15,17 +15,18 @@ public class CharacterSpriteProvider
     private readonly int _clothingsCount = 3;
     private readonly string[] _genders = ["Male", "Female"];
 
-    private readonly Dictionary<JumperAnimations, CharacterAnimationData> _animations =
+    private readonly Dictionary<JumperAnimation, CharacterAnimationData> _animations =
         new()
         {
-            { JumperAnimations.FALL, new FallAnimation() },
-            { JumperAnimations.IDLE, new IdleAnimation() },
-            { JumperAnimations.JUMP, new JumpAnimation() },
-            { JumperAnimations.LAND, new LandAnimation() },
+            { JumperAnimation.FALL, new FallAnimation() },
+            { JumperAnimation.IDLE, new IdleAnimation() },
+            { JumperAnimation.JUMP, new JumpAnimation() },
+            { JumperAnimation.LAND, new LandAnimation() },
         };
 
-    // Map of string to SpriteFrames
-    // Keys are animation names
+    /// <summary>
+    /// Map of string to SpriteFrames. Keys are hashed animation names.
+    /// </summary>
     private readonly Dictionary<string, SpriteFrames> _allSpriteFrames = [];
 
     private CharacterSpriteProvider()
@@ -55,11 +56,12 @@ public class CharacterSpriteProvider
 
     /// <summary>
     /// Forces the singleton instantiation, because it has to load the resources, so we don't want to initialize this
-    /// "at some point" when a new character is created (in case there are lots of resources).
+    /// "at some point" when the first character is created (in case there are lots of resources). This is not required,
+    /// but might be in the future if there are more resources introduced.
     /// </summary>
     public static void Initialize()
     {
-        // Just do some bogus access, doesn't matter what we do here
+        // Force instantiation, it doesn't matter what we do here
         if (Instance is not null)
         {
             return;
@@ -75,7 +77,7 @@ public class CharacterSpriteProvider
     {
         SpriteFrames spriteFrames = new();
 
-        foreach (JumperAnimations animation in Enum.GetValues(typeof(JumperAnimations)))
+        foreach (JumperAnimation animation in Enum.GetValues(typeof(JumperAnimation)))
         {
             string animationName = animation.ToString().ToLower();
             CharacterAnimationData animationData = _animations[animation];
