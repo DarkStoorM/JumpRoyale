@@ -3,19 +3,13 @@
 Placeholder work-in-progress readme file, which will eventually be updated.
 
 -   [JumpRoyale](#jumproyale)
-    -   [Character Choice](#character-choice)
     -   [Create the Arena](#create-the-arena)
+    -   [Some cleanup](#some-cleanup)
     -   [Make a new background](#make-a-new-background)
     -   [Fireballs (Twitch command)](#fireballs-twitch-command)
     -   [Aim command](#aim-command)
     -   [New sprites](#new-sprites)
     -   [Benchmarking](#benchmarking)
-
----
-
-## Character Choice
-
-Old codebase had a hardcoded maximum value, this should be delegated to the sprite handler class, that should automatically calculate and store the maximum amount of possible characters.
 
 ---
 
@@ -43,6 +37,12 @@ Since I already have a dictionary initialization for a range of values, I could 
 Which, in the end, is just $4*n ^{(n-1)}$
 
 ---
+
+## Some cleanup
+
+There are currently some magic numbers, e.g. `16` for the tile size. Extract those into some sort of Constants...
+
+--
 
 ## Make a new background
 

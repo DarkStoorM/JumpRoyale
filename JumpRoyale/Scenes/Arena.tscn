@@ -1,14 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://dmrooefndxyw6"]
+[gd_scene load_steps=6 format=3 uid="uid://dmrooefndxyw6"]
 
 [ext_resource type="Script" path="res://src/SceneScripts/ArenaScene.cs" id="1_yckc0"]
 [ext_resource type="PackedScene" uid="uid://5gt7u2ubg5bn" path="res://Scenes/Jumper.tscn" id="2_as2jd"]
 [ext_resource type="TileSet" uid="uid://03x22p6x7fso" path="res://Resources/TileSet.tres" id="3_r17hm"]
+[ext_resource type="Script" path="res://src/SceneScripts/TwitchManagerScene.cs" id="4_dcque"]
 [ext_resource type="PackedScene" uid="uid://bn46jkbek8sr2" path="res://Scenes/Camera.tscn" id="4_qgcx5"]
 
 [node name="Arena" type="Node2D"]
 position = Vector2(0, -1088)
 script = ExtResource("1_yckc0")
-JumperScene = ExtResource("2_as2jd")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("3_r17hm")
@@ -20,4 +20,8 @@ z_index = -1
 tile_set = ExtResource("3_r17hm")
 format = 2
 
-[node name="Camera" parent="." instance=ExtResource("4_qgcx5")]
+[node name="CameraScene" parent="." instance=ExtResource("4_qgcx5")]
+
+[node name="TwitchManager" type="Node2D" parent="."]
+script = ExtResource("4_dcque")
+JumperScene = ExtResource("2_as2jd")
