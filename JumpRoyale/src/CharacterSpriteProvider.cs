@@ -11,8 +11,6 @@ public class CharacterSpriteProvider
     private static readonly object _lock = new();
     private static CharacterSpriteProvider? _instance;
 
-    private readonly int _charactersCount = 3;
-    private readonly int _clothingsCount = 3;
     private readonly string[] _genders = ["Male", "Female"];
 
     private readonly Dictionary<JumperAnimation, CharacterAnimationData> _animations =
@@ -33,9 +31,9 @@ public class CharacterSpriteProvider
     {
         foreach (string gender in _genders)
         {
-            for (int charNumber = 1; charNumber <= _charactersCount; charNumber++)
+            for (int charNumber = 1; charNumber <= CharactersCount; charNumber++)
             {
-                for (int clothingNumber = 1; clothingNumber <= _clothingsCount; clothingNumber++)
+                for (int clothingNumber = 1; clothingNumber <= ClothingsCount; clothingNumber++)
                 {
                     Create(gender, charNumber, clothingNumber);
                 }
@@ -53,6 +51,10 @@ public class CharacterSpriteProvider
             }
         }
     }
+
+    public int CharactersCount { get; } = 3;
+
+    public int ClothingsCount { get; } = 3;
 
     /// <summary>
     /// Forces the singleton instantiation, because it has to load the resources, so we don't want to initialize this
