@@ -10,8 +10,11 @@ public static class EnumExtensions
     {
         FieldInfo field = value?.GetType().GetField(value.ToString()) ?? throw new NullReferenceException();
 
-        ValueAttribute attribute = (ValueAttribute)Attribute.GetCustomAttribute(field, typeof(ValueAttribute))!;
+        // Return the contents of "value" attribute or throw if there was no attribute assigned to the field/property
+        ValueAttribute? attribute =
+            Attribute.GetCustomAttribute(field, typeof(ValueAttribute)) as ValueAttribute
+            ?? throw new NullReferenceException($"There was no attribute assigned to {value} enum.");
 
-        return attribute != null ? attribute.Value : value.ToString();
+        return attribute.Value;
     }
 }
