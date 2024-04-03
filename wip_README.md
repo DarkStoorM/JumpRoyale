@@ -21,6 +21,10 @@ Before I do anything in the Arena, I need yet another feature, which is the Game
 
 The timer should work by emitting events every [x] seconds, like 30, which triggers some kind of checkpoint, then restarts. The emitted event should send the amount of how many times the timer has reached the checkpoint.
 
+[edit]
+
+There is a System Timer, but I found that out too late and I rely on custom code anyway that is set by the timer, so it's still fine. I made an async timer that is just a drop-in component.
+
 ---
 
 ## Create the Arena
