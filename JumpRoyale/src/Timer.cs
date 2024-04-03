@@ -65,17 +65,14 @@ public class Timer(int runTimerForSeconds, int eventEmissionInterval) : IDisposa
     /// <summary>
     /// Allows stopping the timer early.
     /// </summary>
-    public void Stop(bool skipEventEmitter = false)
+    public void Stop()
     {
         IsStillRunning = false;
 
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
 
-        if (!skipEventEmitter)
-        {
-            EmitEventOnTimerFinish();
-        }
+        EmitEventOnTimerFinish();
     }
 
     public void Dispose()
