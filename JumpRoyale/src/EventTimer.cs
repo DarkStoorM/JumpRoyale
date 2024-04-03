@@ -11,7 +11,7 @@ namespace JumpRoyale;
 /// </summary>
 /// <param name="runTimerForSeconds">Time in seconds this timer should run for unless manually stopped.</param>
 /// <param name="eventEmissionInterval">Timer will emit an event after this many seconds.</param>
-public class Timer(int runTimerForSeconds, int eventEmissionInterval) : IDisposable
+public class EventTimer(int runTimerForSeconds, int eventEmissionInterval) : IDisposable
 {
     /// <summary>
     /// Elapsed time incremented by interval. This is not incremented at realtime by delta.
