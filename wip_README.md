@@ -11,6 +11,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [Aim command](#aim-command)
     -   [New sprites](#new-sprites)
     -   [Benchmarking](#benchmarking)
+    -   [Arena Scene](#arena-scene)
 
 ---
 
@@ -124,3 +125,9 @@ In the old codebase, there is a method that takes all payers, sorts them by heig
 So far, we have tested this on raids with a couple hundred players and while nothing noticeable was happening, it almost felt like the game was losing in puts (?).
 
 Sadly, Godot's profiler is not as good as Unity's, so I will have to rely on simple deltas reports for methods :thinking:
+
+---
+
+## Arena Scene
+
+-   Remove `ViewportSizeInTiles`
