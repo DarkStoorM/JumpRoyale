@@ -13,6 +13,9 @@ namespace JumpRoyale;
 /// <param name="eventEmissionInterval">Timer will emit an event after this many seconds.</param>
 public class Timer(int runTimerForSeconds, int eventEmissionInterval) : IDisposable
 {
+    /// <summary>
+    /// Elapsed time incremented by interval. This is not incremented at realtime by delta.
+    /// </summary>
     private int _elapsedTime;
 
     private CancellationTokenSource _cancellationTokenSource = new();
@@ -33,11 +36,14 @@ public class Timer(int runTimerForSeconds, int eventEmissionInterval) : IDisposa
     public int EventsEmittedCount { get; private set; }
 
     /// <summary>
+    /// Flag preventing the Start method from firing if the Timer is already running.
+    /// </summary>
+    public bool IsStillRunning { get; private set; }
+
+    /// <summary>
     /// Event will be emitted every [x] seconds defined by this value.
     /// </summary>
     public int EventEmissionInterval { get; } = eventEmissionInterval;
-
-    public bool IsStillRunning { get; private set; }
 
     /// <summary>
     /// Describes how long will this timer be allowed to run for.
@@ -54,12 +60,19 @@ public class Timer(int runTimerForSeconds, int eventEmissionInterval) : IDisposa
             return;
         }
 
-        _cancellationTokenSource = new();
-        _elapsedTime = 0;
+        ResetInternals();
+
         IsStillRunning = true;
-        EventsEmittedCount = 0;
 
         await RunTimer(_cancellationTokenSource.Token).ConfigureAwait(false);
+    }
+
+    public void Restart()
+    {
+        Stop();
+        ResetInternals();
+
+        _ = Start();
     }
 
     /// <summary>
@@ -106,6 +119,13 @@ public class Timer(int runTimerForSeconds, int eventEmissionInterval) : IDisposa
 
             EmitEventOnCheckpoint();
         }
+    }
+
+    private void ResetInternals()
+    {
+        _cancellationTokenSource = new();
+        _elapsedTime = 0;
+        EventsEmittedCount = 0;
     }
 
     private void EmitEventOnTimerFinish() => OnFinished?.Invoke(this, new());
