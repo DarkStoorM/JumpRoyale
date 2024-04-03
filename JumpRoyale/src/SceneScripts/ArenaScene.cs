@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using JumpRoyale.Events;
 using JumpRoyale.Utils;
 using JumpRoyale.Utils.Exceptions;
 
@@ -26,6 +27,8 @@ public partial class ArenaScene : Node2D
     /// level.
     /// </summary>
     private readonly Dictionary<int, Tuple<int, float>> _blockSizes;
+
+    private readonly Timer _timer;
 
     /// <summary>
     /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 400 value
@@ -80,6 +83,10 @@ public partial class ArenaScene : Node2D
         _blockSizes = Enumerable
             .Range(0, _difficultyLevelsCount)
             .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
+
+        _timer = new(5);
+        _timer.OnCheckpointReached += Test;
+        _ = _timer.Start();
     }
 
     public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
@@ -379,5 +386,11 @@ public partial class ArenaScene : Node2D
                 _builder.TileTypeByIndex(i)
             );
         }
+    }
+
+    private void Test(object sender, GameTimerEventArgs args)
+    {
+        _timer.Stop();
+        _ = _timer.Start();
     }
 }

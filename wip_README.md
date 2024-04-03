@@ -3,6 +3,7 @@
 Placeholder work-in-progress readme file, which will eventually be updated.
 
 -   [JumpRoyale](#jumproyale)
+    -   [Game Timer](#game-timer)
     -   [Create the Arena](#create-the-arena)
     -   [Some cleanup](#some-cleanup)
     -   [Make a new background](#make-a-new-background)
@@ -10,6 +11,14 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [Aim command](#aim-command)
     -   [New sprites](#new-sprites)
     -   [Benchmarking](#benchmarking)
+
+---
+
+## Game Timer
+
+Before I do anything in the Arena, I need yet another feature, which is the Game Timer. The camera scroll through the arena depends on the timer, but I don't want to do a simple timeout+speed adjustment. I need an actual timer that can send signals or create events. Preferable events in case I would want to write tests.
+
+The timer should work by emitting events every [x] seconds, like 30, which triggers some kind of checkpoint, then restarts. The emitted event should send the amount of how many times the timer has reached the checkpoint.
 
 ---
 
