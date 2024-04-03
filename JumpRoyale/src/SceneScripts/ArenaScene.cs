@@ -28,8 +28,6 @@ public partial class ArenaScene : Node2D
     /// </summary>
     private readonly Dictionary<int, Tuple<int, float>> _blockSizes;
 
-    private readonly Timer _timer;
-
     /// <summary>
     /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 400 value
     /// defines a 6400px tall arena. There are always (n - 1) steps, so if there are e.g. three levels, there will be
@@ -83,10 +81,6 @@ public partial class ArenaScene : Node2D
         _blockSizes = Enumerable
             .Range(0, _difficultyLevelsCount)
             .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
-
-        _timer = new(5);
-        _timer.OnCheckpointReached += Test;
-        _ = _timer.Start();
     }
 
     public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
@@ -386,11 +380,5 @@ public partial class ArenaScene : Node2D
                 _builder.TileTypeByIndex(i)
             );
         }
-    }
-
-    private void Test(object sender, GameTimerEventArgs args)
-    {
-        _timer.Stop();
-        _ = _timer.Start();
     }
 }
