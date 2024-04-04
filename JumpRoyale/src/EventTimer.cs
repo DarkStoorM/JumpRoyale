@@ -23,7 +23,7 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval) : IDi
     /// <summary>
     /// Event emitted at set interval.
     /// </summary>
-    public event EventHandler<TimerEventArgs>? OnCheckpointReached;
+    public event EventHandler<TimerEventArgs>? OnInterval;
 
     /// <summary>
     /// Event emitted once the timer has finished running. Omitted when the timer was aborted.
@@ -78,12 +78,17 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval) : IDi
     /// <summary>
     /// Allows stopping the timer early.
     /// </summary>
-    public void Stop()
+    public void Stop(bool skipFishEmitter = false)
     {
         IsStillRunning = false;
 
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
+
+        if (skipFishEmitter)
+        {
+            return;
+        }
 
         EmitEventOnTimerFinish();
     }
@@ -130,5 +135,5 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval) : IDi
 
     private void EmitEventOnTimerFinish() => OnFinished?.Invoke(this, new());
 
-    private void EmitEventOnCheckpoint() => OnCheckpointReached?.Invoke(this, new(EventsEmittedCount));
+    private void EmitEventOnCheckpoint() => OnInterval?.Invoke(this, new(EventsEmittedCount));
 }
