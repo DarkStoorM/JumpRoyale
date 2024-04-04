@@ -6,6 +6,7 @@ using JumpRoyale.Events;
 namespace Tests.Game;
 
 [TestFixture]
+[Parallelizable(ParallelScope.All)]
 public class TimerTests
 {
     private bool _triggeredTick;
