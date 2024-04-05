@@ -1,45 +1,54 @@
-#pragma warning disable CA2000
+#pragma warning disable CA2000 // Dispose objects before losing scope
 
 using JumpRoyale;
 using JumpRoyale.Events;
 
 namespace Tests.Game;
 
+/// <summary>
+/// This test class defines local functions and variables to let everything run in parallel, so there are no access
+/// collisions to class fields.
+/// </summary>
 [TestFixture]
+[Parallelizable(ParallelScope.All)]
 public class TimerTests
 {
-    private bool _triggeredTick;
-    private bool _triggeredFinish;
-    private int _ticksCount;
-
-    [SetUp]
-    public void SetUp()
-    {
-        _triggeredTick = false;
-        _triggeredFinish = false;
-        _ticksCount = 0;
-    }
-
     [Test]
     public async Task CanEmitEventAtInterval()
     {
+        bool trigger = false;
+
+        void TickTrigger(object sender, EventArgs args)
+        {
+            trigger = true;
+        }
+
         EventTimer timer = new(1, 1);
-        timer.OnInterval += Tick;
+
+        timer.OnInterval += TickTrigger;
 
         await timer.Start().ConfigureAwait(false);
 
-        Assert.That(_triggeredTick, Is.True);
+        Assert.That(trigger, Is.True);
     }
 
     [Test]
     public async Task CanEmitFinishEvent()
     {
+        bool finishTriggered = false;
+
+        void FinishTrigger(object sender, EventArgs args)
+        {
+            finishTriggered = true;
+        }
+
         EventTimer timer = new(1, 1);
-        timer.OnFinished += Finish;
+
+        timer.OnFinished += FinishTrigger;
 
         await timer.Start().ConfigureAwait(false);
 
-        Assert.That(_triggeredFinish, Is.True);
+        Assert.That(finishTriggered, Is.True);
     }
 
     /// <summary>
@@ -49,9 +58,23 @@ public class TimerTests
     [Test]
     public async Task CanStopTimer()
     {
+        int ticksCount = 0;
+        bool finishTriggered = false;
+
+        void TickIncrement(object sender, EventTimerEventArgs args)
+        {
+            ticksCount++;
+        }
+
+        void FinishTrigger(object sender, EventArgs args)
+        {
+            finishTriggered = true;
+        }
+
         EventTimer timer = new(2, 1);
-        timer.OnInterval += Tick;
-        timer.OnFinished += Finish;
+
+        timer.OnInterval += TickIncrement;
+        timer.OnFinished += FinishTrigger;
 
         _ = timer.Start().ConfigureAwait(false);
 
@@ -61,19 +84,8 @@ public class TimerTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_ticksCount, Is.EqualTo(1));
-            Assert.That(_triggeredFinish, Is.False);
+            Assert.That(ticksCount, Is.EqualTo(1));
+            Assert.That(finishTriggered, Is.False);
         });
-    }
-
-    private void Tick(object sender, TimerEventArgs args)
-    {
-        _triggeredTick = true;
-        _ticksCount = args.CheckpointsCount;
-    }
-
-    private void Finish(object sender, EventArgs args)
-    {
-        _triggeredFinish = true;
     }
 }
