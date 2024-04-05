@@ -21,7 +21,7 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval) : IDi
     private CancellationTokenSource _cancellationTokenSource = new();
 
     /// <summary>
-    /// Event emitted at set interval.
+    /// Event emitted at set interval. Useful for calling external actions after certain amount time.
     /// </summary>
     public event EventHandler<EventTimerEventArgs>? OnInterval;
 
