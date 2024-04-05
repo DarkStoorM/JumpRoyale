@@ -23,7 +23,7 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval) : IDi
     /// <summary>
     /// Event emitted at set interval.
     /// </summary>
-    public event EventHandler<TimerEventArgs>? OnInterval;
+    public event EventHandler<EventTimerEventArgs>? OnInterval;
 
     /// <summary>
     /// Event emitted once the timer has finished running. Omitted when the timer was aborted.
