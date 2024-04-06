@@ -7,7 +7,7 @@ namespace JumpRoyale;
 
 /// <summary>
 /// Reusable timer class for different Timed components. Note: this is not a realtime timer, the only purpose is to emit
-/// events at set interval.
+/// events at set interval or to call action after the timer is finished counting.
 /// </summary>
 /// <param name="runTimerForSeconds">Time in seconds this timer should run for unless manually stopped.</param>
 /// <param name="eventEmissionInterval">Timer will emit an event after this many seconds.</param>
