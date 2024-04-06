@@ -13,9 +13,10 @@ public partial class CameraScene : Node2D
         new(GameConstants.GameTimeInSeconds, GameConstants.ScrollSpeedChangeInterval);
 
     /// <summary>
-    /// Lobby timer acting as an awaiting time, which starts the game after the countdown.
+    /// Reference to the ArenaScene in the parent node - assuming this camera scene is correctly instantiated inside the
+    /// arena scene.
     /// </summary>
-    private readonly EventTimer _lobbyTimer = new(GameConstants.LobbyAwaitingTimeInSeconds);
+    private ArenaScene _arena = null!;
 
     /// <summary>
     /// Defines the current camera movement speed multiplier, increased at interval by game timer.
@@ -26,11 +27,12 @@ public partial class CameraScene : Node2D
 
     public override void _Ready()
     {
+        _arena = (ArenaScene)Owner;
+
         _gameTimer.OnInterval += IncreaseMovementMultiplier;
         _gameTimer.OnFinished += StopCamera;
-        _lobbyTimer.OnFinished += StartCamera;
 
-        _ = _lobbyTimer.Start();
+        _arena.LobbyTimer.OnFinished += StartCamera;
     }
 
     public override void _Process(double delta)
