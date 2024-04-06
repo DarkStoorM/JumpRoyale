@@ -80,15 +80,12 @@ public partial class ArenaScene : Node2D
         _blockSizes = Enumerable
             .Range(0, _difficultyLevelsCount)
             .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
-
-        LobbyTimer.OnFinished += RemoveLobbyCeiling;
-        _ = LobbyTimer.Start();
     }
 
     /// <summary>
-    /// Timer controlling the lobby ceiling.
+    /// Component (node, script) containing various EventTimer definitions.
     /// </summary>
-    public EventTimer LobbyTimer { get; } = new(GameConstants.LobbyAwaitingTimeInSeconds);
+    public TimersScene Timers { get; set; } = null!;
 
     public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
 
@@ -105,6 +102,7 @@ public partial class ArenaScene : Node2D
     public override void _Ready()
     {
         _camera = GetNode<Camera2D>("CameraScene/CameraNode");
+
         TileMap tileMap = GetNode<TileMap>("TileMap");
 
         if (tileMap.TileSet is null)
@@ -123,6 +121,8 @@ public partial class ArenaScene : Node2D
             EndX = ViewportSizeInTiles.X - 2,
             SizeInTiles = ViewportSizeInTiles.X - 4,
         };
+
+        Timers.LobbyTimer.OnFinished += RemoveLobbyCeiling;
 
         GenerateArena();
         DrawLobbyCeiling();
