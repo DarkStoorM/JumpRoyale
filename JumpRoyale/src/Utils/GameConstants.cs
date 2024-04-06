@@ -9,6 +9,8 @@ public static class GameConstants
 {
     public static readonly float Gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
+    public static readonly int LobbyAwaitingTime = 40;
+
     /// <summary>
     /// Game time after the awaiting time (lobby countdown).
     /// </summary>
