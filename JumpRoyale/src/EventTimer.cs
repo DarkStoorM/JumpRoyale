@@ -6,11 +6,12 @@ using JumpRoyale.Events;
 namespace JumpRoyale;
 
 /// <summary>
-/// Reusable timer class for different Timed components. Note: this is not a realtime timer, the only purpose is to emit
-/// events at set interval or to call action after the timer is finished counting.
+/// Reusable timer class for different Timed components. Note: this is not a realtime timer, the only purpose is to
+/// raise events at set interval or to call action after the timer is finished counting. See: <see cref="OnFinished"/> /
+/// <see cref="OnInterval"/>.
 /// </summary>
 /// <param name="runTimerForSeconds">Time in seconds this timer should run for unless manually stopped.</param>
-/// <param name="eventEmissionInterval">Timer will emit an event after this many seconds.</param>
+/// <param name="eventEmissionInterval">Timer will raise an event after this many seconds.</param>
 public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) : IDisposable
 {
     /// <summary>
@@ -21,19 +22,20 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
     private CancellationTokenSource _cancellationTokenSource = new();
 
     /// <summary>
-    /// Event emitted at set interval. Useful for calling external actions after certain amount time.
+    /// Event raised at set interval. Useful for calling external actions after certain amount time. Contains data
+    /// about how many times the events were raised.
     /// </summary>
     public event EventHandler<EventTimerEventArgs>? OnInterval;
 
     /// <summary>
-    /// Event emitted once the timer has finished running. Omitted when the timer was aborted.
+    /// Event raised once the timer has finished running. Omitted when the timer was aborted.
     /// </summary>
     public event EventHandler<EventArgs>? OnFinished;
 
     /// <summary>
-    /// Describes how many times the event was emitted.
+    /// Describes how many times the event was raised.
     /// </summary>
-    public int EventsEmittedCount { get; private set; }
+    public int EventsRaisedCount { get; private set; }
 
     /// <summary>
     /// Flag preventing the Start method from firing if the Timer is already running.
@@ -41,7 +43,7 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
     public bool IsStillRunning { get; private set; }
 
     /// <summary>
-    /// Event will be emitted every [x] seconds defined by this value.
+    /// Event will be raised every [x] seconds defined by this value.
     /// </summary>
     public int EventEmissionInterval { get; } = eventEmissionInterval;
 
@@ -78,19 +80,19 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
     /// <summary>
     /// Allows stopping the timer early.
     /// </summary>
-    public void Stop(bool skipFishEmitter = false)
+    public void Stop(bool skipOnFinishEvent = false)
     {
         IsStillRunning = false;
 
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
 
-        if (skipFishEmitter)
+        if (skipOnFinishEvent)
         {
             return;
         }
 
-        EmitEventOnTimerFinish();
+        RaiseEventOnTimerFinish();
     }
 
     public void Dispose()
@@ -113,16 +115,16 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
         {
             await Task.Delay(TimeSpan.FromSeconds(EventEmissionInterval), cancellationToken).ConfigureAwait(false);
 
-            EventsEmittedCount++;
+            EventsRaisedCount++;
             _elapsedTime += EventEmissionInterval;
 
             if (_elapsedTime >= TotalTimerTime)
             {
-                EmitEventOnTimerFinish();
+                RaiseEventOnTimerFinish();
                 Stop();
             }
 
-            EmitEventOnCheckpoint();
+            RaiseEventOnCheckpoint();
         }
     }
 
@@ -130,10 +132,10 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
     {
         _cancellationTokenSource = new();
         _elapsedTime = 0;
-        EventsEmittedCount = 0;
+        EventsRaisedCount = 0;
     }
 
-    private void EmitEventOnTimerFinish() => OnFinished?.Invoke(this, new());
+    private void RaiseEventOnTimerFinish() => OnFinished?.Invoke(this, new());
 
-    private void EmitEventOnCheckpoint() => OnInterval?.Invoke(this, new(EventsEmittedCount));
+    private void RaiseEventOnCheckpoint() => OnInterval?.Invoke(this, new(EventsRaisedCount));
 }

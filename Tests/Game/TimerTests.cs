@@ -14,7 +14,7 @@ namespace Tests.Game;
 public class TimerTests
 {
     [Test]
-    public async Task CanEmitEventAtInterval()
+    public async Task CanRaiseEventAtInterval()
     {
         bool trigger = false;
 
@@ -33,7 +33,7 @@ public class TimerTests
     }
 
     [Test]
-    public async Task CanEmitFinishEvent()
+    public async Task CanRaiseFinishEvent()
     {
         bool finishTriggered = false;
 
