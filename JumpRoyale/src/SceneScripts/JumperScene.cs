@@ -41,6 +41,8 @@ public partial class JumperScene : CharacterBody2D
 
     private int _lastJumpAngleFromCommand;
 
+    private EventTimer _podiumTimer = null!;
+
     /// <summary>
     /// Flag defining if we have jumped straight up. Used for the rotating sprite switch and sprite flipping if there
     /// was a non-zero angle applied.
@@ -57,6 +59,9 @@ public partial class JumperScene : CharacterBody2D
         _glow = GetNode<CpuParticles2D>("Glow");
 
         _animatedSprite2D.AnimationFinished += HandleAnimationFinishEvent;
+
+        // Store the podium timer reference (Jumper -> TwitchManager -> Arena)
+        _podiumTimer = GetParent().GetParent<ArenaScene>().Timers.PodiumTimer;
     }
 
     public void Init(Jumper jumper)
@@ -105,6 +110,13 @@ public partial class JumperScene : CharacterBody2D
 
     private void OnJumpCommandEvent(object sender, JumpCommandEventArgs args)
     {
+        // Only handle this event if the Podium Timer is not running, which indicates that we just ended the game and we
+        // don't want the jumpers to immediately jump off the podium
+        if (_podiumTimer.IsStillRunning)
+        {
+            return;
+        }
+
         HandleJumpEvent(args.JumpAngle, args.JumpPower);
     }
 
