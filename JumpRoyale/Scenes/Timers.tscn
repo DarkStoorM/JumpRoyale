@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://uk6q5kop5knq"]
+
+[ext_resource type="Script" path="res://src/SceneScripts/TimersScene.cs" id="1_j8smm"]
+
+[node name="Timers" type="Node2D"]
+script = ExtResource("1_j8smm")
