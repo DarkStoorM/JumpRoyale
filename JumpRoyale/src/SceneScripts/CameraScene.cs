@@ -7,16 +7,10 @@ namespace JumpRoyale;
 public partial class CameraScene : Node2D
 {
     /// <summary>
-    /// Timer started after the lobby countdown, raises an event at interval.
+    /// Reference to the Timers in the parent node - assuming this camera scene is correctly instantiated inside the
+    /// arena scene and is located __under__ the Timers scene in the hierarchy.
     /// </summary>
-    private readonly EventTimer _gameTimer =
-        new(GameConstants.GameTimeInSeconds, GameConstants.ScrollSpeedChangeInterval);
-
-    /// <summary>
-    /// Reference to the ArenaScene in the parent node - assuming this camera scene is correctly instantiated inside the
-    /// arena scene.
-    /// </summary>
-    private ArenaScene _arena = null!;
+    private TimersScene _timers = null!;
 
     /// <summary>
     /// Defines the current camera movement speed multiplier, increased at interval by game timer.
@@ -27,12 +21,11 @@ public partial class CameraScene : Node2D
 
     public override void _Ready()
     {
-        _arena = (ArenaScene)Owner;
+        _timers = ((ArenaScene)Owner).GetNode<TimersScene>("Timers");
 
-        _gameTimer.OnInterval += IncreaseMovementMultiplier;
-        _gameTimer.OnFinished += StopCamera;
-
-        _arena.LobbyTimer.OnFinished += StartCamera;
+        _timers.GameTimer.OnInterval += IncreaseMovementMultiplier;
+        _timers.GameTimer.OnFinished += StopCamera;
+        _timers.LobbyTimer.OnFinished += StartCamera;
     }
 
     public override void _Process(double delta)
@@ -60,8 +53,6 @@ public partial class CameraScene : Node2D
     private void StartCamera(object sender, EventArgs args)
     {
         CanMove = true;
-
-        _ = _gameTimer.Start();
     }
 
     /// <summary>
