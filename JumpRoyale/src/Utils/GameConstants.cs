@@ -9,7 +9,10 @@ public static class GameConstants
 {
     public static readonly float Gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
-    public static readonly int LobbyAwaitingTime = 40;
+    /// <summary>
+    /// Time before the game starts. While lobby timer is active, the camera will also be stopped for in this period.
+    /// </summary>
+    public static readonly int LobbyAwaitingTimeInSeconds = 40;
 
     /// <summary>
     /// Game time after the awaiting time (lobby countdown).

@@ -15,7 +15,7 @@ public partial class CameraScene : Node2D
     /// <summary>
     /// Lobby timer acting as an awaiting time, which starts the game after the countdown.
     /// </summary>
-    private readonly EventTimer _lobbyTimer = new(GameConstants.LobbyAwaitingTime);
+    private readonly EventTimer _lobbyTimer = new(GameConstants.LobbyAwaitingTimeInSeconds);
 
     /// <summary>
     /// Defines the current camera movement speed multiplier, increased at interval by game timer.

@@ -9,7 +9,10 @@ namespace JumpRoyale;
 
 public partial class ArenaScene : Node2D
 {
-    private readonly EventTimer _lobbyCeilingTimer = new(GameConstants.LobbyAwaitingTime);
+    /// <summary>
+    /// Timer controlling the lobby ceiling.
+    /// </summary>
+    private readonly EventTimer _lobbyCeilingTimer = new(GameConstants.LobbyAwaitingTimeInSeconds);
 
     /// <summary>
     /// Stores a dictionary of platform lengths per difficulty level.
