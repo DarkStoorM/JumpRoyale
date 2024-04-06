@@ -9,6 +9,8 @@ namespace JumpRoyale;
 
 public partial class ArenaScene : Node2D
 {
+    private readonly EventTimer _lobbyCeilingTimer = new(GameConstants.LobbyAwaitingTime);
+
     /// <summary>
     /// Stores a dictionary of platform lengths per difficulty level.
     /// <para>
@@ -80,6 +82,9 @@ public partial class ArenaScene : Node2D
         _blockSizes = Enumerable
             .Range(0, _difficultyLevelsCount)
             .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
+
+        _lobbyCeilingTimer.OnFinished += RemoveLobbyCeiling;
+        _ = _lobbyCeilingTimer.Start();
     }
 
     public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
@@ -117,6 +122,7 @@ public partial class ArenaScene : Node2D
         };
 
         GenerateArena();
+        DrawLobbyCeiling();
     }
 
     /// <summary>
@@ -379,5 +385,26 @@ public partial class ArenaScene : Node2D
                 _builder.TileTypeByIndex(i)
             );
         }
+    }
+
+    /// <summary>
+    /// Draws a horizontal wall across the entire arena, blocking the passage until the lobby timer is done counting.
+    /// </summary>
+    private void DrawLobbyCeiling()
+    {
+        _builder.DrawHorizontalWall(
+            new(ArenaDrawingArea.StartX - 1, -18),
+            ArenaDrawingArea.SizeInTiles,
+            TileTypes.Gold
+        );
+    }
+
+    /// <summary>
+    /// Removes the blocking horizontal wall, releasing the players after the lobby timer countdown and starts the
+    /// camera scroll.
+    /// </summary>
+    private void RemoveLobbyCeiling(object sender, EventArgs args)
+    {
+        _builder.EraseSpritesAtArea(new(ArenaDrawingArea.StartX - 1, -18), new(ArenaDrawingArea.SizeInTiles + 2, -18));
     }
 }
