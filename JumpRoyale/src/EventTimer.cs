@@ -137,5 +137,5 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
 
     private void RaiseEventOnTimerFinish() => OnFinished?.Invoke(this, new());
 
-    private void RaiseEventOnCheckpoint() => OnInterval?.Invoke(this, new(EventsRaisedCount));
+    private void RaiseEventOnInterval() => OnInterval?.Invoke(this, new(EventsRaisedCount));
 }

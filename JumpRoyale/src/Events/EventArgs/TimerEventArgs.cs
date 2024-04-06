@@ -2,7 +2,7 @@ using System;
 
 namespace JumpRoyale.Events;
 
-public class EventTimerEventArgs(int checkpointsCount) : EventArgs
+public class EventTimerEventArgs(int eventsRaisedCount) : EventArgs
 {
-    public int CheckpointsCount { get; set; } = checkpointsCount;
+    public int EventsRaisedCount { get; set; } = eventsRaisedCount;
 }
