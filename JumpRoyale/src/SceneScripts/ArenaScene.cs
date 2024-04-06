@@ -10,11 +10,6 @@ namespace JumpRoyale;
 public partial class ArenaScene : Node2D
 {
     /// <summary>
-    /// Timer controlling the lobby ceiling.
-    /// </summary>
-    private readonly EventTimer _lobbyCeilingTimer = new(GameConstants.LobbyAwaitingTimeInSeconds);
-
-    /// <summary>
     /// Stores a dictionary of platform lengths per difficulty level.
     /// <para>
     /// "Level" changes every [x] platforms.
@@ -86,9 +81,14 @@ public partial class ArenaScene : Node2D
             .Range(0, _difficultyLevelsCount)
             .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
 
-        _lobbyCeilingTimer.OnFinished += RemoveLobbyCeiling;
-        _ = _lobbyCeilingTimer.Start();
+        LobbyTimer.OnFinished += RemoveLobbyCeiling;
+        _ = LobbyTimer.Start();
     }
+
+    /// <summary>
+    /// Timer controlling the lobby ceiling.
+    /// </summary>
+    public EventTimer LobbyTimer { get; } = new(GameConstants.LobbyAwaitingTimeInSeconds);
 
     public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
 
