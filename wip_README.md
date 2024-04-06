@@ -26,6 +26,12 @@ The timer should work by emitting events every [x] seconds, like 30, which trigg
 
 There is a System Timer, but I found that out too late and I rely on custom code anyway that is set by the timer, so it's still fine. I made an async timer that is just a drop-in component.
 
+The implemented timer allows raising events at interval and on finish. Maybe OnStart would also be useful so that other scenes could do something when external timer is started, e.g. the timer is initialized, but not started yet, some components could subscribe to that timer and only do something when it actually starts.
+
+The first example I can think of is starting the camera movement when the lobby timer in the arena script is finished.
+
+Even though I will not be using this right now, I will add this event in case there is some "clashing" logic, e.g. right now there are two timers that depend on the lobby awaiting time. :thinking:
+
 ---
 
 ## Viewport problems
