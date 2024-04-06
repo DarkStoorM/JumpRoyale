@@ -28,6 +28,11 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
     public event EventHandler<EventTimerEventArgs>? OnInterval;
 
     /// <summary>
+    /// Event raised when the timer is started by external components.
+    /// </summary>
+    public event EventHandler<EventArgs>? OnStart;
+
+    /// <summary>
     /// Event raised once the timer has finished running. Omitted when the timer was aborted.
     /// </summary>
     public event EventHandler<EventArgs>? OnFinished;
@@ -63,6 +68,7 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
         }
 
         ResetInternals();
+        RaiseEventOnStart();
 
         IsStillRunning = true;
 
@@ -124,7 +130,7 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
                 Stop();
             }
 
-            RaiseEventOnCheckpoint();
+            RaiseEventOnInterval();
         }
     }
 
@@ -134,6 +140,8 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
         _elapsedTime = 0;
         EventsRaisedCount = 0;
     }
+
+    private void RaiseEventOnStart() => OnStart?.Invoke(this, new());
 
     private void RaiseEventOnTimerFinish() => OnFinished?.Invoke(this, new());
 

@@ -14,6 +14,27 @@ namespace Tests.Game;
 public class TimerTests
 {
     [Test]
+    public async Task CanRaiseEventOnStart()
+    {
+        bool trigger = false;
+
+        void TickTrigger(object sender, EventArgs args)
+        {
+            trigger = true;
+        }
+
+        EventTimer timer = new(1, 1);
+
+        timer.OnStart += TickTrigger;
+
+        Assert.That(trigger, Is.False);
+
+        await timer.Start().ConfigureAwait(false);
+
+        Assert.That(trigger, Is.True);
+    }
+
+    [Test]
     public async Task CanRaiseEventAtInterval()
     {
         bool trigger = false;
