@@ -2,6 +2,7 @@
 
 using JumpRoyale;
 using JumpRoyale.Events;
+using JumpRoyale.Utils.Exceptions;
 
 namespace Tests.Game;
 
@@ -108,5 +109,30 @@ public class TimerTests
             Assert.That(ticksCount, Is.EqualTo(1));
             Assert.That(finishTriggered, Is.False);
         });
+    }
+
+    /// <summary>
+    /// This test makes sure we get get stopped when trying to provide an interval that is not a multiple of the timer,
+    /// because it wouldn't make sense to define a timer with irregular intervals that will not add up to the timer.
+    /// This would result in not running the timer for the defined time, but for whatever "overflows".
+    /// </summary>
+    [Test]
+    public void CanThrowOnNonMultipleInterval()
+    {
+        EventTimer timer = new(5, 2);
+
+        Assert.ThrowsAsync<NonMultipleIntervalException>(timer.Start);
+    }
+
+    /// <summary>
+    /// This test makes sure the provided Interval will not exceed the timer value itself, which prevents raising the
+    /// events.
+    /// </summary>
+    [Test]
+    public void CanEqualizeInterval()
+    {
+        EventTimer timer = new(5, 6);
+
+        Assert.That(timer.EventEmissionInterval, Is.EqualTo(5));
     }
 }
