@@ -4,6 +4,7 @@ Placeholder work-in-progress readme file, which will eventually be updated.
 
 -   [JumpRoyale](#jumproyale)
     -   [Game Timer](#game-timer)
+    -   [Viewport problems](#viewport-problems)
     -   [Create the Arena](#create-the-arena)
     -   [Some cleanup](#some-cleanup)
     -   [Make a new background](#make-a-new-background)
@@ -24,6 +25,16 @@ The timer should work by emitting events every [x] seconds, like 30, which trigg
 [edit]
 
 There is a System Timer, but I found that out too late and I rely on custom code anyway that is set by the timer, so it's still fine. I made an async timer that is just a drop-in component.
+
+---
+
+## Viewport problems
+
+I noticed there is a problem with the viewport scaling on different resolutions, well, duh, I removed the stretch, because it messes up with the pixel art.
+
+Stretch should never be used with pixel art anyway, and instead, there should be a fixed resolution that is not stretched, but scaled. Unfortunately, this is not possible here, because we want to use as much space as possible, which comes with a cost of reducing the sprite quality due to stretching...
+
+Arena Scene takes values from the Viewport, which can only work if the size is constant, but since I changed the viewport to not be stretched and use the current resolution, I have to probably change it back, which then again, will reduce the sprite quality.
 
 ---
 
