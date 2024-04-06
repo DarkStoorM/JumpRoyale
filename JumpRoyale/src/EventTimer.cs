@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using JumpRoyale.Events;
+using JumpRoyale.Utils.Exceptions;
 
 namespace JumpRoyale;
 
@@ -48,9 +49,12 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
     public bool IsStillRunning { get; private set; }
 
     /// <summary>
-    /// Event will be raised every [x] seconds defined by this value.
+    /// Event will be raised every [x] seconds defined by this value. By default, this value is 1 unless specified
+    /// otherwise in the constructor. This value is not allowed to be greater than <c>TotalTimerTime</c> and it will be
+    /// equalized. This value also has to be a factor of <c>TotalTimerTime</c>.
     /// </summary>
-    public int EventEmissionInterval { get; } = eventEmissionInterval;
+    public int EventEmissionInterval { get; } =
+        eventEmissionInterval > runTimerForSeconds ? runTimerForSeconds : eventEmissionInterval;
 
     /// <summary>
     /// Describes how long will this timer be allowed to run for.
@@ -62,6 +66,12 @@ public class EventTimer(int runTimerForSeconds, int eventEmissionInterval = 1) :
     /// </summary>
     public async Task Start()
     {
+        // Disallow non-multiple intervals of the total timer value
+        if (TotalTimerTime % EventEmissionInterval != 0)
+        {
+            throw new NonMultipleIntervalException();
+        }
+
         if (IsStillRunning)
         {
             return;
