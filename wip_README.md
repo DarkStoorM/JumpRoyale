@@ -3,7 +3,6 @@
 Placeholder work-in-progress readme file, which will eventually be updated.
 
 -   [JumpRoyale](#jumproyale)
-    -   [Game Timer](#game-timer)
     -   [Viewport problems](#viewport-problems)
     -   [Create the Arena](#create-the-arena)
     -   [Some cleanup](#some-cleanup)
@@ -13,24 +12,6 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [New sprites](#new-sprites)
     -   [Benchmarking](#benchmarking)
     -   [Arena Scene](#arena-scene)
-
----
-
-## Game Timer
-
-Before I do anything in the Arena, I need yet another feature, which is the Game Timer. The camera scroll through the arena depends on the timer, but I don't want to do a simple timeout+speed adjustment. I need an actual timer that can send signals or create events. Preferable events in case I would want to write tests.
-
-The timer should work by emitting events every [x] seconds, like 30, which triggers some kind of checkpoint, then restarts. The emitted event should send the amount of how many times the timer has reached the checkpoint.
-
-[edit]
-
-There is a System Timer, but I found that out too late and I rely on custom code anyway that is set by the timer, so it's still fine. I made an async timer that is just a drop-in component.
-
-The implemented timer allows raising events at interval and on finish. Maybe OnStart would also be useful so that other scenes could do something when external timer is started, e.g. the timer is initialized, but not started yet, some components could subscribe to that timer and only do something when it actually starts.
-
-The first example I can think of is starting the camera movement when the lobby timer in the arena script is finished.
-
-Even though I will not be using this right now, I will add this event in case there is some "clashing" logic, e.g. right now there are two timers that depend on the lobby awaiting time. :thinking:
 
 ---
 
