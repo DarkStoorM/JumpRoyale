@@ -15,8 +15,6 @@ public class ChatCommandHandler(string message, string userId, string displayNam
 
     public bool IsPrivileged { get; } = isPrivileged;
 
-    public Action<Jumper>? CallableCommand { get; }
-
     public ChatCommandParser ExecutedCommand { get; private set; } = null!;
 
     public void ProcessMessage()
@@ -118,8 +116,5 @@ public class ChatCommandHandler(string message, string userId, string displayNam
         PlayerStats.Instance.UpdatePlayer(playerData);
         PlayerStats.Instance.UpdateJumper(jumper);
         PlayerStats.Instance.EmitPlayerJoinEvent(jumper);
-
-        // To Be Added:
-        // 1) place Jumper on the scene within arena bounds (requires new PR with Arena Generation)
     }
 }
