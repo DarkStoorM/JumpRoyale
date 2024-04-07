@@ -3,6 +3,7 @@
 Placeholder work-in-progress readme file, which will eventually be updated.
 
 -   [JumpRoyale](#jumproyale)
+    -   [Viewport problems](#viewport-problems)
     -   [Create the Arena](#create-the-arena)
     -   [Some cleanup](#some-cleanup)
     -   [Make a new background](#make-a-new-background)
@@ -10,6 +11,17 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [Aim command](#aim-command)
     -   [New sprites](#new-sprites)
     -   [Benchmarking](#benchmarking)
+    -   [Arena Scene](#arena-scene)
+
+---
+
+## Viewport problems
+
+I noticed there is a problem with the viewport scaling on different resolutions, well, duh, I removed the stretch, because it messes up with the pixel art.
+
+Stretch should never be used with pixel art anyway, and instead, there should be a fixed resolution that is not stretched, but scaled. Unfortunately, this is not possible here, because we want to use as much space as possible, which comes with a cost of reducing the sprite quality due to stretching...
+
+Arena Scene takes values from the Viewport, which can only work if the size is constant, but since I changed the viewport to not be stretched and use the current resolution, I have to probably change it back, which then again, will reduce the sprite quality.
 
 ---
 
@@ -41,6 +53,8 @@ Which, in the end, is just $4*n ^{(n-1)}$
 ## Some cleanup
 
 There are currently some magic numbers, e.g. `16` for the tile size. Extract those into some sort of Constants...
+
+-   I just noticed the `CommandHandler` has an unused delegate and it's just declared locally :thinking:
 
 --
 
@@ -115,3 +129,9 @@ In the old codebase, there is a method that takes all payers, sorts them by heig
 So far, we have tested this on raids with a couple hundred players and while nothing noticeable was happening, it almost felt like the game was losing in puts (?).
 
 Sadly, Godot's profiler is not as good as Unity's, so I will have to rely on simple deltas reports for methods :thinking:
+
+---
+
+## Arena Scene
+
+-   Remove `ViewportSizeInTiles`
