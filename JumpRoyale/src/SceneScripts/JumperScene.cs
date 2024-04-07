@@ -61,7 +61,7 @@ public partial class JumperScene : CharacterBody2D
         _animatedSprite2D.AnimationFinished += HandleAnimationFinishEvent;
 
         // Store the podium timer reference (Jumper -> TwitchManager -> Arena)
-        _podiumTimer = GetParent().GetParent<ArenaScene>().Timers.PodiumTimer;
+        _podiumTimer = GetParent().GetParent<ArenaScene>().Timers.GameResultTimer;
     }
 
     public void Init(Jumper jumper)

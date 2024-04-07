@@ -20,7 +20,7 @@ public partial class TimersScene : Node2D
     /// <summary>
     /// Timer started after the Game Timer is finished.
     /// </summary>
-    public EventTimer PodiumTimer { get; } = new(GameConstants.PodiumTimeout);
+    public EventTimer GameResultTimer { get; } = new(GameConstants.PodiumTimeout);
 
     public override void _EnterTree()
     {
@@ -35,7 +35,7 @@ public partial class TimersScene : Node2D
         _ = LobbyTimer.Start();
 
         LobbyTimer.OnFinished += StartGameTimer;
-        GameTimer.OnFinished += StartPodiumTimer;
+        GameTimer.OnFinished += StartGameResultTimer;
     }
 
     private void StartGameTimer(object sender, EventArgs args)
@@ -43,8 +43,8 @@ public partial class TimersScene : Node2D
         _ = GameTimer.Start();
     }
 
-    private void StartPodiumTimer(object sender, EventArgs args)
+    private void StartGameResultTimer(object sender, EventArgs args)
     {
-        _ = PodiumTimer.Start();
+        _ = GameResultTimer.Start();
     }
 }
