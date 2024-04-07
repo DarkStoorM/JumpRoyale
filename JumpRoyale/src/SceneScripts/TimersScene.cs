@@ -25,7 +25,7 @@ public partial class TimersScene : Node2D
     public override void _EnterTree()
     {
         // Force assignment inside the parent before any other component tries to access these timers
-        ((ArenaScene)Owner).Timers = this;
+        GetParent<ArenaScene>().Timers = this;
     }
 
     public override void _Ready()
