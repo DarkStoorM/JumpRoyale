@@ -1,6 +1,5 @@
 using JumpRoyale;
 using JumpRoyale.Commands;
-using JumpRoyale.Utils;
 using Tests.Mocks;
 
 namespace Tests.Commands;
@@ -23,7 +22,7 @@ public class CommandHandlerTests
             ChatCommandHandler commandHandler =
                 new(command, chatter.UserId, chatter.DisplayName, chatter.ColorHex, true);
 
-            GenericActionHandler<Jumper>? matchedCommand = commandHandler.TryGetCommandFromChatMessage();
+            Action<Jumper>? matchedCommand = commandHandler.TryGetCommandFromChatMessage();
 
             Assert.That(matchedCommand is not null && commandHandler.ExecutedCommand.Name == command);
         }

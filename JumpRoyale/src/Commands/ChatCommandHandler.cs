@@ -1,3 +1,4 @@
+using System;
 using JumpRoyale.Utils;
 
 namespace JumpRoyale.Commands;
@@ -14,13 +15,13 @@ public class ChatCommandHandler(string message, string userId, string displayNam
 
     public bool IsPrivileged { get; } = isPrivileged;
 
-    public GenericActionHandler<Jumper>? CallableCommand { get; }
+    public Action<Jumper>? CallableCommand { get; }
 
     public ChatCommandParser ExecutedCommand { get; private set; } = null!;
 
     public void ProcessMessage()
     {
-        GenericActionHandler<Jumper>? callableCommand = TryGetCommandFromChatMessage();
+        Action<Jumper>? callableCommand = TryGetCommandFromChatMessage();
 
         if (callableCommand is null)
         {
@@ -50,7 +51,7 @@ public class ChatCommandHandler(string message, string userId, string displayNam
     /// <summary>
     /// Returns a command delegate if the chat message contained a valid command name.
     /// </summary>
-    public GenericActionHandler<Jumper>? TryGetCommandFromChatMessage()
+    public Action<Jumper>? TryGetCommandFromChatMessage()
     {
         ExecutedCommand = new(Message);
 
