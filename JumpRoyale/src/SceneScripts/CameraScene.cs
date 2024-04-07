@@ -21,7 +21,7 @@ public partial class CameraScene : Node2D
 
     public override void _Ready()
     {
-        _timers = ((ArenaScene)Owner).GetNode<TimersScene>("Timers");
+        _timers = GetParent<ArenaScene>().Timers;
 
         _timers.GameTimer.OnInterval += IncreaseMovementMultiplier;
         _timers.GameTimer.OnFinished += StopCamera;
