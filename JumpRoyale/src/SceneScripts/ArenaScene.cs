@@ -27,37 +27,6 @@ public partial class ArenaScene : Node2D
     /// </summary>
     private readonly Dictionary<int, Tuple<int, float>> _blockSizes;
 
-    /// <summary>
-    /// Note: Y up goes negative, hence the sign. Modify this value if the arena has to be taller. The current 400 value
-    /// defines a 6400px tall arena. There are always (n - 1) steps, so if there are e.g. three levels, there will be
-    /// two sprite changes on the arena, since the first one is selected by default. If we implement more sprites per
-    /// "level", e.g. 10 in total, there are 9 steps (sprite changes), so make sure this value divides nicely by the
-    /// amount of difficulty levels.
-    /// </summary>
-    private readonly int _maximumArenaHeightInTiles = -400;
-
-    /// <summary>
-    /// Amount of difficulty levels.
-    /// </summary>
-    private readonly int _difficultyLevelsCount = 10;
-
-    /// <summary>
-    /// Maximum allowed number of platforms to generate in a single row before forcing to go to the next row.
-    /// </summary>
-    private readonly int _maximumPlatformsPerRow = 3;
-
-    /// <summary>
-    /// Chance to generate a new platform every column. Should be fine-tuned to generate around 2 or 3 platforms per
-    /// row. Note: column = x, iterating through all columns, trying to generate a platform from that spot.
-    /// </summary>
-    private readonly float _chanceToGeneratePlatform = 0.0125f;
-
-    /// <summary>
-    /// Chance to generate a solid block on the arena. This chance is reduced as we go up in height, reduced by certain
-    /// factor every difficulty level.
-    /// </summary>
-    private readonly float _chanceToGenerateBlocks = 0.4f;
-
     private ArenaBuilder _builder = null!;
 
     private Camera2D _camera = null!;
@@ -74,12 +43,22 @@ public partial class ArenaScene : Node2D
     {
         // Construct difficulty values for platforms and blocks. Define more dictionaries here if needed
         _platformLengths = Enumerable
-            .Range(0, _difficultyLevelsCount)
-            .ToDictionary(i => i, i => new int[] { 10 - i, 15 - i });
+            .Range(0, ArenaConstants.DifficultyLevelsCount)
+            .ToDictionary(
+                i => i,
+                i => new int[] { ArenaConstants.MinBasePlatformLength - i, ArenaConstants.MaxBasePlatformLength - i }
+            );
 
         _blockSizes = Enumerable
-            .Range(0, _difficultyLevelsCount)
-            .ToDictionary(i => i, i => Tuple.Create(i, _chanceToGenerateBlocks - (0.010f * i)));
+            .Range(0, ArenaConstants.DifficultyLevelsCount)
+            .ToDictionary(
+                i => i,
+                i =>
+                    Tuple.Create(
+                        i,
+                        ArenaConstants.BlockGenerationChance - (ArenaConstants.BlockGenerationChanceReduction * i)
+                    )
+            );
     }
 
     /// <summary>
@@ -87,17 +66,19 @@ public partial class ArenaScene : Node2D
     /// </summary>
     public TimersScene Timers { get; set; } = null!;
 
-    public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
-
     /// <summary>
-    /// Scaled viewport size. Assuming the viewport was set to always be of the same size despite the window size.
+    /// See type of <see cref="ArenaDrawingArea"/>.
     /// </summary>
-    public Vector2 ViewportSizeInPixels => _viewport.Size;
+    public ArenaDrawingArea ArenaDrawingArea { get; private set; } = null!;
 
     /// <summary>
     /// Describes the visible TileMap portion of the viewport in tiles.
     /// </summary>
-    public Vector2I ViewportSizeInTiles => new((int)_viewport.Size.X / 16, (int)_viewport.Size.Y / 16);
+    /// <remarks>
+    /// By initial design, the game was set to 1080p, but stretched, so it will be set to this resolution.
+    /// </remarks>
+    public Vector2I ViewportSizeInTiles =>
+        new(1920 / GameConstants.TileSizeInPixels, 1072 / GameConstants.TileSizeInPixels);
 
     public override void _Ready()
     {
@@ -110,7 +91,7 @@ public partial class ArenaScene : Node2D
             throw new UnassignedSceneOrComponentException();
         }
 
-        _builder = new ArenaBuilder(tileMap, _maximumArenaHeightInTiles / 3);
+        _builder = new ArenaBuilder(tileMap, ArenaConstants.MaximumArenaHeightInTiles / 3);
         _viewport = GetViewportRect();
 
         // Construct the "playable" arena field from the viewport
@@ -146,7 +127,7 @@ public partial class ArenaScene : Node2D
         DrawSideWalls();
 
         int startY = 0;
-        int endY = _maximumArenaHeightInTiles;
+        int endY = ArenaConstants.MaximumArenaHeightInTiles;
 
         // Randomly draw the platforms as base grounding
         for (int y = startY; y > endY; y -= 2)
@@ -185,7 +166,7 @@ public partial class ArenaScene : Node2D
             currentColumn++;
 
             // Go to the next column and try to generate a new platform
-            if (Rng.RandomFloat() > _chanceToGeneratePlatform)
+            if (Rng.RandomFloat() > ArenaConstants.PlatformGenerationChance)
             {
                 continue;
             }
@@ -198,7 +179,7 @@ public partial class ArenaScene : Node2D
             currentColumn += platformLength + 3;
 
             // Force skipping to the next row if we already generated enough platforms in the current row
-            if (platformsGeneratedThisRow == _maximumPlatformsPerRow)
+            if (platformsGeneratedThisRow == ArenaConstants.MaximumPlatformsPerRow)
             {
                 break;
             }
@@ -232,7 +213,7 @@ public partial class ArenaScene : Node2D
     private int GenerateSeparationWalls()
     {
         // Generate the wall only at certain point, somewhere around the middle of the arena + 2 smaller walls, then 3
-        int centerPoint = _maximumArenaHeightInTiles / 2;
+        int centerPoint = ArenaConstants.MaximumArenaHeightInTiles / 2;
         int randomY = Rng.IntRange((int)(centerPoint / 1.5), centerPoint / 2);
         int fullWallSize = 60;
         int smallWall = fullWallSize / 2;
@@ -349,10 +330,10 @@ public partial class ArenaScene : Node2D
     private int GetDifficultyLevelFromHeight(int currentY)
     {
         // Note: Y is negative.
-        int index = Math.Abs(currentY / (_maximumArenaHeightInTiles / _blockSizes.Count));
+        int index = Math.Abs(currentY / (ArenaConstants.MaximumArenaHeightInTiles / _blockSizes.Count));
 
         // Prevent index overflow for components that depend on the difficulty level, e.g. platform length per level
-        index = Math.Clamp(index, 0, _difficultyLevelsCount - 1);
+        index = Math.Clamp(index, 0, ArenaConstants.DifficultyLevelsCount - 1);
 
         return index;
     }
@@ -366,7 +347,7 @@ public partial class ArenaScene : Node2D
         int startingYPoint = 0;
 
         // Wall height to draw per "step"
-        int wallHeightPerStep = Math.Abs(_maximumArenaHeightInTiles / 3);
+        int wallHeightPerStep = Math.Abs(ArenaConstants.MaximumArenaHeightInTiles / 3);
 
         // We need to manually define the sprite differences on given height, since we are not using the same sprite to
         // draw everything, only the generated platform will change automatically.
