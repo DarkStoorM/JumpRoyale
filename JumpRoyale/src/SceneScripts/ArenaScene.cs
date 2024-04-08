@@ -215,9 +215,9 @@ public partial class ArenaScene : Node2D
         // Generate the wall only at certain point, somewhere around the middle of the arena + 2 smaller walls, then 3
         int centerPoint = ArenaConstants.MaximumArenaHeightInTiles / 2;
         int randomY = Rng.IntRange((int)(centerPoint / 1.5), centerPoint / 2);
-        int fullWallSize = 60;
+        int fullWallSize = ArenaConstants.FullSeparationWallSize;
         int smallWall = fullWallSize / 2;
-        int wallsVerticalOffset = 10;
+        int wallsVerticalOffset = ArenaConstants.SeparationWallVerticalOffset;
 
         // Marker at the quarter of the arena for easier positioning
         int quarterArenaSize = ArenaDrawingArea.SizeInTiles / 4;
@@ -258,10 +258,10 @@ public partial class ArenaScene : Node2D
         int arenaWidth = ArenaDrawingArea.SizeInTiles;
 
         // Height of the entire tunnel part, including the safe platforms below it
-        int tunnelHeight = 40;
+        int tunnelHeight = ArenaConstants.TunnelSectionHeight;
 
         // Gap in the floor and ceiling (entrance/exit)
-        int tunnelOpening = 30;
+        int tunnelOpening = ArenaConstants.TunnelSectionHorizontalOpening;
 
         // Erase the entire area, where the tunnel will be inserted
         _builder.EraseSpritesAtArea(

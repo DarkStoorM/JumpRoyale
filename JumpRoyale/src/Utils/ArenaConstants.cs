@@ -51,4 +51,26 @@ public static class ArenaConstants
     /// Block chance generation will be reduced by this factor per each difficulty level.
     /// </summary>
     public const float BlockGenerationChanceReduction = 0.010f;
+
+    /// <summary>
+    /// Size in tiles for the full size of the separation wall. This only defines the first wall, the next walls are
+    /// calculated off this value.
+    /// </summary>
+    public const int FullSeparationWallSize = 60;
+
+    /// <summary>
+    /// Size in tiles on Y-axis that will offset the next set of walls.
+    /// </summary>
+    public const int SeparationWallVerticalOffset = 10;
+
+    /// <summary>
+    /// Size in tiles for the entire Tunnel section. This includes the platforms placed at the bottom, and this value is
+    /// used by the Cell Eraser to define the area.
+    /// </summary>
+    public const int TunnelSectionHeight = 40;
+
+    /// <summary>
+    /// Size in tiles used to create the opening at the beginning and at the end of the tunnel (floor and ceiling).
+    /// </summary>
+    public const int TunnelSectionHorizontalOpening = 30;
 }
