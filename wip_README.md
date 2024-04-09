@@ -53,8 +53,6 @@ Which, in the end, is just $4*n ^{(n-1)}$
 
 There are currently some magic numbers, e.g. `16` for the tile size. Extract those into some sort of Constants...
 
--   I just noticed the `CommandHandler` has an unused delegate and it's just declared locally :thinking:
-
 --
 
 ## Make a new background
