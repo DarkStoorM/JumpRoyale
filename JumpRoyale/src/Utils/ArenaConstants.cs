@@ -70,6 +70,13 @@ public static class ArenaConstants
     public const int TunnelSectionHeight = 40;
 
     /// <summary>
+    /// Vertical spacing between each tunnel element in tiles. Ideally, this value should be the tunnel section height
+    /// divisor with no remainder (height / 4 = spacing), which should be 4 times smaller, because we draw elements
+    /// every [x] defined by this spacing. This is just a tweaked value to not have "unused" space afterwards.
+    /// </summary>
+    public const int TunnelSpacingBetweenElements = 10;
+
+    /// <summary>
     /// Size in tiles used to create the opening at the beginning and at the end of the tunnel (floor and ceiling).
     /// </summary>
     public const int TunnelSectionHorizontalOpening = 30;

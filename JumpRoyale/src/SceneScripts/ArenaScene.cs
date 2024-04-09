@@ -256,37 +256,34 @@ public partial class ArenaScene : Node2D
         // most
         int randomY = Rng.IntRange(previousY - 70, previousY);
         int arenaWidth = ArenaDrawingArea.SizeInTiles;
-
-        // Height of the entire tunnel part, including the safe platforms below it
-        int tunnelHeight = ArenaConstants.TunnelSectionHeight;
-
-        // Gap in the floor and ceiling (entrance/exit)
-        int tunnelOpening = ArenaConstants.TunnelSectionHorizontalOpening;
+        int verticalSpacing = ArenaConstants.TunnelSpacingBetweenElements;
+        int tunnelOpeningSize = ArenaConstants.TunnelSectionHorizontalOpening;
 
         // Erase the entire area, where the tunnel will be inserted
         _builder.EraseSpritesAtArea(
             new(ArenaDrawingArea.StartX - 1, randomY),
-            new(arenaWidth + 2, randomY - tunnelHeight)
+            new(arenaWidth + 2, randomY - ArenaConstants.TunnelSectionHeight)
         );
 
         // Draw the safe floor first, this will fill the entire width. Due to how the blocks are generated, we will
         // actually need two platforms
         _builder.DrawHorizontalPlatform(new(1, randomY), arenaWidth);
-        _builder.DrawHorizontalPlatform(new(1, randomY - 10), arenaWidth);
+        _builder.DrawHorizontalPlatform(new(1, randomY - verticalSpacing * 1), arenaWidth);
 
-        // Make openings at random, left or right
+        // Prepare values for the openings in the floor/ceiling at random, left or right. If we select to start on the
+        // left side, the ceiling will have the exit on the right side.
         bool startsFromLeft = Rng.RandomBool();
-        int drawFloorAtX = startsFromLeft ? 1 : tunnelOpening;
-        int drawCeilingAtX = startsFromLeft ? tunnelOpening : 1;
-        int wallLength = arenaWidth - tunnelOpening + 1;
+        int drawFloorAtX = startsFromLeft ? 1 : tunnelOpeningSize;
+        int drawCeilingAtX = startsFromLeft ? tunnelOpeningSize : 1;
+        int wallLength = arenaWidth - tunnelOpeningSize + 1; // +1 for a complete enclosure
         int drawPlatformAtX = startsFromLeft ? 1 : wallLength;
 
-        // Draw the tunnel floor and ceiling with openings on the opposite sides
-        _builder.DrawHorizontalWall(new(drawFloorAtX, randomY - 20), wallLength);
-        _builder.DrawHorizontalWall(new(drawCeilingAtX, randomY - 40), wallLength);
+        // Draw the tunnel floor and ceiling above it with openings on the opposite sides
+        _builder.DrawHorizontalWall(new(drawFloorAtX, randomY - verticalSpacing * 2), wallLength);
+        _builder.DrawHorizontalWall(new(drawCeilingAtX, randomY - verticalSpacing * 3), wallLength);
 
         // Draw helper "escape platform" below the ceiling to allow escaping
-        _builder.DrawHorizontalPlatform(new(drawPlatformAtX, randomY - 30), tunnelOpening);
+        _builder.DrawHorizontalPlatform(new(drawPlatformAtX, randomY - verticalSpacing * 4), tunnelOpeningSize);
 
         // Note: we could generate a small block inside the tunnel, but no idea how difficult it would be to navigate
         // through it for the players, but maybe just a tiny 1-tile cell in the middle would also be fine
