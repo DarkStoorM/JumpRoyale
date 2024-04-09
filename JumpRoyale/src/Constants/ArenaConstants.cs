@@ -1,5 +1,9 @@
 namespace JumpRoyale.Utils;
 
+/// <summary>
+/// Provides a set of constants and configuration values related to drawing objects in the arena. Tweak those values in
+/// order to change how the arena builder draws objects.
+/// </summary>
 public static class ArenaConstants
 {
     /// <summary>
