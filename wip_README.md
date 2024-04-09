@@ -3,6 +3,8 @@
 Placeholder work-in-progress readme file, which will eventually be updated.
 
 -   [JumpRoyale](#jumproyale)
+    -   [Things left to do](#things-left-to-do)
+    -   [UI](#ui)
     -   [Viewport problems](#viewport-problems)
     -   [Create the Arena](#create-the-arena)
     -   [Make a new background](#make-a-new-background)
@@ -10,6 +12,36 @@ Placeholder work-in-progress readme file, which will eventually be updated.
     -   [Aim command](#aim-command)
     -   [New sprites](#new-sprites)
     -   [Benchmarking](#benchmarking)
+
+---
+
+## Things left to do
+
+This list is just a reminder of what else is there to do in the game, what to move from the old code and what to implement next. There is no specific order, just listed randomly:
+
+-   totally new game sprites
+-   new background sprite
+-   new result screen
+-   game UI
+-   adjust the platform generation
+-   Chat Command: `aim` - described here: [Aim command](#aim-command)
+-   Chat Command: `fireball` - described here: [Fireballs (Twitch command)](#fireballs-twitch-command)
+
+---
+
+## UI
+
+I did not plan on designing the UI now, but I would prefer to have some more visual progress rather than programmatic, because it doesn't really look like there is any actual progress right now despite lots of code changes and some feature implementation.
+
+So, this one will be a step back from the programming and I will take some time designing the UI. There are couple things to consider here:
+
+-   what actual elements to put in the UI?
+-   where do the components have to be located?
+-   where to put the timer?
+
+One thing is certain: the UI can't really be at the top, because the players spend most of the time at the top of the arena, which will then just cover the players. But, **maybe** it won't be that bad if the UI is small with a pixel font, like `Visitor TT1 BRK`, which is just 10 px :thinking:
+
+I would still prefer the UI to be at the bottom, which then allows the UI to be bigger, but I don't really know how it will behave on different screen resolutions and this may require stretching, which I would like to avoid. the only way to make this work would be to make an actual scalable pixel art resolution, but this only works when the camera is relatively small, like 360x288 and pixels are 24px big.
 
 ---
 
