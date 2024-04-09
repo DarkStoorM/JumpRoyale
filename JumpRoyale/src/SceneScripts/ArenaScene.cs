@@ -78,7 +78,10 @@ public partial class ArenaScene : Node2D
     /// By initial design, the game was set to 1080p, but stretched, so it will be set to this resolution.
     /// </remarks>
     public Vector2I ViewportSizeInTiles =>
-        new(1920 / GameConstants.TileSizeInPixels, 1072 / GameConstants.TileSizeInPixels);
+        new(
+            GameConstants.ScreenWidthInPixels / GameConstants.TileSizeInPixels,
+            GameConstants.ScreenHeightInPixels / GameConstants.TileSizeInPixels
+        );
 
     public override void _Ready()
     {
