@@ -148,6 +148,7 @@ public partial class ArenaScene : Node2D
         int stoppedDrawingAtY = GenerateSeparationWalls();
 
         // Create a tunnel, but only once at random Y __above separation walls__
+        // Note: comment this section out if you don't want the arena to insert a Tunnel
         GenerateTunnel(stoppedDrawingAtY);
     }
 
@@ -211,8 +212,11 @@ public partial class ArenaScene : Node2D
 
     /// <summary>
     /// Draws vertical walls in steps: 1 -> 2 -> 3, with the main wall being the tallest, then two sets of smaller walls
-    /// (50% size). This will return the Y position where the walls were finished drawing + offset.
+    /// (50% size).
     /// </summary>
+    /// <returns>
+    /// Y position where the walls were finished drawing + offset to not immediately draw over the walls.
+    /// </returns>
     private int GenerateSeparationWalls()
     {
         // Generate the wall only at certain point, somewhere around the middle of the arena + 2 smaller walls, then 3
