@@ -210,6 +210,11 @@ public class PlayerStats
         _jumpers[jumper.PlayerData.UserId] = jumper;
     }
 
+    public int JumpersCount()
+    {
+        return _jumpers.Count;
+    }
+
     /// <summary>
     /// Emits new event for subscribers that new Jumper has been created.
     /// </summary>
