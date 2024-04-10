@@ -1,0 +1,124 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcg0yu5eys6vh"]
+
+[ext_resource type="Script" path="res://src/SceneScripts/StatsOverlayScene.cs" id="1_x2b0d"]
+
+[node name="StatsOverlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x2b0d")
+
+[node name="PlayerCountLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 41.0
+offset_top = -67.0
+offset_right = 168.0
+offset_bottom = -44.0
+grow_vertical = 0
+text = "PLAYERS COUNT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerCount" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 41.0
+offset_top = -67.0
+offset_right = 168.0
+offset_bottom = -44.0
+grow_vertical = 0
+text = "PLAYERS COUNT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CurrentMaxHeightLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 253.0
+offset_top = -71.0
+offset_right = 429.0
+offset_bottom = -48.0
+grow_vertical = 0
+text = "CURRENT MAX HEIGHT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CurrentMaxHeight" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 253.0
+offset_top = -71.0
+offset_right = 429.0
+offset_bottom = -48.0
+grow_vertical = 0
+text = "CURRENT MAX HEIGHT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HighestPlayerLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 548.0
+offset_top = -66.0
+offset_right = 678.0
+offset_bottom = -43.0
+grow_vertical = 0
+text = "HIGHEST PLAYER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HighestPlayer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 548.0
+offset_top = -66.0
+offset_right = 678.0
+offset_bottom = -43.0
+grow_vertical = 0
+text = "HIGHEST PLAYER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameTimerLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 895.0
+offset_top = -54.0
+offset_right = 993.0
+offset_bottom = -31.0
+grow_vertical = 0
+text = "GAME TIMER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameTimer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 895.0
+offset_top = -54.0
+offset_right = 993.0
+offset_bottom = -31.0
+grow_vertical = 0
+text = "GAME TIMER"
+horizontal_alignment = 1
+vertical_alignment = 1
