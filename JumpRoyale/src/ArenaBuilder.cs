@@ -22,6 +22,11 @@ public class ArenaBuilder : IArenaBuilder
     /// </summary>
     private readonly TileTypes[] _nextTilesByHeight = [TileTypes.Stone, TileTypes.Concrete, TileTypes.Gold];
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ArenaBuilder"/> class.
+    /// </summary>
+    /// <param name="tileMap">Tilemap to draw on.</param>
+    /// <param name="tileChangeHeightFactor">How many tiles vertically it takes to change to the next sprite.</param>
     public ArenaBuilder(TileMap tileMap, int tileChangeHeightFactor)
     {
         TileMap = tileMap;

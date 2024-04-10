@@ -22,6 +22,7 @@ tile_set = ExtResource("3_r17hm")
 format = 2
 
 [node name="Timers" parent="." instance=ExtResource("6_oc1fy")]
+editor_description = "Keep this component at the top of other components, which use these timers :)"
 
 [node name="TwitchManager" type="Node2D" parent="."]
 script = ExtResource("4_dcque")
