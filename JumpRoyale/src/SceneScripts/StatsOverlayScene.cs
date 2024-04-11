@@ -35,6 +35,12 @@ public partial class StatsOverlayScene : Control
         PlayerStats.Instance.OnPlayerJoin += PollPlayerCountEvent;
     }
 
+    public override void _Process(double delta)
+    {
+        // For now, this will be a test code, because this runs every frame, but benchmark this somehow and check if
+        // there is any impact on performance if we just look for maximum value in a dictionary of players.
+    }
+
     /// <summary>
     /// Retrieves the current player count from <c>PlayerStats</c>, updated when PlayerStats raises an event on new
     /// player join.

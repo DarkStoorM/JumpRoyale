@@ -16,6 +16,11 @@ public class Jumper(PlayerData playerData)
 
     public JumperEventsManager JumperEventsManager { get; } = new();
 
+    /// <summary>
+    /// Realtime updated Y-position of this jumper - controlled by JumperScene.
+    /// </summary>
+    public float CurrentHeight { get; set; }
+
     public void Initialize()
     {
         SetCharacter(PlayerData.CharacterChoice);

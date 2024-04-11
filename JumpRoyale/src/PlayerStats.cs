@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using JumpRoyale.Events;
 using JumpRoyale.Utils;
@@ -210,9 +211,20 @@ public class PlayerStats
         _jumpers[jumper.PlayerData.UserId] = jumper;
     }
 
+    // TODO: Write tests for this
     public int JumpersCount()
     {
         return _jumpers.Count;
+    }
+
+    // TODO: Write tests for this, if possible
+
+    /// <summary>
+    /// Returns the jumper at the highest position on the arena.
+    /// </summary>
+    public Jumper? CurrentLeadingJumper()
+    {
+        return _jumpers.Values.MaxBy(jumper => jumper.CurrentHeight);
     }
 
     /// <summary>
