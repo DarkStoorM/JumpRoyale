@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using JumpRoyale.Events;
 
@@ -5,34 +6,40 @@ namespace JumpRoyale;
 
 public partial class StatsOverlayScene : Control
 {
-    /// <summary>
-    /// Label displaying the live player count, updated on join.
-    /// </summary>
+    private CameraScene _parent = null!;
+
     private Label _playerCount = null!;
-
-    /// <summary>
-    /// Label displaying the current maximum height achieved by someone.
-    /// </summary>
-    private Label _currentMaxHeight = null!;
-
-    /// <summary>
-    /// Label displaying the name of the current leader (highest jumper).
-    /// </summary>
-    private Label _highestPlayer = null!;
-
-    /// <summary>
-    /// Label displaying the game timer (this component is not related to the lobby timer).
-    /// </summary>
+    private Label _firstPlace = null!;
+    private Label _firstPlaceHeight = null!;
+    private Label _secondPlace = null!;
+    private Label _secondPlaceHeight = null!;
     private Label _gameTimer = null!;
+    private Label _difficultyLevel = null!;
+
+    private int _secondsRemaining = GameConstants.GameTime;
+    private int _currentDifficultyLevel = 1;
 
     public override void _Ready()
     {
-        _playerCount = GetNode<Label>("PlayerCount");
-        _currentMaxHeight = GetNode<Label>("CurrentMaxHeight");
-        _highestPlayer = GetNode<Label>("HighestPlayer");
-        _gameTimer = GetNode<Label>("GameTimer");
+        _parent = GetParent<CameraScene>();
 
-        PlayerStats.Instance.OnPlayerJoin += PollPlayerCountEvent;
+        _playerCount = GetNode<Label>("Value_PlayerCount");
+        _firstPlace = GetNode<Label>("Value_1stPlayerName");
+        _firstPlaceHeight = GetNode<Label>("Value_1stPlayerHeight");
+        _gameTimer = GetNode<Label>("Value_GameTimer");
+        _difficultyLevel = GetNode<Label>("Value_Level");
+        _secondPlace = GetNode<Label>("Value_2ndPlayerName");
+        _secondPlaceHeight = GetNode<Label>("Value_2ndPlayerHeight");
+
+        // Immediately update the UI values to reflect the configuration through code
+        UpdateLabelText(_gameTimer, _secondsRemaining.ToString());
+        UpdateLabelText(_difficultyLevel, _parent.MovementMultiplier.ToString());
+
+        _parent.Timers.GameTimer.OnInterval += UpdateTimer;
+        _parent.Timers.GameTimer.OnFinished += HideUI;
+        _parent.Timers.DifficultyTimer.OnInterval += UpdateDifficulty;
+
+        PlayerStats.Instance.OnPlayerJoin += UpdatePlayerCount;
     }
 
     public override void _Process(double delta)
@@ -45,8 +52,56 @@ public partial class StatsOverlayScene : Control
     /// Retrieves the current player count from <c>PlayerStats</c>, updated when PlayerStats raises an event on new
     /// player join.
     /// </summary>
-    private void PollPlayerCountEvent(object sender, PlayerJoinEventArgs args)
+    private void UpdatePlayerCount(object sender, PlayerJoinEventArgs args)
     {
-        _playerCount.Text = PlayerStats.Instance.JumpersCount().ToString();
+        UpdateLabelText(_playerCount, PlayerStats.Instance.JumpersCount().ToString());
+    }
+
+    private void UpdateDifficulty(object sender, EventArgs args)
+    {
+        _currentDifficultyLevel++;
+
+        UpdateLabelText(_difficultyLevel, _currentDifficultyLevel.ToString());
+    }
+
+    private void UpdateTimer(object sender, EventArgs args)
+    {
+        _secondsRemaining--;
+
+        UpdateLabelText(_gameTimer, _secondsRemaining.ToString());
+    }
+
+    /// <summary>
+    /// Changes the UI visibility through Deferred call.
+    /// </summary>
+    private void HideUI(object sender, EventArgs args)
+    {
+        CallDeferred(nameof(DeferredUIVisibilityUpdate));
+    }
+
+    /// <summary>
+    /// Performs a deferred update on Label's Text component.
+    /// </summary>
+    /// <param name="label">Label to update.</param>
+    /// <param name="value">Value to replace the Label's Text contents.</param>
+    private void UpdateLabelText(Label label, string value)
+    {
+        CallDeferred(nameof(DeferredUpdateLabelText), label, value);
+    }
+
+    /// <summary>
+    /// See <see cref="UpdateLabelText(Label, string)"/>.
+    /// </summary>
+    private void DeferredUpdateLabelText(Label label, string value)
+    {
+        label.Text = value;
+    }
+
+    /// <summary>
+    /// Changes the UI visibility through Deferred call.
+    /// </summary>
+    private void DeferredUIVisibilityUpdate()
+    {
+        Visible = false;
     }
 }
