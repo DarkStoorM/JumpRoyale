@@ -12,10 +12,16 @@ public partial class TimersScene : Node2D
     public EventTimer LobbyTimer { get; } = new(GameConstants.LobbyAwaitingTime);
 
     /// <summary>
-    /// Timer started after the lobby countdown, raises an event at interval. Child nodes should be subscribed to this
-    /// timer to call actions when this timer raises events.
+    /// Timer started after the lobby countdown, raises an event at interval, which defines how many seconds have to
+    /// pass before changing the difficulty level. Child nodes should be subscribed to this timer to call actions when
+    /// this timer raises events.
     /// </summary>
-    public EventTimer GameTimer { get; } = new(GameConstants.GameTime, GameConstants.ScrollSpeedChangeInterval);
+    public EventTimer DifficultyTimer { get; } = new(GameConstants.GameTime, GameConstants.ScrollSpeedChangeInterval);
+
+    /// <summary>
+    /// Timer started after the lobby countdown, used to raise an event every second, used as a countdown time.
+    /// </summary>
+    public EventTimer GameTimer { get; } = new(GameConstants.GameTime);
 
     /// <summary>
     /// Timer started after the Game Timer is finished.
@@ -34,12 +40,13 @@ public partial class TimersScene : Node2D
         // which will then trigger the jump timeout after the game is done.
         _ = LobbyTimer.Start();
 
-        LobbyTimer.OnFinished += StartGameTimer;
-        GameTimer.OnFinished += StartGameResultTimer;
+        LobbyTimer.OnFinished += StartGameTimers;
+        DifficultyTimer.OnFinished += StartGameResultTimer;
     }
 
-    private void StartGameTimer(object sender, EventArgs args)
+    private void StartGameTimers(object sender, EventArgs args)
     {
+        _ = DifficultyTimer.Start();
         _ = GameTimer.Start();
     }
 
