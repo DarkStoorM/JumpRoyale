@@ -211,13 +211,10 @@ public class PlayerStats
         _jumpers[jumper.PlayerData.UserId] = jumper;
     }
 
-    // TODO: Write tests for this
     public int JumpersCount()
     {
         return _jumpers.Count;
     }
-
-    // TODO: Write tests for this, if possible
 
     /// <summary>
     /// Returns the jumper at the highest position on the arena.
