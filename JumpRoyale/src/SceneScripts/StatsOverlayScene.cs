@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using JumpRoyale.Events;
 
@@ -6,13 +7,20 @@ namespace JumpRoyale;
 
 public partial class StatsOverlayScene : Control
 {
+    /// <summary>
+    /// Stores the labels related to the podium jumpers in ascending order [name label, height label].
+    /// </summary>
+    private readonly Dictionary<int, Label[]> _podiumJumperLabels = [];
+
     private CameraScene _parent = null!;
 
     private Label _playerCount = null!;
-    private Label _firstPlaceJumperName = null!;
+    private Label _firstPlaceName = null!;
     private Label _firstPlaceHeight = null!;
-    private Label _secondPlaceJumperName = null!;
+    private Label _secondPlaceName = null!;
     private Label _secondPlaceHeight = null!;
+    private Label _thirdPlaceName = null!;
+    private Label _thirdPlaceHeight = null!;
     private Label _gameTimer = null!;
     private Label _difficultyLevel = null!;
 
@@ -24,12 +32,14 @@ public partial class StatsOverlayScene : Control
         _parent = GetParent<CameraScene>();
 
         _playerCount = GetNode<Label>("Value_PlayerCount");
-        _firstPlaceJumperName = GetNode<Label>("Value_1stPlayerName");
-        _firstPlaceHeight = GetNode<Label>("Value_1stPlayerHeight");
         _gameTimer = GetNode<Label>("Value_GameTimer");
         _difficultyLevel = GetNode<Label>("Value_Level");
-        _secondPlaceJumperName = GetNode<Label>("Value_2ndPlayerName");
-        _secondPlaceHeight = GetNode<Label>("Value_2ndPlayerHeight");
+        _firstPlaceName = GetNode<Label>("Value_1stPlaceName");
+        _firstPlaceHeight = GetNode<Label>("Value_1stPlaceHeight");
+        _secondPlaceName = GetNode<Label>("Value_2ndPlaceName");
+        _secondPlaceHeight = GetNode<Label>("Value_2ndPlaceHeight");
+        _thirdPlaceName = GetNode<Label>("Value_3rdPlaceName");
+        _thirdPlaceHeight = GetNode<Label>("Value_3rdPlaceHeight");
 
         // Immediately update the UI values to reflect the configuration through code
         UpdateLabelText(_gameTimer, _secondsRemaining.ToString());
@@ -38,6 +48,10 @@ public partial class StatsOverlayScene : Control
         _parent.Timers.GameTimer.OnInterval += UpdateTimer;
         _parent.Timers.GameTimer.OnFinished += HideUI;
         _parent.Timers.DifficultyTimer.OnInterval += UpdateDifficulty;
+
+        _podiumJumperLabels.Add(0, [_firstPlaceName, _firstPlaceHeight]);
+        _podiumJumperLabels.Add(1, [_secondPlaceName, _secondPlaceHeight]);
+        _podiumJumperLabels.Add(2, [_thirdPlaceName, _thirdPlaceHeight]);
 
         PlayerStats.Instance.OnPlayerJoin += UpdatePlayerCount;
     }
@@ -91,7 +105,7 @@ public partial class StatsOverlayScene : Control
     }
 
     /// <summary>
-    /// See <see cref="UpdateLabelText(Label, string)"/>.
+    /// Use <see cref="UpdateLabelText(Label, string)"/>.
     /// </summary>
     private void DeferredUpdateLabelText(Label label, string value)
     {
@@ -111,17 +125,22 @@ public partial class StatsOverlayScene : Control
     /// </summary>
     private void UpdateLeadingJumper()
     {
-        Jumper? leader = PlayerStats.Instance.CurrentLeadingJumper();
+        Jumper?[] podiumJumpers = PlayerStats.Instance.GetPodiumJumpers();
 
-        if (leader is null)
+        for (int i = 0; i < podiumJumpers.Length; i++)
         {
-            UpdateLabelText(_firstPlaceJumperName, string.Empty);
-            UpdateLabelText(_firstPlaceHeight, string.Empty);
+            Jumper? jumper = podiumJumpers[i];
 
-            return;
+            if (jumper is null)
+            {
+                UpdateLabelText(_podiumJumperLabels[i][0], string.Empty);
+                UpdateLabelText(_podiumJumperLabels[i][1], string.Empty);
+
+                continue;
+            }
+
+            UpdateLabelText(_podiumJumperLabels[i][0], jumper.PlayerData.Name);
+            UpdateLabelText(_podiumJumperLabels[i][1], jumper.CurrentHeight.ToString());
         }
-
-        UpdateLabelText(_firstPlaceJumperName, leader.PlayerData.Name);
-        UpdateLabelText(_firstPlaceHeight, leader.CurrentHeight.ToString());
     }
 }
