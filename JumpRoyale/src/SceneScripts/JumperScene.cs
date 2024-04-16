@@ -107,7 +107,7 @@ public partial class JumperScene : CharacterBody2D
         MoveAndSlide();
         StorePosition();
 
-        _jumper.CurrentHeight = Position.Y;
+        _jumper.CurrentHeight = Math.Round(Math.Abs(Position.Y - 15.9f), 2, MidpointRounding.AwayFromZero);
     }
 
     private void OnJumpCommandEvent(object sender, JumpCommandEventArgs args)
