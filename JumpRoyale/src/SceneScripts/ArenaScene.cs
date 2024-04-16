@@ -120,6 +120,7 @@ public partial class ArenaScene : Node2D
         // different TileMap, but whatever.
         DrawSideWalls();
 
+        // Note: the Y:0 start one tile above the ground
         int startY = 0;
         int endY = ArenaConstants.MaximumArenaHeightInTiles;
 
