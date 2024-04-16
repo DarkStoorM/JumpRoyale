@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using JumpRoyale.Events;
 using JumpRoyale.Utils;
@@ -208,6 +209,19 @@ public class PlayerStats
         NullGuard.ThrowIfNull(jumper);
 
         _jumpers[jumper.PlayerData.UserId] = jumper;
+    }
+
+    public int JumpersCount()
+    {
+        return _jumpers.Count;
+    }
+
+    /// <summary>
+    /// Returns the top 3 jumpers at the highest position on the arena, ordered descending.
+    /// </summary>
+    public Jumper?[] GetPodiumJumpers()
+    {
+        return _jumpers.Values.OrderByDescending(jumper => jumper.CurrentHeight).Take(3).ToArray();
     }
 
     /// <summary>

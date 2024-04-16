@@ -383,6 +383,51 @@ public class IntegrationTests : BaseTwitchTests
     }
 
     /// <summary>
+    /// This test makes sure we get the three highest jumpers in the correct order that we can put on the UI.
+    /// </summary>
+    [Test]
+    public void CanGetPodiumJumpers()
+    {
+        // Insert 5 jumpers with ascending IDs and height. This should give us 3 jumpers with descending IDs
+        // as a result
+        for (int i = 0; i < 5; i++)
+        {
+            FakeTwitchChatter chatter = new(userId: i.ToString());
+
+            TwitchChatClient.Instance.InvokeFakeMessageEvent(
+                "join",
+                chatter.DisplayName,
+                chatter.UserId,
+                chatter.ColorHex
+            );
+
+            PlayerStats.Instance.GetJumperByUserId(i.ToString())!.CurrentHeight = i;
+        }
+
+        Jumper?[] jumpers = PlayerStats.Instance.GetPodiumJumpers();
+        List<int> ids = [];
+
+        foreach (Jumper? jumper in jumpers)
+        {
+            if (jumper is null)
+            {
+                Assert.Fail();
+                break;
+            }
+
+            ids.Add(int.Parse(jumper.PlayerData.UserId));
+        }
+
+        bool isDescending = ids.SequenceEqual(ids.OrderByDescending(n => n));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ids, Has.Count.EqualTo(3));
+            Assert.That(isDescending, Is.True);
+        });
+    }
+
+    /// <summary>
     /// Updates the PlayerData in the Player Stats collection, Serializes all players and reloads them from file.
     /// </summary>
     private void RefreshPlayerData()

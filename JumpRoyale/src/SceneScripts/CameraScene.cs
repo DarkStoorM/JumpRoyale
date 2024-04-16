@@ -7,25 +7,31 @@ namespace JumpRoyale;
 public partial class CameraScene : Node2D
 {
     /// <summary>
-    /// Reference to the Timers in the parent node - assuming this camera scene is correctly instantiated inside the
-    /// arena scene and is located __under__ the Timers scene in the hierarchy.
+    /// Defines the current camera movement speed multiplier, increased at interval by game timer. This also describes
+    /// the current arena difficulty level (related to speed, not to the current height).
     /// </summary>
-    private TimersScene _timers = null!;
-
-    /// <summary>
-    /// Defines the current camera movement speed multiplier, increased at interval by game timer.
-    /// </summary>
-    private int _movementMultiplier = 1;
+    public int MovementMultiplier { get; private set; } = 1;
 
     public bool CanMove { get; set; }
 
+    /// <summary>
+    /// Reference to the Timers in the parent node - assuming this camera scene is correctly instantiated inside the
+    /// arena scene and is located __under__ the Timers scene in the hierarchy.
+    /// </summary>
+    public TimersScene Timers { get; private set; } = null!;
+
+    public override void _EnterTree()
+    {
+        // Since the camera contains the UI, and it has to access the timers, we have to cache them before the children
+        // are ready to make sure the timers are actually accessible to children
+        Timers = GetParent<ArenaScene>().Timers;
+    }
+
     public override void _Ready()
     {
-        _timers = GetParent<ArenaScene>().Timers;
-
-        _timers.GameTimer.OnInterval += IncreaseMovementMultiplier;
-        _timers.GameTimer.OnFinished += StopCamera;
-        _timers.LobbyTimer.OnFinished += StartCamera;
+        Timers.DifficultyTimer.OnInterval += IncreaseMovementMultiplier;
+        Timers.DifficultyTimer.OnFinished += StopCamera;
+        Timers.LobbyTimer.OnFinished += StartCamera;
     }
 
     public override void _Process(double delta)
@@ -34,7 +40,7 @@ public partial class CameraScene : Node2D
         {
             Position = new(
                 Position.X,
-                Position.Y + (float)delta * -GameConstants.BaseCameraMovementSpeed * _movementMultiplier
+                Position.Y + (float)delta * -GameConstants.BaseCameraMovementSpeed * MovementMultiplier
             );
         }
     }
@@ -44,7 +50,7 @@ public partial class CameraScene : Node2D
     /// </summary>
     private void IncreaseMovementMultiplier(object sender, EventTimerEventArgs args)
     {
-        _movementMultiplier++;
+        MovementMultiplier++;
     }
 
     /// <summary>

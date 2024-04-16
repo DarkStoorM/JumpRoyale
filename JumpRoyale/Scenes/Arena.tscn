@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmrooefndxyw6"]
+[gd_scene load_steps=8 format=3 uid="uid://dmrooefndxyw6"]
 
 [ext_resource type="Script" path="res://src/SceneScripts/ArenaScene.cs" id="1_yckc0"]
 [ext_resource type="PackedScene" uid="uid://5gt7u2ubg5bn" path="res://Scenes/Jumper.tscn" id="2_as2jd"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://src/SceneScripts/TwitchManagerScene.cs" id="4_dcque"]
 [ext_resource type="PackedScene" uid="uid://bn46jkbek8sr2" path="res://Scenes/Camera.tscn" id="4_qgcx5"]
 [ext_resource type="PackedScene" uid="uid://uk6q5kop5knq" path="res://Scenes/Timers.tscn" id="6_oc1fy"]
+[ext_resource type="PackedScene" uid="uid://bcg0yu5eys6vh" path="res://Scenes/StatsOverlay.tscn" id="7_y2edk"]
 
 [node name="Arena" type="Node2D"]
 position = Vector2(0, -1088)
@@ -29,3 +30,14 @@ script = ExtResource("4_dcque")
 JumperScene = ExtResource("2_as2jd")
 
 [node name="CameraScene" parent="." instance=ExtResource("4_qgcx5")]
+
+[node name="StatsOverlay" parent="CameraScene" instance=ExtResource("7_y2edk")]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 0.0
+offset_top = -984.0
+offset_right = 1920.0
+offset_bottom = 96.0
+grow_horizontal = 1
+grow_vertical = 0

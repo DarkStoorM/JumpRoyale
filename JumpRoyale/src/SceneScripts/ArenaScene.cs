@@ -31,14 +31,6 @@ public partial class ArenaScene : Node2D
 
     private Camera2D _camera = null!;
 
-    /// <summary>
-    /// Viewport Rect2.
-    /// </summary>
-    /// <remarks>
-    /// This should not be used for Position checking. Use Camera definition instead.
-    /// </remarks>
-    private Rect2 _viewport;
-
     public ArenaScene()
     {
         // Construct difficulty values for platforms and blocks. Define more dictionaries here if needed
@@ -95,7 +87,6 @@ public partial class ArenaScene : Node2D
         }
 
         _builder = new ArenaBuilder(tileMap, ArenaConstants.MaximumArenaHeightInTiles / 3);
-        _viewport = GetViewportRect();
 
         // Construct the "playable" arena field from the viewport
         // Note: node has to enter the scene first, so we can't use this in the constructor
@@ -129,6 +120,7 @@ public partial class ArenaScene : Node2D
         // different TileMap, but whatever.
         DrawSideWalls();
 
+        // Note: the Y:0 start one tile above the ground
         int startY = 0;
         int endY = ArenaConstants.MaximumArenaHeightInTiles;
 
