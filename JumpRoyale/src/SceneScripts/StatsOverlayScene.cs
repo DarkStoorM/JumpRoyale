@@ -9,9 +9,9 @@ public partial class StatsOverlayScene : Control
     private CameraScene _parent = null!;
 
     private Label _playerCount = null!;
-    private Label _firstPlace = null!;
+    private Label _firstPlaceJumperName = null!;
     private Label _firstPlaceHeight = null!;
-    private Label _secondPlace = null!;
+    private Label _secondPlaceJumperName = null!;
     private Label _secondPlaceHeight = null!;
     private Label _gameTimer = null!;
     private Label _difficultyLevel = null!;
@@ -24,11 +24,11 @@ public partial class StatsOverlayScene : Control
         _parent = GetParent<CameraScene>();
 
         _playerCount = GetNode<Label>("Value_PlayerCount");
-        _firstPlace = GetNode<Label>("Value_1stPlayerName");
+        _firstPlaceJumperName = GetNode<Label>("Value_1stPlayerName");
         _firstPlaceHeight = GetNode<Label>("Value_1stPlayerHeight");
         _gameTimer = GetNode<Label>("Value_GameTimer");
         _difficultyLevel = GetNode<Label>("Value_Level");
-        _secondPlace = GetNode<Label>("Value_2ndPlayerName");
+        _secondPlaceJumperName = GetNode<Label>("Value_2ndPlayerName");
         _secondPlaceHeight = GetNode<Label>("Value_2ndPlayerHeight");
 
         // Immediately update the UI values to reflect the configuration through code
@@ -46,6 +46,7 @@ public partial class StatsOverlayScene : Control
     {
         // For now, this will be a test code, because this runs every frame, but benchmark this somehow and check if
         // there is any impact on performance if we just look for maximum value in a dictionary of players.
+        UpdateLeadingJumper();
     }
 
     /// <summary>
@@ -103,5 +104,24 @@ public partial class StatsOverlayScene : Control
     private void DeferredUIVisibilityUpdate()
     {
         Visible = false;
+    }
+
+    /// <summary>
+    /// Updates the UI portions displaying the leader.
+    /// </summary>
+    private void UpdateLeadingJumper()
+    {
+        Jumper? leader = PlayerStats.Instance.CurrentLeadingJumper();
+
+        if (leader is null)
+        {
+            UpdateLabelText(_firstPlaceJumperName, string.Empty);
+            UpdateLabelText(_firstPlaceHeight, string.Empty);
+
+            return;
+        }
+
+        UpdateLabelText(_firstPlaceJumperName, leader.PlayerData.Name);
+        UpdateLabelText(_firstPlaceHeight, leader.CurrentHeight.ToString());
     }
 }
