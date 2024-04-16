@@ -217,11 +217,11 @@ public class PlayerStats
     }
 
     /// <summary>
-    /// Returns the jumper at the highest position on the arena.
+    /// Returns the top 3 jumpers at the highest position on the arena, ordered descending.
     /// </summary>
-    public Jumper? CurrentLeadingJumper()
+    public Jumper?[] GetPodiumJumpers()
     {
-        return _jumpers.Values.MaxBy(jumper => jumper.CurrentHeight);
+        return _jumpers.Values.OrderByDescending(jumper => jumper.CurrentHeight).Take(3).ToArray();
     }
 
     /// <summary>
