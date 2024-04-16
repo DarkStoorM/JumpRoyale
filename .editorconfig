@@ -107,6 +107,8 @@ dotnet_diagnostic.CA1308.severity = none
 dotnet_diagnostic.CA1309.severity = none
 dotnet_diagnostic.CA1310.severity = none
 dotnet_diagnostic.CA1311.severity = none
+# Should override the equality (==) and inequality (!=) operators
+dotnet_diagnostic.CA1815.severity = none
 # Mark members as static when they don't access instance data
 # This is only for performance-sensitive operations, so we don't need this
 dotnet_diagnostic.CA1822.severity = none
