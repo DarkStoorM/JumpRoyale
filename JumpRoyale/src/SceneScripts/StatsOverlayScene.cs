@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using JumpRoyale.Events;
+using JumpRoyale.Utils;
 
 namespace JumpRoyale;
 
@@ -10,7 +11,7 @@ public partial class StatsOverlayScene : Control
     /// <summary>
     /// Stores the labels related to the podium jumpers in ascending order [name label, height label].
     /// </summary>
-    private readonly Dictionary<int, Label[]> _podiumJumperLabels = [];
+    private readonly Dictionary<int, PodiumJumperLabels> _podiumJumperLabels = [];
 
     private CameraScene _parent = null!;
 
@@ -49,9 +50,9 @@ public partial class StatsOverlayScene : Control
         _parent.Timers.GameTimer.OnFinished += HideUI;
         _parent.Timers.DifficultyTimer.OnInterval += UpdateDifficulty;
 
-        _podiumJumperLabels.Add(0, [_firstPlaceName, _firstPlaceHeight]);
-        _podiumJumperLabels.Add(1, [_secondPlaceName, _secondPlaceHeight]);
-        _podiumJumperLabels.Add(2, [_thirdPlaceName, _thirdPlaceHeight]);
+        _podiumJumperLabels.Add(0, new(_firstPlaceName, _firstPlaceHeight));
+        _podiumJumperLabels.Add(1, new(_secondPlaceName, _secondPlaceHeight));
+        _podiumJumperLabels.Add(2, new(_thirdPlaceName, _thirdPlaceHeight));
 
         PlayerStats.Instance.OnPlayerJoin += UpdatePlayerCount;
     }
@@ -131,16 +132,10 @@ public partial class StatsOverlayScene : Control
         {
             Jumper? jumper = podiumJumpers[i];
 
-            if (jumper is null)
-            {
-                UpdateLabelText(_podiumJumperLabels[i][0], string.Empty);
-                UpdateLabelText(_podiumJumperLabels[i][1], string.Empty);
-
-                continue;
-            }
-
-            UpdateLabelText(_podiumJumperLabels[i][0], jumper.PlayerData.Name);
-            UpdateLabelText(_podiumJumperLabels[i][1], jumper.CurrentHeight.ToString());
+            // If there was no jumper, just reset the label back to empty in case we had some initial text, but there
+            // are not enough players to fill all three slots yet
+            UpdateLabelText(_podiumJumperLabels[i].PlayerNameLabel, jumper?.PlayerData.Name ?? string.Empty);
+            UpdateLabelText(_podiumJumperLabels[i].PlayerHeightLabel, jumper?.CurrentHeight.ToString() ?? string.Empty);
         }
     }
 }
